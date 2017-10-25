@@ -1,0 +1,28 @@
+{
+  "name": "roosterjs-react",
+  "version": "0.0.1",
+  "description": "A react component wrapper for roosterjs",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/roosterjs-react"
+  },
+  "scripts": {
+    "build": "node node_modules/typescript/bin/tsc",
+    "start": "webpack-dev-server"
+  },
+  "author": "Jiuqing Song",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.6.2",
+    "react-dom": "15.6.2",
+    "roosterjs-editor-plugins": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^15.6.0",
+    "ts-loader": "^3.0.5",
+    "typescript": "^2.5.2",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.3"
+  }
+}
