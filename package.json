@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A react component wrapper for roosterjs",
   "main": "lib/index.js",
   "repository": {
@@ -14,12 +14,12 @@
   "author": "Jiuqing Song",
   "license": "MIT",
   "dependencies": {
-    "react": "^15.6.2",
-    "react-dom": "15.6.2",
-    "roosterjs-editor-plugins": "^6.3.0"
+    "react": "~15.3.2",
+    "react-dom": "~15.3.2",
+    "roosterjs-editor-plugins": "^6.3.1"
   },
   "devDependencies": {
-    "@types/react": "^15.6.0",
+    "@types/react": "~15.6.0",
     "ts-loader": "^3.0.5",
     "typescript": "^2.5.2",
     "webpack": "^3.8.1",
