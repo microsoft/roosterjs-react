@@ -1,3 +1,4 @@
+/// <reference path="../../node_modules/@types/react/index.d.ts" />
 import * as React from 'react';
 import EditorViewState from '../schema/EditorViewState';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';

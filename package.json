@@ -9,14 +9,16 @@
   },
   "scripts": {
     "build": "node node_modules/typescript/bin/tsc",
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "pack": "node tools/pack.js",
+    "pack:prod": "node tools/pack.js -p"
   },
   "author": "Jiuqing Song",
   "license": "MIT",
   "dependencies": {
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.3.1"
+    "roosterjs-editor-plugins": "^6.3.2"
   },
   "devDependencies": {
     "@types/react": "~15.6.0",

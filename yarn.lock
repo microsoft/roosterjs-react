@@ -2414,39 +2414,39 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-roosterjs-editor-api@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.3.0.tgz#ee50dee22bd2ebae2f06599dde265ed70270fa7a"
+roosterjs-editor-api@6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.3.2.tgz#6341d4d58a37dff0b365021b35f3c7d96f2b656d"
   dependencies:
-    roosterjs-editor-core "6.3.0"
-    roosterjs-editor-dom "6.3.0"
-    roosterjs-editor-types "6.3.0"
+    roosterjs-editor-core "6.3.2"
+    roosterjs-editor-dom "6.3.2"
+    roosterjs-editor-types "6.3.2"
 
-roosterjs-editor-core@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.3.0.tgz#fc3f46d793fb293b0a6b7133959b78979e196660"
+roosterjs-editor-core@6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.3.2.tgz#054e9afa17cb7b767699ab9b9db2bfa1000e06e0"
   dependencies:
-    roosterjs-editor-dom "6.3.0"
-    roosterjs-editor-types "6.3.0"
+    roosterjs-editor-dom "6.3.2"
+    roosterjs-editor-types "6.3.2"
 
-roosterjs-editor-dom@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.3.0.tgz#88670eb8ab2ad063ef40e86b939a23c3944b652f"
+roosterjs-editor-dom@6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.3.2.tgz#e6e46214565efc7e83cf0ffa10ec4b52a676afa6"
   dependencies:
-    roosterjs-editor-types "6.3.0"
+    roosterjs-editor-types "6.3.2"
 
-roosterjs-editor-plugins@^6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.3.0.tgz#f6754de5331eab30be2d4c6adb8ff9dbec978ff3"
+roosterjs-editor-plugins@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.3.2.tgz#4a673d747a93aa1043390bef83c1247cc69f2f21"
   dependencies:
-    roosterjs-editor-api "6.3.0"
-    roosterjs-editor-core "6.3.0"
-    roosterjs-editor-dom "6.3.0"
-    roosterjs-editor-types "6.3.0"
+    roosterjs-editor-api "6.3.2"
+    roosterjs-editor-core "6.3.2"
+    roosterjs-editor-dom "6.3.2"
+    roosterjs-editor-types "6.3.2"
 
-roosterjs-editor-types@6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.3.0.tgz#acd726c32630812966b6e6def6f323cfed43c449"
+roosterjs-editor-types@6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.3.2.tgz#e9e81162704b59a461f8f12fdc41e6516b48bab5"
 
 safe-buffer@5.1.1, safe-buffer@^5.0.1, safe-buffer@^5.1.0, safe-buffer@^5.1.1, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.1"
