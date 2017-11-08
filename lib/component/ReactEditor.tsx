@@ -21,6 +21,7 @@ export interface ReactEditorProps {
     isRtl?: boolean;
     hyperlinkToolTipCallback?: (href: string) => string;
     defaultFormat?: DefaultFormat;
+    onBlur?: (ev: React.FocusEvent<HTMLDivElement>) => void;
 }
 
 export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
@@ -34,7 +35,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
             dir={isRtl ? 'rtl' : 'ltr'}
             className={className}
             onBlur={this.onBlur}
-            ref={ref => this.contentDiv = ref}></div>;
+            ref={this.onContentDivRef}></div>;
     }
 
     componentDidMount() {
@@ -96,7 +97,14 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
         }
     }
 
-    private onBlur = () => {
+    private onBlur = (ev: React.FocusEvent<HTMLDivElement>) => {
         this.updateContentToViewState();
+        if (this.props.onBlur) {
+            this.props.onBlur(ev);
+        }
+    }
+    
+    private onContentDivRef = (ref: HTMLDivElement) => {
+        this.contentDiv = ref;
     }
 }
