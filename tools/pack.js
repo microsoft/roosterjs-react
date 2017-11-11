@@ -1,21 +1,24 @@
+var exec = require('child_process').execSync;
+var path = require('path');
 var autoprefixer = require('autoprefixer');
 var inlineRtl = require('postcss-inline-rtl');
-module.exports = {
-    entry: './sample/script/start.tsx',
+var rootPath = path.resolve(__dirname, '..');
+var sourcePath = rootPath;
+var distPath = path.resolve(rootPath, 'dist');
+var webpack = require('webpack');
+var param = process.argv[2];
+var isProduction = param == '-p';
+var webpackConfig = {
+    entry: path.resolve(sourcePath, 'lib/index.ts'),
     devtool: 'source-map',
     output: {
-        filename: 'start.js',
-        path: __dirname + '/sample/script',
-        publicPath: '/sample/script/',
-        sourceMapFilename: '[name].map'
+        library: 'roosterjs',
+        filename: 'rooster-react.js',
+        path: distPath
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.svg', '.'],
-        modules: [
-            './lib',
-            './sample',
-            './node_modules'
-        ]
+        extensions: ['.ts', '.tsx', '.js', '.svg', '.scss'],
+        modules: [ sourcePath, path.resolve(sourcePath, 'node_modules') ],
     },
     module: {
         rules: [
@@ -60,10 +63,33 @@ module.exports = {
             }
         ]
     },
-    watch: true,
-    stats: "minimal",
-    devServer: {
-        host: "0.0.0.0", // This makes the server public so that others can test by http://hostname ...
-        port: 3000
+    // externals: {
+    //     "react": "React",
+    //     "react-dom": "ReactDom",
+    // },
+    stats: 'minimal',
+    plugins: isProduction ? [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                dead_code: true,
+                warnings: true,
+                screw_ie8: true,
+                drop_debugger: true,
+                drop_console: true,
+                unsafe: false,
+            },
+        })
+    ] : []
+};
+
+console.log('Packing file: ' + path.resolve(distPath, 'rooster.js'));
+webpack(webpackConfig).run((err, stat) => {
+    if (err) {
+        console.error(err);
+    } else {
+        exec('node ./dts.js', {
+            stdio: 'inherit',
+            cwd: __dirname
+        });
     }
-}
+});

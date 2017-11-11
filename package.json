@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A react component wrapper for roosterjs",
   "main": "lib/index.js",
   "repository": {
@@ -8,20 +8,33 @@
     "url": "https://github.com/Microsoft/roosterjs-react"
   },
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc",
-    "start": "webpack-dev-server"
+    "build": "node node_modules/typescript/bin/tsc & node tools/copyfiles.js",
+    "start": "webpack-dev-server",
+    "pack": "node tools/pack.js",
+    "pack:prod": "node tools/pack.js -p"
   },
   "author": "Jiuqing Song",
   "license": "MIT",
   "dependencies": {
+    "office-ui-fabric-react": "~5.9.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.3.1"
+    "roosterjs-editor-plugins": "^6.3.3"
   },
   "devDependencies": {
+    "@microsoft/loader-load-themed-styles": "1.5.1",
+    "@types/node": "8.0.50",
     "@types/react": "~15.6.0",
+    "autoprefixer": "^7.1.1",
+    "classnames": "2.2.5",
+    "css-loader": "0.28.7",
+    "node-sass": "4.6.0",
+    "postcss-inline-rtl": "^0.9.8",
+    "postcss-loader": "^2.0.6",
+    "sass-loader": "6.0.6",
     "ts-loader": "^3.0.5",
     "typescript": "^2.5.2",
+    "url-loader": "0.6.2",
     "webpack": "^3.8.1",
     "webpack-dev-server": "^2.9.3"
   }

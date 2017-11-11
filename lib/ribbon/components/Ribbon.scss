@@ -1,0 +1,75 @@
+$backgroundColor: #fff;
+$hoverBackgroundColor: #ddd;
+$activeBackgroundColor: #aaa;
+$checkedBackgroundColor: #eee;
+
+:global(.roosterRibbon) {
+    left: 0;
+    right: 0;
+    padding: 7px 0 3px;
+    background: $backgroundColor;
+    overflow: hidden;
+    height: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+:global(.roosterRibbonButton) {
+    display: inline-block;
+    white-space: nowrap;
+    background: $backgroundColor;
+}
+
+:global(.roosterRibbonIcon) {
+    width: 32px;
+    height: 32px;
+    margin: 0 4px 4px 0;
+    background: $backgroundColor;
+    border-radius: 2px;
+    flex: 0 0 auto;
+
+    &:focus,
+    &:hover {
+        background-color: $hoverBackgroundColor;
+    }
+
+    &:active {
+        background-color: $activeBackgroundColor;
+    }
+
+    &:global.roosterRibbonButtonChecked {
+        background-color: $checkedBackgroundColor;
+
+        &:focus,
+        &:hover {
+            background-color: $hoverBackgroundColor;
+        }
+        &:active {
+            background-color: $activeBackgroundColor;
+        }
+    }
+
+    &:global.roosterRibbonButtonDisabled {
+        filter: alpha(opacity=35);
+        opacity: 0.35;
+        -khtml-opacity: 0.35;
+        cursor: default;
+    }
+
+    &:global.ms-Button {
+        padding: 0;
+        border-width: 0;
+    }
+
+    :global(.roosterRibbonButtonImage) {
+        width: 32px;
+    }
+}
+
+:global(.roosterRibbonButtonMore) {
+    width: 114px;
+    padding: 4px 0 0 4px;
+    display: flex;
+    flex-flow: row wrap;
+    background-color: $backgroundColor;
+}
