@@ -18,5 +18,5 @@ let copyFn = (f) => {
 glob.sync('package.json').forEach(copyFn);
 glob.sync('@(README|readme)*.*').forEach(copyFn);
 glob.sync('@(license|LICENSE)*').forEach(copyFn);
-glob.sync('lib/ribbon/icons/*.@(svg|SVG)').forEach(copyFn);
-glob.sync('lib/ribbon/components/*.@(scss|SCSS)').forEach(copyFn);
+glob.sync('lib/**/*.svg').forEach(copyFn);
+glob.sync('lib/**/*.scss').forEach(copyFn);

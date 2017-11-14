@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6147 -8740 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #ffb900;
+        stroke: #fff;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3 {
+        fill: #666;
+      }
+    </style>
+  </defs>
+  <g id="FB:_Highlight" data-name="FB: Highlight" transform="translate(-6999 -9195.999)">
+    <rect id="Rectangle_2300" data-name="Rectangle 2300" class="cls-1" width="32" height="32" rx="2" transform="translate(852 455.999)"/>
+    <g id="Group">
+      <path id="Path_998" data-name="Path 998" class="cls-2" d="M7.745-2.125,8.807-3.187l-5.088-5.1L1.179-5.736a.394.394,0,0,0-.116.291.394.394,0,0,0,.116.291L4.2-2.125Z" transform="translate(860 479.999)"/>
+      <path id="Path_1584" data-name="Path 1584" class="cls-3" d="M9.255-2.125H12.75v1.063H3.76L.415-4.416a1.38,1.38,0,0,1-.307-.469A1.5,1.5,0,0,1,0-5.445a1.5,1.5,0,0,1,.108-.56,1.408,1.408,0,0,1,.315-.477l9.936-9.944,6.591,6.6Zm1.1-12.8L4.466-9.031l5.1,5.088,5.885-5.885ZM7.745-2.125,8.807-3.187l-5.088-5.1L1.179-5.736a.394.394,0,0,0-.116.291.394.394,0,0,0,.116.291L4.2-2.125Z" transform="translate(860 479.999)"/>
+    </g>
+  </g>
+</svg>

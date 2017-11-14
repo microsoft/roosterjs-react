@@ -47,6 +47,7 @@ interface RibbonButton {
         targetElement: HTMLElement,
         editor: Editor,
         onDismiss: () => void,
+        stringMap: {[name: string]: string},
         currentFormat: FormatState
     ) => JSX.Element;
 

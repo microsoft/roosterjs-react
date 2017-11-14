@@ -2,183 +2,43 @@ import * as React from 'react';
 import RibbonButton, { RibbonButtonState } from '../schema/RibbonButton';
 import RibbonProps from '../schema/RibbonProps';
 import createFormatState from '../utils/createFormatState';
-import { Alignment, Indentation, Direction } from 'roosterjs-editor-types';
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { FormatState } from 'roosterjs-editor-types';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Image } from 'office-ui-fabric-react/lib/Image';
 import { getFormatState } from 'roosterjs-editor-api';
-import {
-    clearFormat,
-    removeLink,
-    setAlignment,
-    setDirection,
-    setIndentation,
-    toggleBold,
-    toggleBullet,
-    toggleItalic,
-    toggleNumbering,
-    toggleStrikethrough,
-    toggleSubscript,
-    toggleSuperscript,
-    toggleUnderline,
-} from 'roosterjs-editor-api';
+import * as SimpleButtons from './buttons/simpleButtons';
+import * as ColorButtons from './buttons/colorButtons';
 
 const styles = require('./Ribbon.scss');
 const classNames = require('classnames/bind').bind(styles);
-
-const BOLD_SVG = require('../icons/bold.svg');
-const ITALIC_SVG = require('../icons/italic.svg');
-const UNDERLINE_SVG = require('../icons/underline.svg');
-const BULLETS_SVG = require('../icons/bullets.svg');
-const BULLETS_RTL_SVG = require('../icons/bullets-rtl.svg');
-const NUMBERING_SVG = require('../icons/numbering.svg');
-const NUMBERING_RTL_SVG = require('../icons/numbering-rtl.svg');
-const OUTDENT_SVG = require('../icons/outdent.svg');
-const OUTDENT_RTL_SVG = require('../icons/outdent-rtl.svg');
-const INDENT_SVG = require('../icons/indent.svg');
-const INDENT_RTL_SVG = require('../icons/indent-rtl.svg');
-const ALIGNLEFT_SVG = require('../icons/alignleft.svg');
-const ALIGNCENTER_SVG = require('../icons/aligncenter.svg');
-const ALIGNRIGHT_SVG = require('../icons/alignright.svg');
-const UNLINK_SVG = require('../icons/unlink.svg');
-const SUPERSCRIPT_SVG = require('../icons/superscript.svg');
-const SUBSCRIPT_SVG = require('../icons/subscript.svg');
-const STRIKETHROUGH_SVG = require('../icons/strikethrough.svg');
-const LTR_SVG = require('../icons/ltr.svg');
-const RTL_SVG = require('../icons/rtl.svg');
-const UNDO_SVG = require('../icons/undo.svg');
-const REDO_SVG = require('../icons/redo.svg');
-const REMOVEFORMAT_SVG = require('../icons/removeformat.svg');
 const DROPDOWN_SVG = require('../icons/dropdown.svg');
-
-const RIBBONSTATE_POLL_INTERVAL: number = 300;
+const RIBBONSTATE_POLL_INTERVAL = 300;
 const RIBBONITEM_WIDTH = 36;
 const RIBBON_MARGIN = 12;
-
 const BUTTONS = {
-    bold: {
-        title: 'Bold',
-        imageUrl: BOLD_SVG,
-        buttonState: formatState =>
-            formatState.isBold ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleBold(editor),
-    },
-    italic: {
-        title: 'Italic',
-        imageUrl: ITALIC_SVG,
-        buttonState: formatState =>
-            formatState.isItalic ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleItalic(editor),
-    },
-    underline: {
-        title: 'Underline',
-        imageUrl: UNDERLINE_SVG,
-        buttonState: formatState =>
-            formatState.isUnderline ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleUnderline(editor),
-    },
-    bullets: {
-        title: 'Bullets',
-        imageUrl: BULLETS_SVG,
-        rtlImageUrl: BULLETS_RTL_SVG,
-        buttonState: formatState =>
-            formatState.isBullet ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleBullet(editor),
-    },
-    numbering: {
-        title: 'Numbering',
-        imageUrl: NUMBERING_SVG,
-        rtlImageUrl: NUMBERING_RTL_SVG,
-        buttonState: formatState =>
-            formatState.isNumbering ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleNumbering(editor),
-    },
-    indent: {
-        title: 'Increase indent',
-        imageUrl: INDENT_SVG,
-        rtlImageUrl: INDENT_RTL_SVG,
-        onClick: editor => setIndentation(editor, Indentation.Increase),
-    },
-    outdent: {
-        title: 'Decrease indent',
-        imageUrl: OUTDENT_SVG,
-        rtlImageUrl: OUTDENT_RTL_SVG,
-        onClick: editor => setIndentation(editor, Indentation.Decrease),
-    },
-    alignleft: {
-        title: 'Align left',
-        imageUrl: ALIGNLEFT_SVG,
-        onClick: editor => setAlignment(editor, Alignment.Left),
-    },
-    aligncenter: {
-        title: 'Align center',
-        imageUrl: ALIGNCENTER_SVG,
-        onClick: editor => setAlignment(editor, Alignment.Center),
-    },
-    alignright: {
-        title: 'Align right',
-        imageUrl: ALIGNRIGHT_SVG,
-        onClick: editor => setAlignment(editor, Alignment.Right),
-    },
-    unlink: {
-        title: 'Remove hyperlink',
-        imageUrl: UNLINK_SVG,
-        buttonState: formatState =>
-            formatState.canUnlink ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
-        onClick: editor => removeLink(editor),
-    },
-    subscript: {
-        title: 'Subscript',
-        imageUrl: SUBSCRIPT_SVG,
-        buttonState: formatState =>
-            formatState.isSubscript ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleSubscript(editor),
-    },
-    superscript: {
-        title: 'Superscript',
-        imageUrl: SUPERSCRIPT_SVG,
-        buttonState: formatState =>
-            formatState.isSuperscript ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleSuperscript(editor),
-    },
-    strikethrough: {
-        title: 'Strikethrough',
-        imageUrl: STRIKETHROUGH_SVG,
-        buttonState: formatState =>
-            formatState.isStrikeThrough ? RibbonButtonState.Checked : RibbonButtonState.Normal,
-        onClick: editor => toggleStrikethrough(editor),
-    },
-    ltr: {
-        title: 'Left-to-right',
-        imageUrl: LTR_SVG,
-        onClick: editor => setDirection(editor, Direction.LeftToRight),
-    },
-    rtl: {
-        title: 'Right-to-left',
-        imageUrl: RTL_SVG,
-        onClick: editor => setDirection(editor, Direction.RightToLeft),
-    },
-    undo: {
-        title: 'Undo',
-        imageUrl: UNDO_SVG,
-        buttonState: formatState =>
-            formatState.canUndo ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
-        onClick: editor => editor.undo(),
-    },
-    redo: {
-        title: 'Redo',
-        imageUrl: REDO_SVG,
-        buttonState: formatState =>
-            formatState.canRedo ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
-        onClick: editor => editor.redo(),
-    },
-    removeformat: {
-        title: 'Remove formatting',
-        imageUrl: REMOVEFORMAT_SVG,
-        onClick: editor => clearFormat(editor),
-    },
+    bold: SimpleButtons.bold,
+    italic: SimpleButtons.italic,
+    underline: SimpleButtons.underline,
+    backcolor: ColorButtons.backColorButton,
+    textcolor: ColorButtons.textColorButton,
+    bullets: SimpleButtons.bullets,
+    numbering: SimpleButtons.numbering,
+    indent: SimpleButtons.indent,
+    outdent: SimpleButtons.outdent,
+    alignleft: SimpleButtons.alignleft,
+    aligncenter: SimpleButtons.aligncenter,
+    alignright: SimpleButtons.alignright,
+    unlink: SimpleButtons.unlink,
+    subscript: SimpleButtons.subscript,
+    superscript: SimpleButtons.superscript,
+    strikethrough: SimpleButtons.strikethrough,
+    ltr: SimpleButtons.ltr,
+    rtl: SimpleButtons.rtl,
+    undo: SimpleButtons.undo,
+    redo: SimpleButtons.redo,
+    removeformat: SimpleButtons.removeformat,
 };
 
 export interface RibbonState {
@@ -260,6 +120,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                             this.buttonElements[dropDown],
                             editor,
                             this.onDismiss,
+                            this.props.stringMap,
                             this.state.formatState
                         )}
                 </FocusZone>

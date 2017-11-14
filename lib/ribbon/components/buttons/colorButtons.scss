@@ -1,0 +1,40 @@
+:global {
+    .roosterRibbonColorPicker {
+        width: 192px;
+        padding: 8px;
+        background: #fff;
+        overflow: hidden;
+
+        & ul {
+            width: 192px;
+            overflow: hidden;
+        }
+    }
+
+    .roosterRibbonColorItem {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: #fff;
+
+        & button {
+            padding: 0;
+            min-width: 0;
+            background: transparent;
+        }
+    }
+
+    .roosterRibbonColor {
+        width: 20px;
+        height: 20px;
+        margin: 4px;
+        border-style: solid;
+        border-width: 2px;
+        border-color: transparent;
+
+        &:hover,
+        &:focus {
+            border-color: #ff0000;
+        }
+    }
+}
