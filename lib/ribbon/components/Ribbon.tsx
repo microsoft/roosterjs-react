@@ -10,6 +10,7 @@ import { Image } from 'office-ui-fabric-react/lib/Image';
 import { getFormatState } from 'roosterjs-editor-api';
 import * as SimpleButtons from './buttons/simpleButtons';
 import * as ColorButtons from './buttons/colorButtons';
+import { fontNameButton } from './buttons/fontNameButton';
 
 const styles = require('./Ribbon.scss');
 const classNames = require('classnames/bind').bind(styles);
@@ -21,6 +22,7 @@ const BUTTONS = {
     bold: SimpleButtons.bold,
     italic: SimpleButtons.italic,
     underline: SimpleButtons.underline,
+    fontname: fontNameButton,
     backcolor: ColorButtons.backColorButton,
     textcolor: ColorButtons.textColorButton,
     bullets: SimpleButtons.bullets,

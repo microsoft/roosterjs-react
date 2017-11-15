@@ -9,8 +9,7 @@ import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { setBackgroundColor, setTextColor } from 'roosterjs-editor-api';
 
-let styles = require('./colorButtons.scss');
-let classNames = require('classnames/bind').bind(styles);
+require('./colorButtons.scss');
 const BACKCOLOR_SVG = require('../../icons/backcolor.svg');
 const TEXTCOLOR_SVG = require('../../icons/textcolor.svg');
 
@@ -125,7 +124,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
                 title={title}
                 onClick={() => this.onSelectColor(color)}
                 key={item.key}>
-                <div className={classNames('roosterRibbonColor')} style={inlineStyles} />
+                <div className={'roosterRibbonColor'} style={inlineStyles} />
             </Button>
         );
     };
@@ -137,7 +136,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
 
     render() {
         let { onDismissMenu, menuTargetElement } = this.props;
-        let pickerStyle = classNames('roosterRibbonColorPicker');
+        let pickerStyle = 'roosterRibbonColorPicker';
         return (
             <ContextualMenu
                 className={pickerStyle}
@@ -151,7 +150,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
                         name: color.name,
                         onRender: this.renderColorMenuItem,
                         data: color,
-                        className: classNames('roosterRibbonColorItem'),
+                        className: 'roosterRibbonColorItem',
                     };
                 })}
             />
