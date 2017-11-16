@@ -138,7 +138,7 @@ const FONT_NAME_LIST: Font[] = [
     { name: 'Sylfaen', family: 'Sylfaen,Mshtakan,Menlo,serif' }, //other-armenian-georgian
 ];
 
-export const fontNameButton = {
+export const fontNameButton: RibbonButton = {
     title: 'Font',
     imageUrl: FONTNAME_SVG,
     dropdown: (target, editor, dismiss, stringMap, format) =>
@@ -148,7 +148,7 @@ export const fontNameButton = {
             onSelectName={font => setFontName(editor, font.family)}
             selectedName={format.fontName}
         />,
-} as RibbonButton;
+};
 
 interface FontNamePickerProps {
     menuTargetElement: HTMLElement;
@@ -177,16 +177,17 @@ class FontNamePicker extends React.Component<FontNamePickerProps, {}> {
     }
 
     render() {
-        let { onDismissMenu, menuTargetElement } = this.props;
-        let fontMatches = (this.props.selectedName || '').match(FIRSTFONT_REGEX);
-        let selectedFont = fontMatches && fontMatches.length == 2 ? fontMatches[1] : '';
-            return (
+        let { onDismissMenu, menuTargetElement, selectedName } = this.props;
+        let fontMatches = (selectedName || '').match(FIRSTFONT_REGEX);
+        selectedName = fontMatches && fontMatches.length == 2 ? fontMatches[1] : selectedName;
+        return (
             <ContextualMenu
                 className={'roosterRibbonFontPicker'}
                 target={menuTargetElement}
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 onDismiss={onDismissMenu}
-                items={this.createMenuItems(selectedFont)}
+                shouldFocusOnMount={true}
+                items={this.createMenuItems(selectedName)}
             />
         );
     }

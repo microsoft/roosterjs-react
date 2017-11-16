@@ -11,6 +11,7 @@ import { getFormatState } from 'roosterjs-editor-api';
 import * as SimpleButtons from './buttons/simpleButtons';
 import * as ColorButtons from './buttons/colorButtons';
 import { fontNameButton } from './buttons/fontNameButton';
+import { fontSizeButton } from './buttons/fontSizeButton';
 
 const styles = require('./Ribbon.scss');
 const classNames = require('classnames/bind').bind(styles);
@@ -23,6 +24,7 @@ const BUTTONS = {
     italic: SimpleButtons.italic,
     underline: SimpleButtons.underline,
     fontname: fontNameButton,
+    fontSize: fontSizeButton,
     backcolor: ColorButtons.backColorButton,
     textcolor: ColorButtons.textColorButton,
     bullets: SimpleButtons.bullets,

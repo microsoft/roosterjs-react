@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6291 -8740 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #666;
+      }
+    </style>
+  </defs>
+  <g id="FB:_Size" data-name="FB: Size" transform="translate(-6999 -9195.999)">
+    <rect id="Rectangle_2296" data-name="Rectangle 2296" class="cls-1" width="32" height="32" rx="2" transform="translate(708 455.999)"/>
+    <path id="Path_1520" data-name="Path 1520" class="cls-2" d="M11.712-15.937,16.319-2.125H15.2l-1.411-4.25H8.525L7.114-2.125H5.993L5.288-4.25H2.15L1.444-2.125H.324l2.839-8.5H4.275L6.549-3.81,10.6-15.937ZM2.507-5.312H4.931L3.719-8.94ZM8.882-7.437h4.549l-2.274-6.815Z" transform="translate(716 479.999)"/>
+  </g>
+</svg>

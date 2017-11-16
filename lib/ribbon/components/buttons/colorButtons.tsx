@@ -13,7 +13,7 @@ require('./colorButtons.scss');
 const BACKCOLOR_SVG = require('../../icons/backcolor.svg');
 const TEXTCOLOR_SVG = require('../../icons/textcolor.svg');
 
-export const backColorButton = {
+export const backColorButton: RibbonButton = {
     title: 'Highlight',
     imageUrl: BACKCOLOR_SVG,
     dropdown: (target, editor, dismiss, stringMap) =>
@@ -24,9 +24,9 @@ export const backColorButton = {
             stringMap={stringMap}
             onSelectColor={color => setBackgroundColor(editor, color.code)}
         />,
-} as RibbonButton;
+};
 
-export const textColorButton = {
+export const textColorButton: RibbonButton = {
     title: 'Font color',
     imageUrl: TEXTCOLOR_SVG,
     dropdown: (target, editor, dismiss, stringMap) =>
@@ -37,7 +37,7 @@ export const textColorButton = {
             stringMap={stringMap}
             onSelectColor={color => setTextColor(editor, color.code)}
         />,
-} as RibbonButton;
+};
 
 interface ColorPickerItem {
     name: string;
@@ -144,6 +144,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 onDismiss={onDismissMenu}
                 arrowDirection={FocusZoneDirection.bidirectional}
+                shouldFocusOnMount={true}
                 items={this.props.colors.map((color: ColorPickerItem) => {
                     return {
                         key: color.name,
