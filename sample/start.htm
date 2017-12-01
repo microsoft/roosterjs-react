@@ -2,6 +2,11 @@
     <head>
         <title>Rooster-React Sample Page</title>
         <style>
+            .editorContainer {
+                background-color: white;
+                position: relative;
+                height: 400px;
+            }
             .editor {
                 position: absolute;
                 left: 10px;
@@ -9,8 +14,11 @@
                 top: 60px;
                 bottom: 10px;
                 overflow: auto;
-                border: solid 1px black;
                 outline: none;
+                border: solid 1px transparent;
+            }
+            .editor.editing {
+                border: solid 1px black;
             }
         </style>
     </head>

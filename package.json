@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A react component wrapper for roosterjs",
   "main": "lib/index.js",
   "repository": {
@@ -19,7 +19,7 @@
     "office-ui-fabric-react": "~5.9.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.3.3"
+    "roosterjs-editor-plugins": "^6.3.6"
   },
   "devDependencies": {
     "@microsoft/loader-load-themed-styles": "1.5.1",

@@ -21,6 +21,7 @@ export interface ReactEditorProps {
     isRtl?: boolean;
     hyperlinkToolTipCallback?: (href: string) => string;
     defaultFormat?: DefaultFormat;
+    initialReadonly?: boolean;
 }
 
 export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
@@ -29,17 +30,20 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
     private updateViewStateWhenUnmount: boolean;
 
     render() {
-        let { className, isRtl } = this.props;
+        let { className, isRtl, viewState } = this.props;
         return <div
+            dangerouslySetInnerHTML={{__html: convertInlineCss(viewState.content)}}
             dir={isRtl ? 'rtl' : 'ltr'}
             className={className}
-            onBlur={this.onBlur}
             ref={ref => this.contentDiv = ref}></div>;
     }
 
     componentDidMount() {
-        this.editor = new Editor(this.contentDiv, this.getEditorOptions());
-        this.updateViewStateWhenUnmount = true;
+        if (this.props.initialReadonly) {
+            this.contentDiv.innerHTML = this.props.viewState.content;
+        } else {
+            this.createEditor();
+        }
         this.updateContentToViewState(true /*isInitializing*/);
     }
 
@@ -48,8 +52,15 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
             this.updateContentToViewState();
             this.updateViewStateWhenUnmount = false;
         }
-        this.editor.dispose();
-        this.editor = null;
+        this.disposeEditor();
+    }
+
+    setIsReadonly(isReadonly: boolean) {
+        if (isReadonly) {
+            this.disposeEditor();
+        } else {
+            this.createEditor();
+        }
     }
 
     updateContentToViewState(isInitializing?: boolean) {
@@ -63,8 +74,22 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
         this.updateViewStateWhenUnmount = updateViewStateWhenUnmount;
     }
 
+    private createEditor() {
+        if (!this.editor) {
+            this.editor = new Editor(this.contentDiv, this.getEditorOptions());
+            this.updateViewStateWhenUnmount = true;
+        }
+    }
+
+    private disposeEditor() {
+        if (this.editor) {
+            this.editor.dispose();
+            this.editor = null;
+        }
+    }
+
     private getEditorOptions(): EditorOptions {
-        let { pasteHandler, plugins, viewState, undo, hyperlinkToolTipCallback, defaultFormat } = this.props;
+        let { pasteHandler, plugins, undo, hyperlinkToolTipCallback, defaultFormat } = this.props;
         let allPlugins: EditorPlugin[] = [
             new ContentEdit(),
             new HyperLink(hyperlinkToolTipCallback),
@@ -76,12 +101,10 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
             allPlugins = allPlugins.concat(plugins);
         }
 
-        let initialContent = convertInlineCss(viewState.content);
         let options: EditorOptions = {
             plugins: allPlugins,
             defaultFormat: defaultFormat,
             undo: undo,
-            initialContent: initialContent,
         };
 
         return options;
@@ -94,9 +117,5 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
                 viewState.isDirty = true;
             }
         }
-    }
-
-    private onBlur = () => {
-        this.updateContentToViewState();
     }
 }
