@@ -12,6 +12,8 @@ import * as SimpleButtons from './buttons/simpleButtons';
 import * as ColorButtons from './buttons/colorButtons';
 import { fontNameButton } from './buttons/fontNameButton';
 import { fontSizeButton } from './buttons/fontSizeButton';
+import { createLinkButton } from './buttons/createLinkButton';
+import { imageAltTextButton } from './buttons/imageAltTextButton';
 
 const styles = require('./Ribbon.scss');
 const classNames = require('classnames/bind').bind(styles);
@@ -31,13 +33,16 @@ const BUTTONS = {
     numbering: SimpleButtons.numbering,
     indent: SimpleButtons.indent,
     outdent: SimpleButtons.outdent,
+    blockquote: SimpleButtons.blockquote,
     alignleft: SimpleButtons.alignleft,
     aligncenter: SimpleButtons.aligncenter,
     alignright: SimpleButtons.alignright,
+    insertlink: createLinkButton,
     unlink: SimpleButtons.unlink,
     subscript: SimpleButtons.subscript,
     superscript: SimpleButtons.superscript,
     strikethrough: SimpleButtons.strikethrough,
+    imagealttext: imageAltTextButton,
     ltr: SimpleButtons.ltr,
     rtl: SimpleButtons.rtl,
     undo: SimpleButtons.undo,
@@ -232,7 +237,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
             // 2. If the button has a customized onclick handler, invoke it
             let editor = plugin.getEditor();
             editor.focus();
-            button.onClick(editor);
+            button.onClick(editor, this.props.stringMap || {});
             plugin.buttonClick(buttonName);
             this.updateRibbonState();
         }

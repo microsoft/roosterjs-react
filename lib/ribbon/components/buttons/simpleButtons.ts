@@ -7,6 +7,7 @@ import {
     setDirection,
     setIndentation,
     toggleBold,
+    toggleBlockQuote,
     toggleBullet,
     toggleItalic,
     toggleNumbering,
@@ -27,6 +28,7 @@ const OUTDENT_SVG = require('../../icons/outdent.svg');
 const OUTDENT_RTL_SVG = require('../../icons/outdent-rtl.svg');
 const INDENT_SVG = require('../../icons/indent.svg');
 const INDENT_RTL_SVG = require('../../icons/indent-rtl.svg');
+const BLOCKQUOTE_SVG = require('../../icons/blockquote.svg');
 const ALIGNLEFT_SVG = require('../../icons/alignleft.svg');
 const ALIGNCENTER_SVG = require('../../icons/aligncenter.svg');
 const ALIGNRIGHT_SVG = require('../../icons/alignright.svg');
@@ -88,6 +90,11 @@ export const outdent: RibbonButton = {
     imageUrl: OUTDENT_SVG,
     rtlImageUrl: OUTDENT_RTL_SVG,
     onClick: editor => setIndentation(editor, Indentation.Decrease),
+};
+export const blockquote: RibbonButton = {
+    title: 'Quote',
+    imageUrl: BLOCKQUOTE_SVG,
+    onClick: editor => toggleBlockQuote(editor),
 };
 export const alignleft: RibbonButton = {
     title: 'Align left',

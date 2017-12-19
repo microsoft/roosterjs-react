@@ -1,0 +1,20 @@
+:global {
+    .linkContent {
+        display: flex;
+        flex-flow: row nowrap;
+    }
+
+    .linkLabel {
+        flex: 0 0 auto;
+    }
+
+    .linkInput {
+        min-width: 250px;
+        flex: 1 1 auto;
+        margin-left: 10px;
+    }   
+    
+    .ms-Dialog-main.linkDialog {
+        max-width: 600px;
+    }
+}

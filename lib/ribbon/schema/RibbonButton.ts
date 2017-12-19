@@ -59,7 +59,7 @@ interface RibbonButton {
     /**
      * onClick event handler
      */
-    onClick?: (editor: Editor) => void;
+    onClick?: (editor: Editor, stringMap: {[name: string]: string}) => void;
 }
 
 export default RibbonButton;
