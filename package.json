@@ -8,10 +8,12 @@
     "url": "https://github.com/Microsoft/roosterjs-react"
   },
   "scripts": {
-    "build": "node node_modules/typescript/bin/tsc & node tools/copyfiles.js",
+    "clean": "rimraf dist",
+    "build": "npm run clean & node node_modules/typescript/bin/tsc & node tools/copyfiles.js & npm run pack & npm run pack:prod & npm run dts",
+    "dts": "node tools/dts.js",
     "start": "webpack-dev-server",
-    "pack": "node tools/pack.js",
-    "pack:prod": "node tools/pack.js -p"
+    "pack": "node tools/pack.js & node tools/pack.js -amd",
+    "pack:prod": "node tools/pack.js -p & node tools/pack.js -amd -p"
   },
   "author": "Jiuqing Song",
   "license": "MIT",
@@ -19,7 +21,7 @@
     "office-ui-fabric-react": "~5.9.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.3.3"
+    "roosterjs-editor-plugins": "^6.4.0"
   },
   "devDependencies": {
     "@microsoft/loader-load-themed-styles": "1.5.1",
@@ -31,6 +33,7 @@
     "node-sass": "4.6.0",
     "postcss-inline-rtl": "^0.9.8",
     "postcss-loader": "^2.0.6",
+    "rimraf": "2.6.2",
     "sass-loader": "6.0.6",
     "ts-loader": "^3.0.5",
     "typescript": "^2.5.2",

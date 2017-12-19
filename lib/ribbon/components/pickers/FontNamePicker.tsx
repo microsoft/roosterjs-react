@@ -3,15 +3,13 @@ import {
     ContextualMenu,
     DirectionalHint,
     IContextualMenuItem,
-} from 'office-ui-fabric-react/lib/components/ContextualMenu';
-import RibbonButton from '../../schema/RibbonButton';
-import { setFontName } from 'roosterjs-editor-api';
+} from 'office-ui-fabric-react/lib/ContextualMenu';
 
-require('./fontNameButton.scss');
-const FONTNAME_SVG = require('../../icons/fontname.svg');
+require('./Picker.scss');
+
 const FIRSTFONT_REGEX: RegExp = /^['"]?([^'",]+)/i;
 
-interface Font {
+export interface Font {
     name: string;
     family: string;
     localizedName?: string;
@@ -138,26 +136,14 @@ const FONT_NAME_LIST: Font[] = [
     { name: 'Sylfaen', family: 'Sylfaen,Mshtakan,Menlo,serif' }, //other-armenian-georgian
 ];
 
-export const fontNameButton: RibbonButton = {
-    title: 'Font',
-    imageUrl: FONTNAME_SVG,
-    dropdown: (target, editor, dismiss, stringMap, format) =>
-        <FontNamePicker
-            menuTargetElement={target}
-            onDismissMenu={dismiss}
-            onSelectName={font => setFontName(editor, font.family)}
-            selectedName={format.fontName}
-        />,
-};
-
-interface FontNamePickerProps {
+export interface FontNamePickerProps {
     menuTargetElement: HTMLElement;
     onDismissMenu: () => void;
     onSelectName: (value: Font) => void;
     selectedName?: string;
 }
 
-class FontNamePicker extends React.Component<FontNamePickerProps, {}> {
+export default class FontNamePicker extends React.Component<FontNamePickerProps, {}> {
     private createMenuItems(selectedFont: string): IContextualMenuItem[] {
         let dividerKey = 0;
         return FONT_NAME_LIST.map(font => font.name == '-' ? {

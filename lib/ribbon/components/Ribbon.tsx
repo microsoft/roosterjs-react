@@ -6,48 +6,41 @@ import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { FormatState } from 'roosterjs-editor-types';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
-import { Image } from 'office-ui-fabric-react/lib/Image';
 import { getFormatState } from 'roosterjs-editor-api';
-import * as SimpleButtons from './buttons/simpleButtons';
-import * as ColorButtons from './buttons/colorButtons';
-import { fontNameButton } from './buttons/fontNameButton';
-import { fontSizeButton } from './buttons/fontSizeButton';
-import { createLinkButton } from './buttons/createLinkButton';
-import { imageAltTextButton } from './buttons/imageAltTextButton';
+import * as Buttons from './buttons';
 
 const styles = require('./Ribbon.scss');
 const classNames = require('classnames/bind').bind(styles);
-const DROPDOWN_SVG = require('../icons/dropdown.svg');
 const RIBBONSTATE_POLL_INTERVAL = 300;
 const RIBBONITEM_WIDTH = 36;
 const RIBBON_MARGIN = 12;
 const BUTTONS = {
-    bold: SimpleButtons.bold,
-    italic: SimpleButtons.italic,
-    underline: SimpleButtons.underline,
-    fontname: fontNameButton,
-    fontSize: fontSizeButton,
-    backcolor: ColorButtons.backColorButton,
-    textcolor: ColorButtons.textColorButton,
-    bullets: SimpleButtons.bullets,
-    numbering: SimpleButtons.numbering,
-    indent: SimpleButtons.indent,
-    outdent: SimpleButtons.outdent,
-    blockquote: SimpleButtons.blockquote,
-    alignleft: SimpleButtons.alignleft,
-    aligncenter: SimpleButtons.aligncenter,
-    alignright: SimpleButtons.alignright,
-    insertlink: createLinkButton,
-    unlink: SimpleButtons.unlink,
-    subscript: SimpleButtons.subscript,
-    superscript: SimpleButtons.superscript,
-    strikethrough: SimpleButtons.strikethrough,
-    imagealttext: imageAltTextButton,
-    ltr: SimpleButtons.ltr,
-    rtl: SimpleButtons.rtl,
-    undo: SimpleButtons.undo,
-    redo: SimpleButtons.redo,
-    removeformat: SimpleButtons.removeformat,
+    bold: Buttons.bold,
+    italic: Buttons.italic,
+    underline: Buttons.underline,
+    font: Buttons.fontname,
+    size: Buttons.fontsize,
+    bkcolor: Buttons.backcolor,
+    color: Buttons.textcolor,
+    bullet: Buttons.bullets,
+    number: Buttons.numbering,
+    indent: Buttons.indent,
+    outdent: Buttons.outdent,
+    quote: Buttons.blockquote,
+    left: Buttons.alignleft,
+    center: Buttons.aligncenter,
+    right: Buttons.alignright,
+    link: Buttons.createlink,
+    unlink: Buttons.unlink,
+    sub: Buttons.subscript,
+    super: Buttons.superscript,
+    strike: Buttons.strikethrough,
+    alttext: Buttons.imagealttext,
+    ltr: Buttons.ltr,
+    rtl: Buttons.rtl,
+    undo: Buttons.undo,
+    redo: Buttons.redo,
+    unformat: Buttons.removeformat,
 };
 
 export interface RibbonState {
@@ -63,7 +56,6 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
     private buttonNames: string[];
     private moreButton: RibbonButton = {
         title: 'More formatting options',
-        imageUrl: DROPDOWN_SVG,
         dropdown: (targetElement: HTMLElement) => {
             return (
                 <Callout
@@ -178,10 +170,6 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
             ? ribbonButton.buttonState(this.state.formatState)
             : RibbonButtonState.Normal;
         let isDisabled = buttonState == RibbonButtonState.Disabled;
-        let imageUrl =
-            this.props.isRtl && ribbonButton.rtlImageUrl
-                ? ribbonButton.rtlImageUrl
-                : ribbonButton.imageUrl;
         let buttonClassName = classNames('roosterRibbonIcon', {
             roosterRibbonButtonChecked:
                 this.state.dropDown == name || buttonState == RibbonButtonState.Checked,
@@ -199,11 +187,11 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                     title={title}
                     onClick={!isDisabled && (() => this.onRibbonButton(name))}
                     onDragStart={this.cancelEvent}>
-                    <Image
-                        className={'roosterRibbonButtonImage'}
-                        shouldFadeIn={false}
-                        src={imageUrl}
-                    />
+                    {
+                        this.props.buttonRenderer ?
+                            this.props.buttonRenderer(name, this.props.isRtl) :
+                            <span>{name}</span>
+                    }
                 </IconButton>
             </div>
         );

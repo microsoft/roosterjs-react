@@ -31,16 +31,6 @@ interface RibbonButton {
     title: string;
 
     /**
-     * Url for image to show on the button
-     */
-    imageUrl: string;
-
-    /**
-     * Url for image to show on the button when current culture is RTL
-     */
-    rtlImageUrl?: string;
-
-    /**
      * A call back to get a drop down UI when click on this button
      */
     dropdown?: (

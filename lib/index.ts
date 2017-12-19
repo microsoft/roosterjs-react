@@ -1,4 +1,4 @@
-export { default as ReactEditor } from './editor/component/ReactEditor';
+export { default as ReactEditor, ReactEditorProps } from './editor/component/ReactEditor';
 export { default as EditorViewState } from './editor/schema/EditorViewState';
 export { default as createEditorViewState } from './editor/utils/createEditorViewState';
 

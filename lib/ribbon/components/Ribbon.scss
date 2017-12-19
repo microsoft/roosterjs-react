@@ -27,6 +27,8 @@ $checkedBackgroundColor: #eee;
         margin: 0 4px 4px 0;
         background: $backgroundColor;
         border-radius: 2px;
+        overflow: hidden;
+        font-size: 9px;
         flex: 0 0 auto;
 
         &:focus,
@@ -60,10 +62,6 @@ $checkedBackgroundColor: #eee;
         &.ms-Button {
             padding: 0;
             border-width: 0;
-        }
-
-        .roosterRibbonButtonImage {
-            width: 32px;
         }
     }
 

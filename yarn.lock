@@ -3431,7 +3431,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
+rimraf@2, rimraf@2.6.2, rimraf@^2.2.8, rimraf@^2.5.1, rimraf@^2.6.1:
   version "2.6.2"
   resolved "https://registry.yarnpkg.com/rimraf/-/rimraf-2.6.2.tgz#2ed8150d24a16ea8651e6d6ef0f47c4158ce7a36"
   dependencies:
@@ -3444,39 +3444,39 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-roosterjs-editor-api@6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.3.3.tgz#89f2a5827655cc918875c317b64253dc6d17c35e"
+roosterjs-editor-api@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.4.0.tgz#1b5849b8d3f859e9b1938770b17f27e8e7ff5172"
   dependencies:
-    roosterjs-editor-core "6.3.3"
-    roosterjs-editor-dom "6.3.3"
-    roosterjs-editor-types "6.3.3"
+    roosterjs-editor-core "6.4.0"
+    roosterjs-editor-dom "6.4.0"
+    roosterjs-editor-types "6.4.0"
 
-roosterjs-editor-core@6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.3.3.tgz#7a75e1e63def68af4ce5aeb49b8a339db3fcb183"
+roosterjs-editor-core@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.4.0.tgz#bcabe84caacfd444aeabd06a4e4e865a037d8bfc"
   dependencies:
-    roosterjs-editor-dom "6.3.3"
-    roosterjs-editor-types "6.3.3"
+    roosterjs-editor-dom "6.4.0"
+    roosterjs-editor-types "6.4.0"
 
-roosterjs-editor-dom@6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.3.3.tgz#f39062d520e78ad355159dd391e6eba49fbd5b14"
+roosterjs-editor-dom@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.4.0.tgz#16300c6bda775157cd476c46524699ef82ee26ff"
   dependencies:
-    roosterjs-editor-types "6.3.3"
+    roosterjs-editor-types "6.4.0"
 
-roosterjs-editor-plugins@^6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.3.3.tgz#b2be5c95d70006ded5afae26a887256929d088c5"
+roosterjs-editor-plugins@^6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.4.0.tgz#b158483e5d23387c2994d6d99f72dbd58ec69d58"
   dependencies:
-    roosterjs-editor-api "6.3.3"
-    roosterjs-editor-core "6.3.3"
-    roosterjs-editor-dom "6.3.3"
-    roosterjs-editor-types "6.3.3"
+    roosterjs-editor-api "6.4.0"
+    roosterjs-editor-core "6.4.0"
+    roosterjs-editor-dom "6.4.0"
+    roosterjs-editor-types "6.4.0"
 
-roosterjs-editor-types@6.3.3:
-  version "6.3.3"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.3.3.tgz#199750983e4e86464a1f3983f06ebaf0b0aa4461"
+roosterjs-editor-types@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.4.0.tgz#4cb3121b9039efafc75094d98ca43f272ce37d81"
 
 rtlcss@^2.0.3:
   version "2.2.1"
