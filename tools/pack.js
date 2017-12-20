@@ -1,6 +1,6 @@
 var path = require('path');
 var autoprefixer = require('autoprefixer');
-var inlineRtl = require('postcss-inline-rtl');
+// var inlineRtl = require('postcss-inline-rtl');
 var rootPath = path.resolve(__dirname, '..');
 var sourcePath = rootPath;
 var distPath = path.resolve(rootPath, 'dist/dist');
@@ -79,28 +79,28 @@ var webpackConfig = {
                     mimetype: 'image/svg+xml'                        
                 }
             },
-            {
-                test: /\.scss$/,
-                use: [
-                    '@microsoft/loader-load-themed-styles',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                        }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            plugins: loader => [
-                                autoprefixer({browsers: 'last 2 versions'}),
-                                inlineRtl,
-                            ]
-                        }
-                    },
-                    'sass-loader'
-                ]
-            }
+            // {
+            //     test: /\.scss$/,
+            //     use: [
+            //         '@microsoft/loader-load-themed-styles',
+            //         {
+            //             loader: 'css-loader',
+            //             options: {
+            //                 modules: true,
+            //             }
+            //         },
+            //         {
+            //             loader: 'postcss-loader',
+            //             options: {
+            //                 plugins: loader => [
+            //                     autoprefixer({browsers: 'last 2 versions'}),
+            //                     inlineRtl,
+            //                 ]
+            //             }
+            //         },
+            //         'sass-loader'
+            //     ]
+            // }
         ]
     },
     externals: externals,

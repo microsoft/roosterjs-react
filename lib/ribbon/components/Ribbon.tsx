@@ -8,9 +8,9 @@ import { FormatState } from 'roosterjs-editor-types';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { getFormatState } from 'roosterjs-editor-api';
 import * as Buttons from './buttons';
+import * as Styles from './Ribbon.scss.g';
 
-const styles = require('./Ribbon.scss');
-const classNames = require('classnames/bind').bind(styles);
+const classNames = require('classnames');
 const RIBBONSTATE_POLL_INTERVAL = 300;
 const RIBBONITEM_WIDTH = 36;
 const RIBBON_MARGIN = 12;
@@ -59,7 +59,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
         dropdown: (targetElement: HTMLElement) => {
             return (
                 <Callout
-                    className={'roosterRibbonButtonMore'}
+                    className={Styles.ribbonButtonMore}
                     onDismiss={() => this.setCurrentDropDown(null)}
                     gapSpace={12}
                     target={targetElement}
@@ -112,7 +112,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
         return (
             <div ref={ref => (this.ribbonContainer = ref)} className={this.props.className}>
                 <FocusZone
-                    className={'roosterRibbon'}
+                    className={Styles.ribbon}
                     direction={FocusZoneDirection.horizontal}>
                     {visibleButtons.map(name => this.renderRibbonButton(name))}
                     {dropDownButton &&
@@ -170,15 +170,15 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
             ? ribbonButton.buttonState(this.state.formatState)
             : RibbonButtonState.Normal;
         let isDisabled = buttonState == RibbonButtonState.Disabled;
-        let buttonClassName = classNames('roosterRibbonIcon', {
-            roosterRibbonButtonChecked:
-                this.state.dropDown == name || buttonState == RibbonButtonState.Checked,
-            roosterRibbonButtonDisabled: isDisabled,
-        });
+        let buttonClassName = classNames(
+            Styles.ribbonIcon, 
+            (this.state.dropDown == name || buttonState == RibbonButtonState.Checked) && Styles.ribbonButtonChecked,
+            isDisabled && Styles.ribbonButtonDisabled,
+        );
         let title = (this.props.stringMap && this.props.stringMap[name]) || ribbonButton.title;
         return (
             <div
-                className={'roosterRibbonButton'}
+                className={Styles.ribbonButton}
                 ref={ref => (this.buttonElements[name] = ref)}
                 key={name}>
                 <IconButton

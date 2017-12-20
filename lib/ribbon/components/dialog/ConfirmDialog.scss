@@ -1,16 +1,14 @@
-:global {
-    .roosterDialogContent {
-        display: flex;
-        flex-flow: row nowrap;
-    }
-
-    .roosterDialogLabel {
-        flex: 0 0 auto;
-    }
-
-    .roosterDialogInput {
-        min-width: 250px;
-        flex: 1 1 auto;
-        margin-left: 10px;
-    }   
+.dialogContent {
+    display: flex;
+    flex-flow: row nowrap;
 }
+
+.dialogLabel {
+    flex: 0 0 auto;
+}
+
+.dialogInput {
+    min-width: 250px;
+    flex: 1 1 auto;
+    margin-left: 10px;
+}   

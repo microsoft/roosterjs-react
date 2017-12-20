@@ -93,7 +93,6 @@ buttonImages['more-rtl'] = DROPDOWN_SVG;
 export default function ribbonButtonRenderer(buttonName: string, isRtl: boolean): JSX.Element {
     let image = buttonImages[isRtl ? buttonName + '-rtl' : buttonName];
     return <Image
-        className={'roosterRibbonButtonImage'}
         style={{width: '32px'}}
         shouldFadeIn={false}
         src={image}

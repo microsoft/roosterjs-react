@@ -1,57 +1,55 @@
-:global {
-    .roosterRibbonColorPicker {
+.ribbonColorPicker {
+    width: 192px;
+    padding: 8px;
+    background: #fff;
+    overflow: hidden;
+
+    & ul {
         width: 192px;
-        padding: 8px;
-        background: #fff;
         overflow: hidden;
-
-        & ul {
-            width: 192px;
-            overflow: hidden;
-        }
     }
+}
 
-    .roosterRibbonColorItem {
-        display: inline-block;
-        width: 32px;
-        height: 32px;
-        background: #fff;
+.ribbonColorItem {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    background: #fff;
 
-        & button {
-            padding: 0;
-            min-width: 0;
-            background: transparent;
-        }
+    & button {
+        padding: 0;
+        min-width: 0;
+        background: transparent;
     }
+}
 
-    .roosterRibbonColor {
-        width: 20px;
-        height: 20px;
-        margin: 4px;
-        border-style: solid;
-        border-width: 2px;
-        border-color: transparent;
+.ribbonColor {
+    width: 20px;
+    height: 20px;
+    margin: 4px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: transparent;
 
-        &:hover,
-        &:focus {
-            border-color: #ff0000;
-        }
+    &:hover,
+    &:focus {
+        border-color: #ff0000;
     }
+}
 
-    .roosterRibbonFontPicker {
-        width: 200px;
-        max-height: 300px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        padding: 3px 0;
-        background-color: #fff;
-    }
+.ribbonFontPicker {
+    width: 200px;
+    max-height: 300px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 3px 0;
+    background-color: #fff;
+}
 
-    .roosterRibbonFontSizePicker {
-        width: 70px;
-        max-height: 300px;
-        overflow-x: hidden;
-        padding: 3px 0px;
-        background: #fff;
-    }
+.ribbonFontSizePicker {
+    width: 70px;
+    max-height: 300px;
+    overflow-x: hidden;
+    padding: 3px 0px;
+    background: #fff;
 }

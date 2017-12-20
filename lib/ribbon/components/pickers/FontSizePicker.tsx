@@ -4,8 +4,8 @@ import {
     DirectionalHint,
     IContextualMenuItem,
 } from 'office-ui-fabric-react/lib/components/ContextualMenu';
+import * as Styles from './Picker.scss.g';
 
-require('./Picker.scss');
 const FONTSIZE_REGEX = /(\d+)pt/i;
 
 // This list is used to populate font size picker drop down
@@ -41,7 +41,7 @@ export default class FontSizePicker extends React.Component<FontSizePickerProps,
         selectedSize = matches && matches.length == 2 ? matches[1] : selectedSize;
         return (
             <ContextualMenu
-                className={'roosterRibbonFontSizePicker customScrollBar'}
+                className={Styles.ribbonFontSizePicker}
                 shouldFocusOnMount={true}
                 target={menuTargetElement}
                 directionalHint={DirectionalHint.bottomLeftEdge}

@@ -6,8 +6,7 @@ import {
 } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-
-require('./Picker.scss');
+import * as Styles from './Picker.scss.g';
 
 export interface ColorPickerItem {
     name: string;
@@ -94,7 +93,7 @@ export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
                 title={title}
                 onClick={() => this.onSelectColor(color)}
                 key={item.key}>
-                <div className={'roosterRibbonColor'} style={inlineStyles} />
+                <div className={Styles.ribbonColor} style={inlineStyles} />
             </Button>
         );
     };
@@ -106,7 +105,7 @@ export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
 
     render() {
         let { onDismissMenu, menuTargetElement } = this.props;
-        let pickerStyle = 'roosterRibbonColorPicker';
+        let pickerStyle = Styles.ribbonColorPicker;
         return (
             <ContextualMenu
                 className={pickerStyle}
@@ -121,7 +120,7 @@ export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
                         name: color.name,
                         onRender: this.renderColorMenuItem,
                         data: color,
-                        className: 'roosterRibbonColorItem',
+                        className: Styles.ribbonColorItem,
                     };
                 })}
             />

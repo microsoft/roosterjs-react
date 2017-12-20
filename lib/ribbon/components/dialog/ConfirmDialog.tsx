@@ -2,8 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { Dialog, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
-
-require('./ConfirmDialog.scss');
+import * as Styles from './ConfirmDialog.scss.g';
 
 interface ConfirmDialogProps {
     onClose: () => void;
@@ -45,8 +44,8 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
                         evt.preventDefault();
                         onOk();
                     }}>
-                    <div className={'roosterDialogContent'}>
-                        <label className={'roosterDialogLabel'}>
+                    <div className={Styles.dialogContent}>
+                        <label className={Styles.dialogLabel}>
                             {this.props.subText}
                             <input
                                 role="textbox"
@@ -57,7 +56,7 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
                                     value: this.input.value,
                                 })}
                                 value={this.state.value}
-                                className={'roosterDialogInput'}
+                                className={Styles.dialogInput}
                             />
                         </label>
                     </div>

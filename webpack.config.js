@@ -36,28 +36,28 @@ module.exports = {
                     mimetype: 'image/svg+xml'                        
                 }
             },
-            {
-                test: /\.scss$/,
-                use: [
-                    '@microsoft/loader-load-themed-styles',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            modules: true,
-                        }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            plugins: loader => [
-                                autoprefixer({browsers: 'last 2 versions'}),
-                                inlineRtl,
-                            ]
-                        }
-                    },
-                    'sass-loader'
-                ]
-            }
+            // {
+            //     test: /\.scss$/,
+            //     use: [
+            //         '@microsoft/loader-load-themed-styles',
+            //         {
+            //             loader: 'css-loader',
+            //             options: {
+            //                 modules: true,
+            //             }
+            //         },
+            //         {
+            //             loader: 'postcss-loader',
+            //             options: {
+            //                 plugins: loader => [
+            //                     autoprefixer({browsers: 'last 2 versions'}),
+            //                     inlineRtl,
+            //                 ]
+            //             }
+            //         },
+            //         'sass-loader'
+            //     ]
+            // }
         ]
     },
     watch: true,
