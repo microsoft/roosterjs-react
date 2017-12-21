@@ -1,33 +1,37 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
 import * as React from 'react';
+import { closest } from '../../utils/ElementUtil';
 
-export interface IFocusOutShellProps {
+export interface FocusOutShellProps {
     className?: string,
     onFocus?: (ev: React.FocusEvent<HTMLElement>) => void;
     onBlur?: (ev: React.FocusEvent<HTMLElement>) => void;
     allowMouseDown?: (target: HTMLElement) => boolean;
 }
 
-export interface IFocusOutShellChildContext {
+export interface FocusOutShellChildContext {
     callOutClassName: string,
     callOutOnDismiss: (ev: React.FocusEvent<HTMLElement>) => void;
 }
 
 export const FocusOutShellChildContextTypes: React.ValidationMap<any> = {
-    callOutClassName: React.PropTypes.string.isRequired,
-    callOutOnDismiss: React.PropTypes.func.isRequired
+    callOutClassName: React.PropTypes.string,
+    callOutOnDismiss: React.PropTypes.func
 }
 
-export default class FocusOutShell extends React.PureComponent<IFocusOutShellProps, {}> {
+export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, {}> {
     public static readonly childContextTypes = FocusOutShellChildContextTypes;
 
     private static readonly BaseClassName = "focus-out-shell";
     private static readonly CallOutClassName = `${FocusOutShell.BaseClassName}-callout`;
+    private static Id = 0;
 
     private _containerDiv: HTMLDivElement;
+    private _callOutClassName = `${FocusOutShell.CallOutClassName}-${FocusOutShell.Id++}`;
+    private _hasFocus: boolean;
 
     public render(): JSX.Element {
-        const { children, onFocus, className } = this.props;
+        const { children, className } = this.props;
 
         let rootClassName = FocusOutShell.BaseClassName;
         if (className) {
@@ -35,46 +39,69 @@ export default class FocusOutShell extends React.PureComponent<IFocusOutShellPro
         }
 
         return (
-            <div className={rootClassName} ref={this._containerDivOnRef} onBlur={this._onBlur} onFocus={onFocus} onMouseDown={this._onMouseDown}>
+            <div className={rootClassName} ref={this._containerDivOnRef} onBlur={this._onBlur} onFocus={this._onFocus} onMouseDown={this._onMouseDown}>
                 {children}
             </div>
         );
     }
 
-    public getChildContext(): IFocusOutShellChildContext {
+    public getChildContext(): FocusOutShellChildContext {
         return {
-            callOutClassName: FocusOutShell.CallOutClassName,
+            callOutClassName: this._callOutClassName,
             callOutOnDismiss: this._callOutOnDismiss
         };
     }
 
     private _callOutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {
         // target is the event object from the document.body focus event (captured by the Callout component)
-        const nextTarget = ev.target as HTMLElement;
+        const nextTarget = ev && ev.target as HTMLElement;
 
-        if (this._containerDiv && nextTarget && this._containerDiv.contains(nextTarget)) {
-            return;
+        if (this._shouldCallBlur(nextTarget)) {
+             // delay so call out dismiss can complete
+            requestAnimationFrame(() => {
+                if (this.props.onBlur) {
+                    this.props.onBlur(ev);
+                }
+
+                this._hasFocus = false;
+            });
         }
-
-        requestAnimationFrame(() => this.props.onBlur(ev));
     }
 
     private _onBlur = (ev: React.FocusEvent<HTMLElement>): void => {
         // relatedTarget is the event object from the blur event, so it is the next focused element
         const nextTarget = ev.relatedTarget as HTMLElement;
 
-        // don't call blur if the next target is the call out
-        if (nextTarget && nextTarget.classList && nextTarget.classList.contains(FocusOutShell.CallOutClassName)) {
-            return;
+        if (this._shouldCallBlur(nextTarget)) {
+            if (this.props.onBlur) {
+                this.props.onBlur(ev);
+            }
+            
+            this._hasFocus = false;
         }
+    }
 
-        // similarly, don't call blur if the next target is an element on this container
+    private _shouldCallBlur(nextTarget?: HTMLElement): boolean {
+        // don't call blur if the next target is an element on this container
         if (nextTarget && this._containerDiv.contains(nextTarget)) {
-            return;
+            return false;
         }
 
-        if (this.props.onBlur) {
-            this.props.onBlur(ev);
+        // similarly, don't call blur if the next target is the call out or its children
+        if (nextTarget && closest(nextTarget, `.${this._callOutClassName}`)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private _onFocus = (ev: React.FocusEvent<HTMLElement>): void => {
+        if (!this._hasFocus) {
+            this._hasFocus = true;
+
+            if (this.props.onFocus) {
+                this.props.onFocus(ev);
+            }
         }
     }
 
