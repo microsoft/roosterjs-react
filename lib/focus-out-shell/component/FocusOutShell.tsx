@@ -63,10 +63,12 @@ export default class FocusOutShell extends React.PureComponent<IFocusOutShellPro
         // relatedTarget is the event object from the blur event, so it is the next focused element
         const nextTarget = ev.relatedTarget as HTMLElement;
 
+        // don't call blur if the next target is the call out
         if (nextTarget && nextTarget.classList && nextTarget.classList.contains(FocusOutShell.CallOutClassName)) {
             return;
         }
 
+        // similarly, don't call blur if the next target is an element on this container
         if (nextTarget && this._containerDiv.contains(nextTarget)) {
             return;
         }
