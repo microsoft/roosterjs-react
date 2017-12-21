@@ -1,5 +1,6 @@
 import { FormatState } from 'roosterjs-editor-types';
 import { Editor } from 'roosterjs-editor-core';
+import { Strings, StringKeys } from '../../strings/strings';
 
 /**
  * State of button on ribbon
@@ -26,9 +27,9 @@ export const enum RibbonButtonState {
  */
 interface RibbonButton {
     /**
-     * String to show in tool tip.
+     * Name of the button
      */
-    title: string;
+    name: StringKeys;
 
     /**
      * A call back to get a drop down UI when click on this button
@@ -37,7 +38,7 @@ interface RibbonButton {
         targetElement: HTMLElement,
         editor: Editor,
         onDismiss: () => void,
-        stringMap: {[name: string]: string},
+        strings: Strings,
         currentFormat: FormatState
     ) => JSX.Element;
 
@@ -49,7 +50,7 @@ interface RibbonButton {
     /**
      * onClick event handler
      */
-    onClick?: (editor: Editor, stringMap: {[name: string]: string}) => void;
+    onClick?: (editor: Editor, strings: Strings) => void;
 }
 
 export default RibbonButton;

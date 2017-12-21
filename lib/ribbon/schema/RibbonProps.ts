@@ -1,5 +1,6 @@
 import RibbonPluginInterface from './RibbonPluginInterface';
 import RibbonButton from './RibbonButton';
+import { Strings } from '../../strings/strings';
 
 interface RibbonProps {
     /**
@@ -35,9 +36,9 @@ interface RibbonProps {
     isRtl?: boolean;
 
     /**
-     * A map of localized strings
+     * Localized string set
      */
-    stringMap?: { [key: string]: string };
+    strings?: Strings;
 
     /**
      * CSS class name to apply to the outer div

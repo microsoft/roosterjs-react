@@ -1,0 +1,81 @@
+export type Strings = { [key: string]: string };
+
+export const defaultStrings = {
+    // Ribbon buttons
+    btnMore: 'More formatting options',
+    btnFontName: 'Font',
+    btnFontSize: 'Font size',
+    btnBold: 'Bold',
+    btnItalic: 'Italic',
+    btnUnderline: 'Underline',
+    btnBullets: 'Bullets',
+    btnNumbering: 'Numbering',
+    btnIndent: 'Increase indent',
+    btnOutdent: 'Decrease indent',
+    btnQuote: 'Quote',
+    btnAlignLeft: 'Align left',
+    btnAlignCenter: 'Align center',
+    btnAlignRight: 'Align right',
+    btnUnlink: 'Remove hyperlink',
+    btnSubscript: 'Subscript',
+    btnSuperScript: 'Superscript',
+    btnStrikethrough: 'Strikethrough',
+    btnLTR: 'Left-to-right',
+    btnRTL: 'Right-to-left',
+    btnUndo: 'Undo',
+    btnRedo: 'Redo',
+    btnUnformat: 'Remove formatting',
+    btnBkColor: 'Highlight',
+    btnFontColor: 'Font color',
+    btnInsertLink: 'Insert hyperlink',
+    btnImageAltText: 'Insert alternate text',
+
+    // Dialogs:
+    dlgLinkTitle: 'Insert link',
+    dlgUrlLabel: 'URL: ',
+    dlgAltTextTitle: 'Insert alternate text',
+    dlgOk: 'OK',
+    dlgCancel: 'Cancel',
+
+    // Color names
+    clrLightBlue: 'Light blue',
+    clrLightGreen: 'Light green',
+    clrLightYellow: 'Light yellow',
+    clrLightOrange: 'Light orange',
+    clrLightRed: 'Light red',
+    clrLightPurple: 'Light purple',
+    clrBlue: 'Blue',
+    clrGreen: 'Green',
+    clrYellow: 'Yellow',
+    clrOrange: 'Orange',
+    clrRed: 'Red',
+    clrPurple: 'Purple',
+    clrDarkBlue: 'Dark blue',
+    clrDarkGreen: 'Dark green',
+    clrDarkYellow: 'Dark yellow',
+    clrDarkOrange: 'Dark orange',
+    clrDarkRed: 'Dark red',
+    clrDarkPurple: 'Dark purple',
+    clrDarkerBlue: 'Darker blue',
+    clrDarkerGreen: 'Darker green',
+    clrDarkerYellow: 'Darker yellow',
+    clrDarkerOrange: 'Darker orange',
+    clrDarkerRed: 'Darker red',
+    clrDarkerPurple: 'Darker purple',
+    clrWhite: 'White',
+    clrLightGray: 'Light gray',
+    clrGray: 'Gray',
+    clrDarkGray: 'Dark gray',
+    clrDarkerGray: 'Darker gray',
+    clrBlack: 'Black',
+    clrCyan: 'Cyan',
+    clrMagenta: 'Magenta',
+    clrLightCyan: 'Light cyna',
+    clrLightMagenta: 'Light magenta',
+};
+
+export type StringKeys = keyof typeof defaultStrings;
+
+export function getString(key: StringKeys, strings?: Strings): string {
+    return (strings || {})[key] || defaultStrings[key]
+}

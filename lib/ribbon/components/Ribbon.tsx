@@ -7,6 +7,7 @@ import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZ
 import { FormatState } from 'roosterjs-editor-types';
 import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { getFormatState } from 'roosterjs-editor-api';
+import { getString } from '../../strings/strings';
 import * as Buttons from './buttons';
 import * as Styles from './Ribbon.scss.g';
 
@@ -18,24 +19,24 @@ const BUTTONS = {
     bold: Buttons.bold,
     italic: Buttons.italic,
     underline: Buttons.underline,
-    font: Buttons.fontname,
-    size: Buttons.fontsize,
-    bkcolor: Buttons.backcolor,
-    color: Buttons.textcolor,
+    font: Buttons.fontName,
+    size: Buttons.fontSize,
+    bkcolor: Buttons.backColor,
+    color: Buttons.textColor,
     bullet: Buttons.bullets,
     number: Buttons.numbering,
     indent: Buttons.indent,
     outdent: Buttons.outdent,
-    quote: Buttons.blockquote,
-    left: Buttons.alignleft,
-    center: Buttons.aligncenter,
-    right: Buttons.alignright,
-    link: Buttons.createlink,
+    quote: Buttons.quote,
+    left: Buttons.alignLeft,
+    center: Buttons.alignCenter,
+    right: Buttons.alignRight,
+    link: Buttons.insertLink,
     unlink: Buttons.unlink,
     sub: Buttons.subscript,
     super: Buttons.superscript,
     strike: Buttons.strikethrough,
-    alttext: Buttons.imagealttext,
+    alttext: Buttons.imageAltText,
     ltr: Buttons.ltr,
     rtl: Buttons.rtl,
     undo: Buttons.undo,
@@ -55,7 +56,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
     private ribbonContainer: HTMLElement;
     private buttonNames: string[];
     private moreButton: RibbonButton = {
-        title: 'More formatting options',
+        name: 'btnMore',
         dropdown: (targetElement: HTMLElement) => {
             return (
                 <Callout
@@ -121,7 +122,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                             this.buttonElements[dropDown],
                             editor,
                             this.onDismiss,
-                            this.props.stringMap,
+                            this.props.strings,
                             this.state.formatState
                         )}
                 </FocusZone>
@@ -175,7 +176,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
             (this.state.dropDown == name || buttonState == RibbonButtonState.Checked) && Styles.ribbonButtonChecked,
             isDisabled && Styles.ribbonButtonDisabled,
         );
-        let title = (this.props.stringMap && this.props.stringMap[name]) || ribbonButton.title;
+        let title = getString(ribbonButton.name, this.props.strings);
         return (
             <div
                 className={Styles.ribbonButton}
@@ -225,7 +226,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
             // 2. If the button has a customized onclick handler, invoke it
             let editor = plugin.getEditor();
             editor.focus();
-            button.onClick(editor, this.props.stringMap || {});
+            button.onClick(editor, this.props.strings);
             plugin.buttonClick(buttonName);
             this.updateRibbonState();
         }

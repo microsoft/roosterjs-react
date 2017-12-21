@@ -2,6 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { Dialog, DialogFooter } from 'office-ui-fabric-react/lib/Dialog';
+import { Strings, getString } from '../../../strings/strings';
 import * as Styles from './ConfirmDialog.scss.g';
 
 interface ConfirmDialogProps {
@@ -10,7 +11,7 @@ interface ConfirmDialogProps {
     onOkCallback: (value: string) => void;
     initialValue?: string;
     subText?: string;
-    stringMap?: {[key: string]: string};
+    strings?: Strings;
 }
 
 interface ConfirmDialogState {
@@ -33,7 +34,7 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
     render() {
         let onOk = () => this.onClick(this.props.onOkCallback);
         let onCancel = () => this.onClick(null);
-        let stringMap = this.props.stringMap || {};
+        let strings = this.props.strings;
         return (
             <Dialog
                 isOpen={this.state.isShown}
@@ -65,12 +66,12 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
                     <Button
                         buttonType={ButtonType.primary}
                         onClick={onOk}>
-                        {stringMap['ok'] || 'OK'}
+                        {getString('dlgOk', strings)}
                     </Button>
                     <Button
                         buttonType={ButtonType.normal}
                         onClick={onCancel}>
-                        {stringMap['cancel'] || 'Cancel'}
+                        {getString('dlgCancel', strings)}
                     </Button>
                 </DialogFooter>
             </Dialog>
@@ -105,7 +106,7 @@ export default function confirm(
     title: string,
     subText: string,
     initialValue?: string,
-    stringMap?: {[key: string]: string}
+    strings?: Strings
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         let confirmDialogDiv = document.createElement('div');
@@ -116,7 +117,7 @@ export default function confirm(
                 subText={subText}
                 onOkCallback={value => resolve(value)}
                 initialValue={initialValue}
-                stringMap={stringMap}
+                strings={strings}
                 onClose={() => {
                     ReactDOM.unmountComponentAtNode(confirmDialogDiv);
                     document.body.removeChild(confirmDialogDiv);

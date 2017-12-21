@@ -28,135 +28,136 @@ import {
     toggleSuperscript,
     toggleUnderline,
 } from 'roosterjs-editor-api';
+import { getString } from '../../strings/strings';
 
 export const bold: RibbonButton = {
-    title: 'Bold',
+    name: 'btnBold',
     buttonState: formatState =>
         formatState.isBold ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleBold(editor),
 };
 export const italic: RibbonButton = {
-    title: 'Italic',
+    name: 'btnItalic',
     buttonState: formatState =>
         formatState.isItalic ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleItalic(editor),
 };
 export const underline: RibbonButton = {
-    title: 'Underline',
+    name: 'btnUnderline',
     buttonState: formatState =>
         formatState.isUnderline ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleUnderline(editor),
 };
 export const bullets: RibbonButton = {
-    title: 'Bullets',
+    name: 'btnBullets',
     buttonState: formatState =>
         formatState.isBullet ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleBullet(editor),
 };
 export const numbering: RibbonButton = {
-    title: 'Numbering',
+    name: 'btnNumbering',
     buttonState: formatState =>
         formatState.isNumbering ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleNumbering(editor),
 };
 export const indent: RibbonButton = {
-    title: 'Increase indent',
+    name: 'btnIndent',
     onClick: editor => setIndentation(editor, Indentation.Increase),
 };
 export const outdent: RibbonButton = {
-    title: 'Decrease indent',
+    name: 'btnOutdent',
     onClick: editor => setIndentation(editor, Indentation.Decrease),
 };
-export const blockquote: RibbonButton = {
-    title: 'Quote',
+export const quote: RibbonButton = {
+    name: 'btnQuote',
     onClick: editor => toggleBlockQuote(editor),
     buttonState: formatState => formatState.isBlockQuote ? RibbonButtonState.Checked : RibbonButtonState.Normal,
 };
-export const alignleft: RibbonButton = {
-    title: 'Align left',
+export const alignLeft: RibbonButton = {
+    name: 'btnAlignLeft',
     onClick: editor => setAlignment(editor, Alignment.Left),
 };
-export const aligncenter: RibbonButton = {
-    title: 'Align center',
+export const alignCenter: RibbonButton = {
+    name: 'btnAlignCenter',
     onClick: editor => setAlignment(editor, Alignment.Center),
 };
-export const alignright: RibbonButton = {
-    title: 'Align right',
+export const alignRight: RibbonButton = {
+    name: 'btnAlignRight',
     onClick: editor => setAlignment(editor, Alignment.Right),
 };
 export const unlink: RibbonButton = {
-    title: 'Remove hyperlink',
+    name: 'btnUnlink',
     buttonState: formatState =>
         formatState.canUnlink ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
     onClick: editor => removeLink(editor),
 };
 export const subscript: RibbonButton = {
-    title: 'Subscript',
+    name: 'btnSubscript',
     buttonState: formatState =>
         formatState.isSubscript ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleSubscript(editor),
 };
 export const superscript: RibbonButton = {
-    title: 'Superscript',
+    name: 'btnSuperScript',
     buttonState: formatState =>
         formatState.isSuperscript ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleSuperscript(editor),
 };
 export const strikethrough: RibbonButton = {
-    title: 'Strikethrough',
+    name: 'btnStrikethrough',
     buttonState: formatState =>
         formatState.isStrikeThrough ? RibbonButtonState.Checked : RibbonButtonState.Normal,
     onClick: editor => toggleStrikethrough(editor),
 };
 export const ltr: RibbonButton = {
-    title: 'Left-to-right',
+    name: 'btnLTR',
     onClick: editor => setDirection(editor, Direction.LeftToRight),
 };
 export const rtl: RibbonButton = {
-    title: 'Right-to-left',
+    name: 'btnRTL',
     onClick: editor => setDirection(editor, Direction.RightToLeft),
 };
 export const undo: RibbonButton = {
-    title: 'Undo',
+    name: 'btnUndo',
     buttonState: formatState =>
         formatState.canUndo ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
     onClick: editor => editor.undo(),
 };
 export const redo: RibbonButton = {
-    title: 'Redo',
+    name: 'btnRedo',
     buttonState: formatState =>
         formatState.canRedo ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
     onClick: editor => editor.redo(),
 };
 export const removeformat: RibbonButton = {
-    title: 'Remove formatting',
+    name: 'btnUnformat',
     onClick: editor => clearFormat(editor),
 };
-export const backcolor: RibbonButton = {
-    title: 'Highlight',
-    dropdown: (target, editor, dismiss, stringMap) =>
+export const backColor: RibbonButton = {
+    name: 'btnBkColor',
+    dropdown: (target, editor, dismiss, strings) =>
         <ColorPicker
             menuTargetElement={target}
             onDismissMenu={dismiss}
             colors={blackColors}
-            stringMap={stringMap}
+            strings={strings}
             onSelectColor={color => setBackgroundColor(editor, color.code)}
         />,
 };
-export const textcolor: RibbonButton = {
-    title: 'Font color',
-    dropdown: (target, editor, dismiss, stringMap) =>
+export const textColor: RibbonButton = {
+    name: 'btnFontColor',
+    dropdown: (target, editor, dismiss, strings) =>
         <ColorPicker
             menuTargetElement={target}
             onDismissMenu={dismiss}
             colors={textColors}
-            stringMap={stringMap}
+            strings={strings}
             onSelectColor={color => setTextColor(editor, color.code)}
         />,
 };
-export const createlink: RibbonButton = {
-    title: 'Insert hyperlink',
-    onClick: (editor, stringMap) => {
+export const insertLink: RibbonButton = {
+    name: 'btnInsertLink',
+    onClick: (editor, strings) => {
         editor.saveSelectionRange();
         let link = '';
         try {
@@ -164,10 +165,10 @@ export const createlink: RibbonButton = {
         } catch (e) {}
 
         confirm(
-            stringMap['linkTitle'] || 'Insert link',
-            stringMap['urlLabel'] || 'URL:',
+            getString('dlgLinkTitle', strings),
+            getString('dlgUrlLabel', strings),
             link,
-            stringMap).then(link => {
+            strings).then(link => {
                 if (link) {
                     editor.focus();
                     createLink(editor, link, link);
@@ -175,25 +176,25 @@ export const createlink: RibbonButton = {
             });
         },
 }
-export const imagealttext: RibbonButton = {
-    title: 'Insert alternate text',
+export const imageAltText: RibbonButton = {
+    name: 'btnImageAltText',
     buttonState: formatState => formatState.canAddImageAltText ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
-    onClick: (editor, stringMap) => {
+    onClick: (editor, strings) => {
         editor.saveSelectionRange();
         let node = queryNodesWithSelection(editor, 'img')[0];
         let alt = (node as HTMLImageElement).alt;
         confirm(
-            stringMap['altTextTitle'] || 'Insert alternate text',
+            getString('dlgAltTextTitle', strings),
             null,
             alt,
-            stringMap).then(alt => {
+            strings).then(alt => {
                 editor.focus();
                 setImageAltText(editor, alt);
             });
         },
 }
-export const fontsize: RibbonButton = {
-    title: 'Font size',
+export const fontSize: RibbonButton = {
+    name: 'btnFontSize',
     dropdown: (target, editor, dismiss, stringFormat, format) =>
         <FontSizePicker
             menuTargetElement={target}
@@ -202,9 +203,9 @@ export const fontsize: RibbonButton = {
             selectedSize={format.fontSize}
         />,
 };
-export const fontname: RibbonButton = {
-    title: 'Font',
-    dropdown: (target, editor, dismiss, stringMap, format) =>
+export const fontName: RibbonButton = {
+    name: 'btnFontName',
+    dropdown: (target, editor, dismiss, strings, format) =>
         <FontNamePicker
             menuTargetElement={target}
             onDismissMenu={dismiss}
