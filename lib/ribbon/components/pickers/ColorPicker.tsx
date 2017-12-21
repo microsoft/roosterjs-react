@@ -1,52 +1,21 @@
 import * as React from 'react';
-import RibbonButton from '../../schema/RibbonButton';
 import {
     ContextualMenu,
     DirectionalHint,
     IContextualMenuItem,
-} from 'office-ui-fabric-react/lib/components/ContextualMenu';
+} from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { setBackgroundColor, setTextColor } from 'roosterjs-editor-api';
+import * as Styles from './Picker.scss.g';
 
-require('./colorButtons.scss');
-const BACKCOLOR_SVG = require('../../icons/backcolor.svg');
-const TEXTCOLOR_SVG = require('../../icons/textcolor.svg');
-
-export const backColorButton: RibbonButton = {
-    title: 'Highlight',
-    imageUrl: BACKCOLOR_SVG,
-    dropdown: (target, editor, dismiss, stringMap) =>
-        <ColorPicker
-            menuTargetElement={target}
-            onDismissMenu={dismiss}
-            colors={blackColors}
-            stringMap={stringMap}
-            onSelectColor={color => setBackgroundColor(editor, color.code)}
-        />,
-};
-
-export const textColorButton: RibbonButton = {
-    title: 'Font color',
-    imageUrl: TEXTCOLOR_SVG,
-    dropdown: (target, editor, dismiss, stringMap) =>
-        <ColorPicker
-            menuTargetElement={target}
-            onDismissMenu={dismiss}
-            colors={textColors}
-            stringMap={stringMap}
-            onSelectColor={color => setTextColor(editor, color.code)}
-        />,
-};
-
-interface ColorPickerItem {
+export interface ColorPickerItem {
     name: string;
     title: string;
     code: string;
     borderColor?: string;
 }
 
-const textColors = [
+export const textColors = [
     { name: 'colorLightBlue', title: 'Light blue', code: '#51a7f9' },
     { name: 'colorLightGreen', title: 'Light green', code: '#6fc040' },
     { name: 'colorLightYellow', title: 'Light yellow', code: '#f5d427' },
@@ -79,7 +48,7 @@ const textColors = [
     { name: 'colorBlack', title: 'Black', code: '#000000' },
 ] as ColorPickerItem[];
 
-const blackColors = [
+export const blackColors = [
     { name: 'colorCyan', title: 'Cyan', code: '#00ffff' },
     { name: 'colorGreen', title: 'Green', code: '#00ff00' },
     { name: 'colorYellow', title: 'Yellow', code: '#ffff00' },
@@ -100,7 +69,7 @@ const blackColors = [
     { name: 'colorBlack', title: 'Black', code: '#000000' },
 ] as ColorPickerItem[];
 
-interface ColorPickerProps {
+export interface ColorPickerProps {
     menuTargetElement: HTMLElement;
     colors: ColorPickerItem[];
     onDismissMenu: () => void;
@@ -108,7 +77,7 @@ interface ColorPickerProps {
     stringMap?: {[name: string]: string};
 }
 
-class ColorPicker extends React.Component<ColorPickerProps, {}> {
+export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
     private renderColorMenuItem = (item: IContextualMenuItem): JSX.Element => {
         let color = item.data as ColorPickerItem;
         let inlineStyles: React.CSSProperties = { backgroundColor: color.code };
@@ -124,7 +93,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
                 title={title}
                 onClick={() => this.onSelectColor(color)}
                 key={item.key}>
-                <div className={'roosterRibbonColor'} style={inlineStyles} />
+                <div className={Styles.ribbonColor} style={inlineStyles} />
             </Button>
         );
     };
@@ -136,7 +105,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
 
     render() {
         let { onDismissMenu, menuTargetElement } = this.props;
-        let pickerStyle = 'roosterRibbonColorPicker';
+        let pickerStyle = Styles.ribbonColorPicker;
         return (
             <ContextualMenu
                 className={pickerStyle}
@@ -151,7 +120,7 @@ class ColorPicker extends React.Component<ColorPickerProps, {}> {
                         name: color.name,
                         onRender: this.renderColorMenuItem,
                         data: color,
-                        className: 'roosterRibbonColorItem',
+                        className: Styles.ribbonColorItem,
                     };
                 })}
             />

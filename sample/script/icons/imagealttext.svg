@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5824 -8860 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #0078d7;
+        stroke: #fff;
+        stroke-width: 1.5px;
+      }
+
+      .cls-3 {
+        fill: #666;
+      }
+
+      .cls-4, .cls-5 {
+        fill: #fff;
+      }
+
+      .cls-5 {
+        stroke: #666;
+      }
+
+      .cls-6 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="FB:_Alt_Text" data-name="FB: Alt Text" transform="translate(-6876 -9195.999)">
+    <rect id="Rectangle_2291" data-name="Rectangle 2291" class="cls-1" width="32" height="32" rx="2" transform="translate(1052 335.999)"/>
+    <g id="Group_3943" data-name="Group 3943">
+      <path id="Path_990" data-name="Path 990" class="cls-2" d="M1.063-3.187H8.917L2.663-9.341l-1.6,1.624Zm12.49,0L9.028-7.241l-2.129,2L8.917-3.187h4.636Z" transform="translate(1059.937 358.94)"/>
+      <path id="Path_1407" data-name="Path 1407" class="cls-3" d="M11.688-12.219a.511.511,0,0,1,.158-.374.511.511,0,0,1,.374-.158.511.511,0,0,1,.374.158.511.511,0,0,1,.158.374.511.511,0,0,1-.158.374.511.511,0,0,1-.374.158.511.511,0,0,1-.374-.158A.511.511,0,0,1,11.688-12.219ZM10.555-3.187H0V-14.875H14.875v8.367H13.813v-7.3H1.063v3.495L2.656-11.9l4.25,4.25L9.031-9.778l3.681,3.673-.755.755L9.031-8.284,7.653-6.906,10.318-4.25h.237ZM8.807-4.25,2.656-10.409l-1.594,1.6V-4.25Z" transform="translate(1060 359.999)"/>
+      <rect id="Rectangle_2854" data-name="Rectangle 2854" class="cls-4" width="8" height="5" transform="translate(1068 352.999)"/>
+      <g id="Rectangle_2850" data-name="Rectangle 2850" class="cls-5" transform="translate(1069 353.999)">
+        <rect class="cls-6" width="8" height="5"/>
+        <rect class="cls-1" x="0.5" y="0.5" width="7" height="4"/>
+      </g>
+      <g id="Rectangle_2853" data-name="Rectangle 2853" class="cls-5" transform="translate(1071 355.999)">
+        <rect class="cls-6" width="4" height="1"/>
+        <rect class="cls-1" x="0.5" y="0.5" width="3"/>
+      </g>
+    </g>
+  </g>
+</svg>

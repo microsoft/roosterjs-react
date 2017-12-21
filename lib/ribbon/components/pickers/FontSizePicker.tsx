@@ -4,36 +4,21 @@ import {
     DirectionalHint,
     IContextualMenuItem,
 } from 'office-ui-fabric-react/lib/components/ContextualMenu';
-import { setFontSize } from 'roosterjs-editor-api';
-import RibbonButton from '../../schema/RibbonButton';
+import * as Styles from './Picker.scss.g';
 
-require('./fontSizeButton.scss');
-const FONTSIZE_SVG = require('../../icons/fontsize.svg');
 const FONTSIZE_REGEX = /(\d+)pt/i;
 
 // This list is used to populate font size picker drop down
 const FONT_SIZE_LIST: string[] = ['8', '9', '10', '11', '12', '14', '16', '18', '20', '22', '24', '26', '28', '36', '48', '72'];
 
-export const fontSizeButton: RibbonButton = {
-    title: 'Font size',
-    imageUrl: FONTSIZE_SVG,
-    dropdown: (target, editor, dismiss, stringFormat, format) =>
-        <FontSizePicker
-            menuTargetElement={target}
-            onDismissMenu={dismiss}
-            onSelectSize={fontSize => setFontSize(editor, fontSize + 'pt')}
-            selectedSize={format.fontSize}
-        />,
-};
-
-interface FontSizePickerProps {
+export interface FontSizePickerProps {
     menuTargetElement: HTMLElement;
     onDismissMenu: () => void;
     onSelectSize: (size: string) => void;
     selectedSize?: string;
 }
 
-class FontSizePicker extends React.Component<FontSizePickerProps, {}> {
+export default class FontSizePicker extends React.Component<FontSizePickerProps, {}> {
     private createMenuItems(selectedSize: string): IContextualMenuItem[] {
         return FONT_SIZE_LIST.map(size => {
             return {
@@ -56,7 +41,7 @@ class FontSizePicker extends React.Component<FontSizePickerProps, {}> {
         selectedSize = matches && matches.length == 2 ? matches[1] : selectedSize;
         return (
             <ContextualMenu
-                className={'roosterRibbonFontSizePicker customScrollBar'}
+                className={Styles.ribbonFontSizePicker}
                 shouldFocusOnMount={true}
                 target={menuTargetElement}
                 directionalHint={DirectionalHint.bottomLeftEdge}

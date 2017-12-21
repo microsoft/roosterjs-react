@@ -8,6 +8,12 @@ interface RibbonProps {
     ribbonPlugin: RibbonPluginInterface;
 
     /**
+     * A customized renderer function.
+     * Default behavior is to render the button name
+     */
+    buttonRenderer?: (buttonName: string, isRtl: boolean) => JSX.Element;
+
+    /**
      * Minimum count of button to shown in ribbon.
      * Default value is 8
      */
