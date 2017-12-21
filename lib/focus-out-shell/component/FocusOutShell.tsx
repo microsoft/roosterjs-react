@@ -18,7 +18,7 @@ export const FocusOutShellChildContextTypes: React.ValidationMap<any> = {
     callOutOnDismiss: React.PropTypes.func.isRequired
 }
 
-export class FocusOutShell extends React.PureComponent<IFocusOutShellProps, {}> {
+export default class FocusOutShell extends React.PureComponent<IFocusOutShellProps, {}> {
     public static readonly childContextTypes = FocusOutShellChildContextTypes;
 
     private static readonly BaseClassName = "focus-out-shell";

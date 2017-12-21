@@ -16,7 +16,7 @@ var regEnum = /(export\s+)?(default\s+|declare\s+)?(const\s+)?enum\s+([a-zA-Z0-9
 // 4. [export ][default |declare ]type <NAME> = ...;
 var regType = /(export\s+)?(default\s+|declare\s+)?type\s+([0-9a-zA-Z_<>]+)\s*(=[^;]+;)/gm;
 // 5. [export ][default |declare ]const <NAME>: ...;
-var regConst = /(exports\s+)?(default\s+|declare\s+)?const\s+([0-9a-zA-Z_<>]+)\s*(:[^;]+;)/gm;
+var regConst = /(export\s+)?(default\s+|declare\s+)?const\s+([0-9a-zA-Z_<>]+)\s*(:[^;]+;)/gm;
 // 6. export[ default] <NAME>|{NAMES};
 var regExport = /(export\s+)(default\s+([0-9a-zA-Z_]+)\s*,?)?(\s*{([^}]+)})?\s*;/gm;
 
