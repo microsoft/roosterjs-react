@@ -5,6 +5,7 @@
       "outDir": "./dist",
       "noUnusedLocals": true,
       "declaration": true,
+      "preserveConstEnums": true,
       "baseUrl": "./",
       "paths": {
         "*": [

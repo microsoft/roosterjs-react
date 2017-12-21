@@ -1,0 +1,73 @@
+$backgroundColor: #fff;
+$hoverBackgroundColor: #ddd;
+$activeBackgroundColor: #aaa;
+$checkedBackgroundColor: #eee;
+
+.ribbon {
+    left: 0;
+    right: 0;
+    padding: 7px 0 3px;
+    background: $backgroundColor;
+    overflow: hidden;
+    height: 48px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.ribbonButton {
+    display: inline-block;
+    white-space: nowrap;
+    background: $backgroundColor;
+}
+
+.ribbonIcon {
+    width: 32px;
+    height: 32px;
+    margin: 0 4px 4px 0;
+    background: $backgroundColor;
+    border-radius: 2px;
+    overflow: hidden;
+    font-size: 9px;
+    flex: 0 0 auto;
+
+    &:focus,
+    &:hover {
+        background-color: $hoverBackgroundColor;
+    }
+
+    &:active {
+        background-color: $activeBackgroundColor;
+    }
+
+    &.ribbonButtonChecked {
+        background-color: $checkedBackgroundColor;
+
+        &:focus,
+        &:hover {
+            background-color: $hoverBackgroundColor;
+        }
+        &:active {
+            background-color: $activeBackgroundColor;
+        }
+    }
+
+    &.ribbonButtonDisabled {
+        filter: alpha(opacity=35);
+        opacity: 0.35;
+        -khtml-opacity: 0.35;
+        cursor: default;
+    }
+
+    &:global(.ms-Button) {
+        padding: 0;
+        border-width: 0;
+    }
+}
+
+.ribbonButtonMore {
+    width: 114px;
+    padding: 4px 0 0 4px;
+    display: flex;
+    flex-flow: row wrap;
+    background-color: $backgroundColor;
+}

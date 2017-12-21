@@ -1,22 +1,63 @@
+var autoprefixer = require('autoprefixer');
+var inlineRtl = require('postcss-inline-rtl');
 module.exports = {
-    entry: './web/script/start.tsx',
+    entry: './sample/script/start.tsx',
     devtool: 'source-map',
     output: {
         filename: 'start.js',
-        path: __dirname + '/web/script',
-        publicPath: '/web/script/',
+        path: __dirname + '/sample/script',
+        publicPath: '/sample/script/',
         sourceMapFilename: '[name].map'
     },
     resolve: {
-        extensions: ['.ts', '.tsx', '.js'],
+        extensions: ['.ts', '.tsx', '.js', '.svg', '.'],
         modules: [
             './lib',
+            './sample',
             './node_modules'
         ]
     },
     module: {
-        loaders: [
-            { test: /\.tsx?$/, loader: 'ts-loader' }
+        rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+                options: {
+                    compilerOptions: {
+                        declaration: false,
+                        preserveConstEnums: false
+                    },
+                }
+            },
+            {
+                test: /\.svg$/,
+                loader: 'url-loader',
+                options: {
+                    mimetype: 'image/svg+xml'                        
+                }
+            },
+            // {
+            //     test: /\.scss$/,
+            //     use: [
+            //         '@microsoft/loader-load-themed-styles',
+            //         {
+            //             loader: 'css-loader',
+            //             options: {
+            //                 modules: true,
+            //             }
+            //         },
+            //         {
+            //             loader: 'postcss-loader',
+            //             options: {
+            //                 plugins: loader => [
+            //                     autoprefixer({browsers: 'last 2 versions'}),
+            //                     inlineRtl,
+            //                 ]
+            //             }
+            //         },
+            //         'sass-loader'
+            //     ]
+            // }
         ]
     },
     watch: true,

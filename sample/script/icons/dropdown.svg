@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6003 -8692 32 32">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #666;
+      }
+    </style>
+  </defs>
+  <g id="TB:_Chevron" data-name="TB: Chevron" transform="translate(-6366 -9160.999)">
+    <rect id="Rectangle_26" data-name="Rectangle 26" class="cls-1" width="32" height="32" rx="2" transform="translate(363 468.999)"/>
+    <path id="Path_1831" data-name="Path 1831" class="cls-2" d="M5-1.909.122-6.787l.591-.591L5-3.091,9.287-7.378l.591.591Z" transform="translate(374 489.999)"/>
+  </g>
+</svg>
