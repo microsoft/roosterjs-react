@@ -3,31 +3,31 @@ import * as React from 'react';
 import { closest } from '../../utils/ElementUtil';
 
 export interface FocusOutShellProps {
-    className?: string,
-    onFocus?: (ev: React.FocusEvent<HTMLElement>) => void;
-    onBlur?: (ev: React.FocusEvent<HTMLElement>) => void;
     allowMouseDown?: (target: HTMLElement) => boolean;
+    className?: string,
+    onBlur?: (ev: React.FocusEvent<HTMLElement>) => void;
+    onFocus?: (ev: React.FocusEvent<HTMLElement>) => void;
 }
 
 export interface FocusOutShellChildContext {
-    callOutClassName: string,
-    callOutOnDismiss: (ev: React.FocusEvent<HTMLElement>) => void;
+    calloutClassName: string;
+    calloutOnDismiss: (ev: React.FocusEvent<HTMLElement>) => void;
 }
 
 export const FocusOutShellChildContextTypes: React.ValidationMap<any> = {
-    callOutClassName: React.PropTypes.string,
-    callOutOnDismiss: React.PropTypes.func
+    calloutClassName: React.PropTypes.string,
+    calloutOnDismiss: React.PropTypes.func
 }
 
 export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, {}> {
     public static readonly childContextTypes = FocusOutShellChildContextTypes;
 
     private static readonly BaseClassName = "focus-out-shell";
-    private static readonly CallOutClassName = `${FocusOutShell.BaseClassName}-callout`;
-    private static Id = 0;
+    private static readonly CalloutClassName = `${FocusOutShell.BaseClassName}-callout`;
+    private static NextId = 0;
 
+    private _calloutClassName = `${FocusOutShell.CalloutClassName}-${FocusOutShell.NextId++}`;
     private _containerDiv: HTMLDivElement;
-    private _callOutClassName = `${FocusOutShell.CallOutClassName}-${FocusOutShell.Id++}`;
     private _hasFocus: boolean;
 
     public render(): JSX.Element {
@@ -39,7 +39,12 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
 
         return (
-            <div className={rootClassName} ref={this._containerDivOnRef} onBlur={this._onBlur} onFocus={this._onFocus} onMouseDown={this._onMouseDown}>
+            <div
+                className={rootClassName}
+                ref={this._containerDivOnRef}
+                onBlur={this._onBlur}
+                onFocus={this._onFocus}
+                onMouseDown={this._onMouseDown}>
                 {children}
             </div>
         );
@@ -47,17 +52,17 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
 
     public getChildContext(): FocusOutShellChildContext {
         return {
-            callOutClassName: this._callOutClassName,
-            callOutOnDismiss: this._callOutOnDismiss
+            calloutClassName: this._calloutClassName,
+            calloutOnDismiss: this._calloutOnDismiss
         };
     }
 
-    private _callOutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {
-        // target is the event object from the document.body focus event (captured by the Callout component)
+    private _calloutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {
+        // For Callout component, target is the event object from the document.body focus event
         const nextTarget = ev && ev.target as HTMLElement;
 
         if (this._shouldCallBlur(nextTarget)) {
-             // delay so call out dismiss can complete
+            // delay so callout dismiss can complete
             requestAnimationFrame(() => {
                 if (this.props.onBlur) {
                     this.props.onBlur(ev);
@@ -76,7 +81,7 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
             if (this.props.onBlur) {
                 this.props.onBlur(ev);
             }
-            
+
             this._hasFocus = false;
         }
     }
@@ -87,8 +92,8 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
             return false;
         }
 
-        // similarly, don't call blur if the next target is the call out or its children
-        if (nextTarget && closest(nextTarget, `.${this._callOutClassName}`)) {
+        // similarly, don't call blur if the next target is the callout or its children
+        if (nextTarget && closest(nextTarget, `.${this._calloutClassName}`)) {
             return false;
         }
 
