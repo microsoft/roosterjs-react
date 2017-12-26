@@ -6,11 +6,12 @@ import {
 } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Button, ButtonType } from 'office-ui-fabric-react/lib/Button';
 import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { Strings, StringKeys, getString } from '../../../strings/strings';
+import { Strings, getString } from '../../../strings/strings';
+import { ColorStringKey } from '../../../strings/colorStrings';
 import * as Styles from './Picker.scss.g';
 
 export interface ColorPickerItem {
-    name: StringKeys;
+    name: ColorStringKey;
     code: string;
     borderColor?: string;
 }

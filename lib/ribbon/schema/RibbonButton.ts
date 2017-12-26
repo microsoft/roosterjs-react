@@ -1,6 +1,7 @@
 import { FormatState } from 'roosterjs-editor-types';
 import { Editor } from 'roosterjs-editor-core';
-import { Strings, StringKeys } from '../../strings/strings';
+import { Strings } from '../../strings/strings';
+import { RibbonButtonStringKey } from '../../strings/ribbonButtonStrings';
 
 /**
  * State of button on ribbon
@@ -29,7 +30,7 @@ interface RibbonButton {
     /**
      * Name of the button
      */
-    name: StringKeys;
+    name: RibbonButtonStringKey;
 
     /**
      * A call back to get a drop down UI when click on this button
