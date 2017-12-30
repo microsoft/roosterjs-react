@@ -1,6 +1,7 @@
 import { colorStrings, ColorStringKey } from './colorStrings';
 import { dialogStrings, DialogStringKey } from './dialogStrings';
 import { ribbonButtonStrings, RibbonButtonStringKey } from './ribbonButtonStrings';
+import { emojiDescriptionStrings, EmojiDescriptionStringKey, emojiKeywordStrings, EmojiKeywordStringKey } from './emojiStrings';
 
 export type Strings = { [key: string]: string };
 
@@ -11,13 +12,18 @@ let registeredStringSet = [
     colorStrings,
     dialogStrings,
     ribbonButtonStrings,
+    emojiDescriptionStrings,
+    emojiKeywordStrings,
 ];
 
 // When adding new localized string types, please register your string keys below
 export type RegisteredStrings = 
     ColorStringKey |
     DialogStringKey |
-    RibbonButtonStringKey;
+    RibbonButtonStringKey |
+    EmojiDescriptionStringKey |
+    EmojiKeywordStringKey
+;
 
 export function getString(
     key: RegisteredStrings,

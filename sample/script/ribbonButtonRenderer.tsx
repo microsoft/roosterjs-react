@@ -32,6 +32,7 @@ const CREATELINK_SVG = require('./icons/createlink.svg');
 const IMAGE_ALT_TEXT_SVG = require('./icons/imagealttext.svg');
 const FONTSIZE_SVG = require('./icons/fontsize.svg');
 const FONTNAME_SVG = require('./icons/fontname.svg');
+const EMOJI_SVG = require('./icons/emoji.svg');
 
 let buttonImages: {[key: string]: string} = {};
 buttonImages['bold'] = BOLD_SVG;
@@ -61,6 +62,7 @@ buttonImages['font'] = FONTNAME_SVG;
 buttonImages['size'] = FONTSIZE_SVG;
 buttonImages['alttext'] = IMAGE_ALT_TEXT_SVG;
 buttonImages['more'] = DROPDOWN_SVG;
+buttonImages['emoji'] = EMOJI_SVG;
 
 buttonImages['bold-rtl'] = BOLD_SVG;
 buttonImages['italic-rtl'] = ITALIC_SVG;
@@ -89,6 +91,7 @@ buttonImages['font-rtl'] = FONTNAME_SVG;
 buttonImages['size-rtl'] = FONTSIZE_SVG;
 buttonImages['alttext-rtl'] = IMAGE_ALT_TEXT_SVG;
 buttonImages['more-rtl'] = DROPDOWN_SVG;
+buttonImages['emoji-rtl'] = EMOJI_SVG;
 
 export default function ribbonButtonRenderer(buttonName: string, isRtl: boolean): JSX.Element {
     let image = buttonImages[isRtl ? buttonName + '-rtl' : buttonName];

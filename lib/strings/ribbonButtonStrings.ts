@@ -29,4 +29,4 @@ export const ribbonButtonStrings = {
     btnImageAltText: 'Insert alternate text',
 };
 
-export type RibbonButtonStringKey = keyof typeof ribbonButtonStrings;
+export type RibbonButtonStringKey = (keyof typeof ribbonButtonStrings) | string;

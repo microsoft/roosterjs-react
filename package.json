@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/load-themed-styles": "1.7.14",
-    "office-ui-fabric-react": "~5.9.0",
+    "office-ui-fabric-react": "~5.12.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
     "roosterjs-editor-plugins": "^6.4.0"

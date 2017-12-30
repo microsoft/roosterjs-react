@@ -1,0 +1,24 @@
+.emojiPane {
+    max-width: 244px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.emoji {
+    width: 32px;
+    height: 32px;
+    padding: 0 2px;
+    &.selected {
+        background-color: #ccc;
+        border-radius: 4px;
+    }
+}
+
+.header {
+    border-bottom: solid 1px #aaa;
+}
+
+.searchBox {
+    width: 240px;
+    outline: none;
+}

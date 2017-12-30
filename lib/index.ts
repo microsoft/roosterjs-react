@@ -10,3 +10,6 @@ export { default as RibbonButton, RibbonButtonState } from './ribbon/schema/Ribb
 export { default as RibbonProps } from './ribbon/schema/RibbonProps';
 export { default as Ribbon } from './ribbon/components/Ribbon';
 export { default as RibbonPlugin } from './ribbon/plugins/RibbonPlugin';
+
+export { default as EmojiPlugin } from './emoji/plugins/EmojiPlugin';
+export { default as createEmojiButton } from './emoji/utils/createEmojiButton';
