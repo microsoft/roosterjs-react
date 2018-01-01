@@ -9,8 +9,7 @@
       "baseUrl": "./",
       "paths": {
         "*": [
-          "*",
-          "dist/*"
+          "lib/*/index"
         ]
       },
       "rootDir": "./",

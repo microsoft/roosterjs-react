@@ -57,8 +57,11 @@ var webpackConfig = {
     devtool: 'source-map',
     output: output,
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.svg', '.scss'],
-        modules: [ sourcePath, path.resolve(sourcePath, 'node_modules') ],
+        extensions: ['.ts', '.tsx', '.js'],
+        modules: [
+            path.resolve(sourcePath, 'lib'),
+            path.resolve(sourcePath, 'node_modules')
+        ],
     },
     module: {
         rules: [
@@ -68,7 +71,7 @@ var webpackConfig = {
                 options: {
                     compilerOptions: {
                         declaration: false,
-                        preserveConstEnums: false
+                        preserveConstEnums: false,
                     },
                 }
             },
@@ -79,28 +82,6 @@ var webpackConfig = {
                     mimetype: 'image/svg+xml'                        
                 }
             },
-            // {
-            //     test: /\.scss$/,
-            //     use: [
-            //         '@microsoft/loader-load-themed-styles',
-            //         {
-            //             loader: 'css-loader',
-            //             options: {
-            //                 modules: true,
-            //             }
-            //         },
-            //         {
-            //             loader: 'postcss-loader',
-            //             options: {
-            //                 plugins: loader => [
-            //                     autoprefixer({browsers: 'last 2 versions'}),
-            //                     inlineRtl,
-            //                 ]
-            //             }
-            //         },
-            //         'sass-loader'
-            //     ]
-            // }
         ]
     },
     externals: externals,

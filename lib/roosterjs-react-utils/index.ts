@@ -1,0 +1,1 @@
+export { closest } from './ElementUtil';

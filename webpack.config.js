@@ -1,5 +1,5 @@
-var autoprefixer = require('autoprefixer');
-var inlineRtl = require('postcss-inline-rtl');
+// var autoprefixer = require('autoprefixer');
+// var inlineRtl = require('postcss-inline-rtl');
 module.exports = {
     entry: './sample/script/start.tsx',
     devtool: 'source-map',

@@ -1,0 +1,1 @@
+export { default as confirm } from './components/ConfirmDialog';
