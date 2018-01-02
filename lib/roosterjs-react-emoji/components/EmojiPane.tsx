@@ -5,6 +5,7 @@ import EmojiIcon from './EmojiIcon';
 import emojiList, { EmojiFamily, commonEmojis, moreEmoji } from '../utils/emojiList';
 import { Strings } from '../strings/emojiStrings';
 import { searchEmojis } from '../utils/searchEmojis';
+import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 
 export interface EmojiPaneState {
     index: number;
@@ -109,7 +110,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
                         onChange={this.onSearchChange}
                         />
                 </div>
-                <div
+                <FocusZone
                     className={Styles.emojiPane}>
                     {
                         this.state.emojis ?
@@ -122,13 +123,13 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
                                     onClick={(e) => this.onSelect(e, emoji)} />) :
                             this.renderFullList()
                     }
-                </div>
+                </FocusZone>
             </div>
         );
     }
 
     private renderFullList(): JSX.Element {
-        return <div>
+        return <FocusZone>
                 <div className={Styles.header}>
                 {
                     Object.keys(emojiList).map((key, index) =>
@@ -152,7 +153,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
                             onClick={(e) => this.onSelect(e, emoji)} />)
                 }
                 </div>
-            </div>;
+            </FocusZone>;
     }
 
     private searchRefCallback = (ref: HTMLInputElement) => {
