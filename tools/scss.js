@@ -1,7 +1,7 @@
 const glob = require('glob');
 const path = require('path');
 
-var scssPath = path.resolve(__dirname, '..', 'lib/**/*.scss');
+var scssPath = path.resolve(__dirname, '..', 'packages/**/*.scss');
 const files = glob.sync(scssPath);
 
 const sass = require('node-sass');
