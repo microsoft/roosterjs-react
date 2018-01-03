@@ -300,7 +300,7 @@ function main(config) {
 
 var projDir = path.resolve(__dirname, '..');
 var baseDir = path.resolve(projDir, 'dist');
-var targetDir = path.resolve(baseDir, 'dist');
+var targetDir = path.resolve(baseDir, 'roosterjs-react', 'dist');
 if (!fs.existsSync(targetDir)) {
     fs.mkdirSync(targetDir);
 }
@@ -309,6 +309,6 @@ main({
     library: 'roosterjs',
     output: path.resolve(targetDir, 'rooster-react'),
     include: [
-        'lib/index.d.ts'
+        'roosterjs-react/lib/index.d.ts'
     ]
 });

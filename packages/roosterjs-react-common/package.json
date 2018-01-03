@@ -1,0 +1,13 @@
+{
+  "name": "roosterjs-react-common",
+  "description": "Common library for roosterjs-react",
+  "dependencies": {
+    "roosterjs-editor-plugins": ""
+  },
+  "peerDependencies": {
+    "office-ui-fabric-react": ">=5.9.0",
+    "react": ">=15.3.2",
+    "react-dom": ">=15.3.2"
+ },
+  "main": "./lib/index.ts"
+}

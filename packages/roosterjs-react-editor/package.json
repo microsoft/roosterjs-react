@@ -1,0 +1,8 @@
+{
+  "name": "roosterjs-react-editor",
+  "description": "React wrapper for roosterjs editor",
+  "dependencies": {
+    "roosterjs-react-common": ""
+  },
+  "main": "./lib/index.ts"
+}

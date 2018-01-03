@@ -1,9 +1,9 @@
 var path = require('path');
-var autoprefixer = require('autoprefixer');
+// var autoprefixer = require('autoprefixer');
 // var inlineRtl = require('postcss-inline-rtl');
 var rootPath = path.resolve(__dirname, '..');
-var sourcePath = rootPath;
-var distPath = path.resolve(rootPath, 'dist/dist');
+var sourcePath = path.resolve(rootPath, 'packages');
+var distPath = path.resolve(rootPath, 'dist/roosterjs-react/dist');
 var webpack = require('webpack');
 var param = process.argv[2];
 
@@ -53,15 +53,12 @@ if (skipRooster) {
 }
 
 var webpackConfig = {
-    entry: path.resolve(sourcePath, 'lib/index.ts'),
+    entry: path.resolve(sourcePath, 'roosterjs-react/lib/index.ts'),
     devtool: 'source-map',
     output: output,
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
-        modules: [
-            path.resolve(sourcePath, 'lib'),
-            path.resolve(sourcePath, 'node_modules')
-        ],
+        modules: [ sourcePath ],
     },
     module: {
         rules: [
@@ -74,14 +71,7 @@ var webpackConfig = {
                         preserveConstEnums: false,
                     },
                 }
-            },
-            {
-                test: /\.svg$/,
-                loader: 'url-loader',
-                options: {
-                    mimetype: 'image/svg+xml'                        
-                }
-            },
+            }
         ]
     },
     externals: externals,

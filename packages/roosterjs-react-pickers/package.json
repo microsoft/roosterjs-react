@@ -1,0 +1,8 @@
+{
+  "name": "roosterjs-react-pickers",
+  "description": "Pickers for roosterjs-react ribbon",
+  "dependencies": {
+    "roosterjs-react-common": ""
+  },
+  "main": "./lib/index.ts"
+}

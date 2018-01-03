@@ -1,0 +1,10 @@
+{
+  "name": "roosterjs-react",
+  "description": "Facade for all roosterjs-react packages",
+  "dependencies": {
+    "roosterjs-react-editor": "",
+    "roosterjs-react-ribbon": "",
+    "roosterjs-react-emoji": ""
+  },
+  "main": "./lib/index.ts"
+}

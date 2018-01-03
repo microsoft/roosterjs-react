@@ -1,1 +1,0 @@
-export { Strings, registerDefaultString, getString } from './strings';

@@ -1,10 +1,8 @@
-// var autoprefixer = require('autoprefixer');
-// var inlineRtl = require('postcss-inline-rtl');
 module.exports = {
-    entry: './sample/script/start.tsx',
+    entry: './sample/script/sample.tsx',
     devtool: 'source-map',
     output: {
-        filename: 'start.js',
+        filename: 'sample.js',
         path: __dirname + '/sample/script',
         publicPath: '/sample/script/',
         sourceMapFilename: '[name].map'
@@ -12,8 +10,7 @@ module.exports = {
     resolve: {
         extensions: ['.ts', '.tsx', '.js', '.svg', '.'],
         modules: [
-            './lib',
-            './sample',
+            './packages',
             './node_modules'
         ]
     },
@@ -21,13 +18,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                loader: 'ts-loader',
-                options: {
-                    compilerOptions: {
-                        declaration: false,
-                        preserveConstEnums: false
-                    },
-                }
+                loader: 'ts-loader'
             },
             {
                 test: /\.svg$/,

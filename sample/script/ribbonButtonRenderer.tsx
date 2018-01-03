@@ -34,7 +34,7 @@ const FONTSIZE_SVG = require('./icons/fontsize.svg');
 const FONTNAME_SVG = require('./icons/fontname.svg');
 const EMOJI_SVG = require('./icons/emoji.svg');
 
-let buttonImages: {[key: string]: string} = {};
+let buttonImages: { [key: string]: string } = {};
 buttonImages['bold'] = BOLD_SVG;
 buttonImages['italic'] = ITALIC_SVG;
 buttonImages['underline'] = UNDERLINE_SVG;
@@ -95,9 +95,5 @@ buttonImages['emoji-rtl'] = EMOJI_SVG;
 
 export default function ribbonButtonRenderer(buttonName: string, isRtl: boolean): JSX.Element {
     let image = buttonImages[isRtl ? buttonName + '-rtl' : buttonName];
-    return <Image
-        style={{width: '32px'}}
-        shouldFadeIn={false}
-        src={image}
-    />
+    return <Image style={{ width: '32px' }} shouldFadeIn={false} src={image} />;
 }
