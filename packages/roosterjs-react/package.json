@@ -2,6 +2,7 @@
   "name": "roosterjs-react",
   "description": "Facade for all roosterjs-react packages",
   "dependencies": {
+    "roosterjs-plugin-image-resize": "",
     "roosterjs-react-editor": "",
     "roosterjs-react-ribbon": "",
     "roosterjs-react-emoji": ""

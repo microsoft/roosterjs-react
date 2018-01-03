@@ -45,6 +45,7 @@ var externals = {
 };
 
 if (skipRooster) {
+    externals["roosterjs-plugin-image-resize"] = "roosterjs";
     externals["roosterjs-editor-plugins"] = "roosterjs";
     externals["roosterjs-editor-api"] = "roosterjs";
     externals["roosterjs-editor-core"] = "roosterjs";
@@ -58,7 +59,10 @@ var webpackConfig = {
     output: output,
     resolve: {
         extensions: ['.ts', '.tsx', '.js'],
-        modules: [ sourcePath ],
+        modules: [
+            sourcePath,
+            path.resolve(rootPath, 'node_modules')
+        ],
     },
     module: {
         rules: [
