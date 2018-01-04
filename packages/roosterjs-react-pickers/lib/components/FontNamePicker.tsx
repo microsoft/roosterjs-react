@@ -41,7 +41,6 @@ const FONT_NAME_LIST: Font[] = [
     },
     { name: 'Garamond', family: 'Garamond,Georgia,serif' },
     { name: 'Georgia', family: 'Georgia,serif' },
-    { name: 'Helvetica', family: 'Helvetica,Arial,sans-serif' },
     { name: 'Impact', family: 'Impact,Charcoal,sans-serif' },
     { name: 'Lucida Console', family: "'Lucida Console',Monaco,monospace" },
     { name: 'Lucida Handwriting', family: "'Lucida Handwriting','Apple Chancery',cursive" },
