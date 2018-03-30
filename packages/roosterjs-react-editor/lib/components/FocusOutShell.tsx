@@ -1,27 +1,18 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
 import * as React from 'react';
-import { closest } from 'roosterjs-react-common';
+import { closest, css } from 'roosterjs-react-common';
+
+export type FocusEventHandler = (ev: React.FocusEvent<HTMLElement>) => void;
 
 export interface FocusOutShellProps {
     allowMouseDown?: (target: HTMLElement) => boolean;
     className?: string;
-    onBlur?: (ev: React.FocusEvent<HTMLElement>) => void;
-    onFocus?: (ev: React.FocusEvent<HTMLElement>) => void;
+    onBlur?: FocusEventHandler;
+    onFocus?: FocusEventHandler;
+    renderChildren: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
 }
-
-export interface FocusOutShellChildContext {
-    calloutClassName: string;
-    calloutOnDismiss: (ev: React.FocusEvent<HTMLElement>) => void;
-}
-
-export const FocusOutShellChildContextTypes: React.ValidationMap<any> = {
-    calloutClassName: React.PropTypes.string,
-    calloutOnDismiss: React.PropTypes.func,
-};
 
 export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, {}> {
-    public static readonly childContextTypes = FocusOutShellChildContextTypes;
-
     private static readonly BaseClassName = 'focus-out-shell';
     private static readonly CalloutClassName = `${FocusOutShell.BaseClassName}-callout`;
     private static NextId = 0;
@@ -31,30 +22,17 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     private _hasFocus: boolean;
 
     public render(): JSX.Element {
-        const { children, className } = this.props;
-
-        let rootClassName = FocusOutShell.BaseClassName;
-        if (className) {
-            rootClassName = `${rootClassName} ${className}`;
-        }
-
+        const { className, renderChildren } = this.props;
         return (
             <div
-                className={rootClassName}
+                className={css(FocusOutShell.BaseClassName, className)}
                 ref={this._containerDivOnRef}
                 onBlur={this._onBlur}
                 onFocus={this._onFocus}
                 onMouseDown={this._onMouseDown}>
-                {children}
+                {renderChildren(this._calloutClassName, this._calloutOnDismiss)}
             </div>
         );
-    }
-
-    public getChildContext(): FocusOutShellChildContext {
-        return {
-            calloutClassName: this._calloutClassName,
-            calloutOnDismiss: this._calloutOnDismiss,
-        };
     }
 
     private _calloutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {

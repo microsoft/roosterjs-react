@@ -2,10 +2,9 @@ import * as React from 'react';
 import EditorViewState from '../schema/EditorViewState';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';
 import {
-    ClipBoardData,
     ContentEdit,
     HyperLink,
-    PasteManager,
+    Paste,
     DefaultShortcut,
 } from 'roosterjs-editor-plugins';
 import { convertInlineCss } from 'roosterjs-editor-dom';
@@ -21,7 +20,6 @@ export interface ReactEditorProps {
         isInitializing: boolean
     ) => void;
     undo?: UndoService;
-    pasteHandler?: (clipboardData: ClipBoardData) => void;
     isRtl?: boolean;
     hyperlinkToolTipCallback?: (href: string) => string;
     defaultFormat?: DefaultFormat;
@@ -73,7 +71,6 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
 
     private getEditorOptions(): EditorOptions {
         let {
-            pasteHandler,
             plugins,
             viewState,
             undo,
@@ -83,7 +80,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
         let allPlugins: EditorPlugin[] = [
             new ContentEdit(),
             new HyperLink(hyperlinkToolTipCallback),
-            new PasteManager(pasteHandler),
+            new Paste(),
             new DefaultShortcut(),
         ];
 
