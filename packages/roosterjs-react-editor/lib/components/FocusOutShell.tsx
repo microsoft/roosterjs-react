@@ -9,7 +9,7 @@ export interface FocusOutShellProps {
     className?: string;
     onBlur?: FocusEventHandler;
     onFocus?: FocusEventHandler;
-    renderChildren: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => JSX.Element;
+    renderChildren: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
 }
 
 export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, {}> {
@@ -23,7 +23,6 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
 
     public render(): JSX.Element {
         const { className, renderChildren } = this.props;
-
         return (
             <div
                 className={css(FocusOutShell.BaseClassName, className)}
