@@ -15,7 +15,8 @@
     "dts": "node tools/dts.js",
     "start": "node tools/scss.js & webpack-dev-server",
     "pack": "node tools/pack.js & node tools/pack.js -amd",
-    "pack:prod": "node tools/pack.js -p & node tools/pack.js -amd -p"
+    "pack:prod": "node tools/pack.js -p & node tools/pack.js -amd -p",
+    "publish": "node tools/publish-all.js"
   },
   "author": "Jiuqing Song",
   "license": "MIT",

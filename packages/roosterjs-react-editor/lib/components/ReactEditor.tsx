@@ -80,7 +80,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
         let allPlugins: EditorPlugin[] = [
             new ContentEdit(),
             new HyperLink(hyperlinkToolTipCallback),
-            new Paste(),
+            new Paste(true /*useDirectPaste*/),
             new DefaultShortcut(),
         ];
 
