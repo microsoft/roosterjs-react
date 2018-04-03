@@ -24,8 +24,8 @@
     "office-ui-fabric-react": "~5.12.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.4.1",
-    "roosterjs-plugin-image-resize": "^6.4.1"
+    "roosterjs-editor-plugins": "^6.9.0",
+    "roosterjs-plugin-image-resize": "^6.9.0"
   },
   "devDependencies": {
     "@types/node": "8.0.50",
