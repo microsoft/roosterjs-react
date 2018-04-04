@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A react component wrapper for roosterjs with more plugins",
   "main": "lib/index.js",
   "repository": {
@@ -25,8 +25,8 @@
     "office-ui-fabric-react": "~5.12.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.9.0",
-    "roosterjs-plugin-image-resize": "^6.9.0"
+    "roosterjs-editor-plugins": "^6.9.2",
+    "roosterjs-plugin-image-resize": "^6.9.2"
   },
   "devDependencies": {
     "@types/node": "8.0.50",

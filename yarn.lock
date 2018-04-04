@@ -2931,48 +2931,48 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^2.0.0"
     inherits "^2.0.1"
 
-roosterjs-editor-api@6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.9.0.tgz#0d82656778895fbbc3107299012409e43faa35bc"
+roosterjs-editor-api@6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-api/-/roosterjs-editor-api-6.9.2.tgz#3d19af0309983c6bc44a8f0956c2aa6ce1be1fbf"
   dependencies:
-    roosterjs-editor-core "6.9.0"
-    roosterjs-editor-dom "6.9.0"
-    roosterjs-editor-types "6.9.0"
+    roosterjs-editor-core "6.9.2"
+    roosterjs-editor-dom "6.9.2"
+    roosterjs-editor-types "6.9.2"
 
-roosterjs-editor-core@6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.9.0.tgz#f8cb5e6975ebf5f56586de61639e158e22660aec"
+roosterjs-editor-core@6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-core/-/roosterjs-editor-core-6.9.2.tgz#c9268920ee92b2bd2bad2356490af5e90c740aff"
   dependencies:
-    roosterjs-editor-dom "6.9.0"
-    roosterjs-editor-types "6.9.0"
+    roosterjs-editor-dom "6.9.2"
+    roosterjs-editor-types "6.9.2"
 
-roosterjs-editor-dom@6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.9.0.tgz#83dc58c68fcfcc332f8de82f1ff2b11a37568e12"
+roosterjs-editor-dom@6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-dom/-/roosterjs-editor-dom-6.9.2.tgz#eed22b0ec57d12264066b8f68c128c1e417d6691"
   dependencies:
-    roosterjs-editor-types "6.9.0"
+    roosterjs-editor-types "6.9.2"
 
-roosterjs-editor-plugins@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.9.0.tgz#9b68c31367adb02398614b7ca4888e7ffee82fac"
+roosterjs-editor-plugins@^6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-plugins/-/roosterjs-editor-plugins-6.9.2.tgz#4a74789f62e09d438b8f87ba840a2c3bcd592bbd"
   dependencies:
-    roosterjs-editor-api "6.9.0"
-    roosterjs-editor-core "6.9.0"
-    roosterjs-editor-dom "6.9.0"
-    roosterjs-editor-types "6.9.0"
+    roosterjs-editor-api "6.9.2"
+    roosterjs-editor-core "6.9.2"
+    roosterjs-editor-dom "6.9.2"
+    roosterjs-editor-types "6.9.2"
 
-roosterjs-editor-types@6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.9.0.tgz#52d8cc0ff04a8a426d01132607ea544c21870a10"
+roosterjs-editor-types@6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-editor-types/-/roosterjs-editor-types-6.9.2.tgz#0fd1edb18aa67eece4b2f219e208e8939c27a5fa"
 
-roosterjs-plugin-image-resize@^6.9.0:
-  version "6.9.0"
-  resolved "https://registry.yarnpkg.com/roosterjs-plugin-image-resize/-/roosterjs-plugin-image-resize-6.9.0.tgz#6e8671800a1734a0404ed012cd931b50b4dca3b5"
+roosterjs-plugin-image-resize@^6.9.2:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/roosterjs-plugin-image-resize/-/roosterjs-plugin-image-resize-6.9.2.tgz#ef7dac49f6805f9d2b259a81fca5ae5fade0a423"
   dependencies:
-    roosterjs-editor-api "6.9.0"
-    roosterjs-editor-core "6.9.0"
-    roosterjs-editor-dom "6.9.0"
-    roosterjs-editor-types "6.9.0"
+    roosterjs-editor-api "6.9.2"
+    roosterjs-editor-core "6.9.2"
+    roosterjs-editor-dom "6.9.2"
+    roosterjs-editor-types "6.9.2"
 
 rtlcss@^2.0.3:
   version "2.2.1"

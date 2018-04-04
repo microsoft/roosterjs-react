@@ -8,6 +8,44 @@
             "es5",
             "es2015.promise",
             "dom"
-        ]
+        ],
+        "paths": {
+            "roosterjs-react/lib/*": [
+                "packages/roosterjs-react/lib/*"
+            ],
+            "roosterjs-react": [
+                "packages/roosterjs-react/lib/index"
+            ],
+            "roosterjs-react-common/lib/*": [
+                "packages/roosterjs-react-common/lib/*"
+            ],
+            "roosterjs-react-common": [
+                "packages/roosterjs-react-common/lib/index"
+            ],
+            "roosterjs-react-editor/lib/*": [
+                "packages/roosterjs-react-editor/lib/*"
+            ],
+            "roosterjs-react-editor": [
+                "packages/roosterjs-react-editor/lib/index"
+            ],
+            "roosterjs-react-emoji/lib/*": [
+                "packages/roosterjs-react-emoji/lib/*"
+            ],
+            "roosterjs-react-emoji": [
+                "packages/roosterjs-react-emoji/lib/index"
+            ],
+            "roosterjs-react-pickers/lib/*": [
+                "packages/roosterjs-react-pickers/lib/*"
+            ],
+            "roosterjs-react-pickers": [
+                "packages/roosterjs-react-pickers/lib/index"
+            ],
+            "roosterjs-react-ribbon/lib/*": [
+                "packages/roosterjs-react-ribbon/lib/*"
+            ],
+            "roosterjs-react-ribbon": [
+                "packages/roosterjs-react-ribbon/lib/index"
+            ]
+        }
     }
 }
