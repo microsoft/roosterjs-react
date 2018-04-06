@@ -31,16 +31,18 @@ var externals = {
     "react-dom": "react-dom",
     "office-ui-fabric-react": "OfficeFabric",
     "office-ui-fabric-react/lib/Button": "OfficeFabric/Button",
+    "office-ui-fabric-react/lib/Callout": "OfficeFabric/Callout",
+    "office-ui-fabric-react/lib/CommandBar": "OfficeFabric/CommandBar",
+    "office-ui-fabric-react/lib/ContextualMenu": "OfficeFabric/ContextualMenu",
     "office-ui-fabric-react/lib/Dialog": "OfficeFabric/Dialog",
     "office-ui-fabric-react/lib/FocusZone": "OfficeFabric/FocusZone",
-    "office-ui-fabric-react/lib/ContextualMenu": "OfficeFabric/ContextualMenu",
-    "office-ui-fabric-react/lib/Callout": "OfficeFabric/Callout",
     "office-ui-fabric-react/lib/Image": "OfficeFabric/Image",
     "office-ui-fabric-react/lib/components/Button": "OfficeFabric/components/Button/Button",
+    "office-ui-fabric-react/lib/components/Callout": "OfficeFabric/components/Callout/Callout",
+    "office-ui-fabric-react/lib/components/CommandBar": "OfficeFabric/components/CommandBar/CommandBar",
+    "office-ui-fabric-react/lib/components/ContextualMenu": "OfficeFabric/components/ContextualMenu/ContextualMenu",
     "office-ui-fabric-react/lib/components/Dialog": "OfficeFabric/components/Dialog/Dialog",
     "office-ui-fabric-react/lib/components/FocusZone": "OfficeFabric/components/FocusZone/FocusZone",
-    "office-ui-fabric-react/lib/components/ContextualMenu": "OfficeFabric/components/ContextualMenu/ContextualMenu",
-    "office-ui-fabric-react/lib/components/Callout": "OfficeFabric/components/Callout/Callout",
     "office-ui-fabric-react/lib/components/Image": "OfficeFabric/components/Image/Image"
 };
 

@@ -1,4 +1,5 @@
-import { ICommandBarItemProps } from '@uifabric/experiments/lib/CommandBar';
+// TODO-1 import { ICommandBarItemProps } from '@uifabric/experiments/lib/CommandBar';
+import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import {
     clearFormat,
@@ -21,7 +22,7 @@ function getIconProps(name: string): IIconProps {
     return { className: `$rooster-command-bar-icon ms-Icon ms-Icon--${name}` };
 }
 
-export const OOB_COMMAND_BAR_ITEMS: ICommandBarItemProps[] = [
+export const OOB_COMMAND_BAR_ITEMS: IContextualMenuItem[] = [
     {
         key: "bold",
         iconProps: getIconProps("Bold"),
@@ -132,9 +133,9 @@ export const OOB_COMMAND_BAR_ITEMS: ICommandBarItemProps[] = [
     }
 ];
 
-type CommandBarItemMap = { [key: string]: ICommandBarItemProps };
+type CommandBarItemMap = { [key: string]: IContextualMenuItem };
 export const OOB_COMMAND_BAR_ITEM_MAP = OOB_COMMAND_BAR_ITEMS.reduce(
-    (result: CommandBarItemMap, item: ICommandBarItemProps) => {
+    (result: CommandBarItemMap, item: IContextualMenuItem) => {
         result[item.key] = item;
         return result;
     },

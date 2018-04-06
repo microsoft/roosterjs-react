@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
-import { CommandBar, ICommandBarItemProps } from '@uifabric/experiments/lib/CommandBar';
+// TODO-1 import { CommandBar, ICommandBarItemProps } from '@uifabric/experiments/lib/CommandBar';
+import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
+import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { createFormatState } from 'roosterjs-react-editor';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState } from 'roosterjs-editor-types';
@@ -41,7 +43,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         return (
             <div className={css("rooster-command-bar", className)}>
                 <CommandBar
-                    // TODO update experimental OfficeFabric CommandBar
+                    // TODO-1 update experimental OfficeFabric CommandBar
                     /* overflowItemProps={{ menuClassName: calloutClassName, onAfterMenuDismiss: calloutOnDismiss, } as IOverflowItemProps} */
                     className={css("command-bar")}
                     items={this._buttonKeys
@@ -71,7 +73,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         this._updateFormatStateDebounced();
     }
 
-    private _getMenuItem(commandBarItem: ICommandBarItemProps): ICommandBarItemProps {
+    private _getMenuItem(commandBarItem: IContextualMenuItem): IContextualMenuItem {
         if (!commandBarItem) {
             return null;
         }
@@ -97,7 +99,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         return item;
     }
 
-    private _onCommandBarItemClick = (item: ICommandBarItemProps) => {
+    private _onCommandBarItemClick = (item: IContextualMenuItem) => {
         const { roosterCommandBarPlugin } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
