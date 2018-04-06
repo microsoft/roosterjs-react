@@ -1,7 +1,7 @@
 import * as React from 'react';
 import RibbonButton, { RibbonButtonState } from '../schema/RibbonButton';
 import RibbonProps from '../schema/RibbonProps';
-import createFormatState from '../utils/createFormatState';
+import { createFormatState } from 'roosterjs-react-editor';
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { FormatState } from 'roosterjs-editor-types';
@@ -172,7 +172,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
         let buttonClassName = classNames(
             Styles.ribbonIcon,
             (this.state.dropDown == name || buttonState == RibbonButtonState.Checked) &&
-                Styles.ribbonButtonChecked,
+            Styles.ribbonButtonChecked,
             isDisabled && Styles.ribbonButtonDisabled
         );
         let title = getString(ribbonButton.name, this.props.strings);
@@ -190,8 +190,8 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                     {this.props.buttonRenderer ? (
                         this.props.buttonRenderer(name, this.props.isRtl)
                     ) : (
-                        <span>{name}</span>
-                    )}
+                            <span>{name}</span>
+                        )}
                 </IconButton>
             </div>
         );

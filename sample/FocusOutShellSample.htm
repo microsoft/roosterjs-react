@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>Rooster-React FocusOutShell Sample Page</title>
+        <style>
+            .editor-container {
+                display: flex;
+                flex-direction: column;
+                height: 900px;
+            }
+            .focus-out-shell {
+                display: flex;
+                flex: 1;
+                flex-direction: column;
+                margin-bottom: 40px;
+                border: solid 1px black;
+            }
+            .lean-rooster {
+                height: 100%;
+                outline: none;
+                overflow: auto;
+            }
+            .lean-rooster.view-mode + .rooster-command-bar {
+                display: none;
+            }
+            .focus-out-shell {
+                border-color: transparent;
+            }
+            .focus-out-shell:hover {
+                border-color: silver;
+            }
+            .focus-out-shell.is-focused {
+                border-color: rgb(16, 110, 190);;
+            }
+        </style>
+        <link rel="stylesheet" href="//static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.0/css/fabric.min.css">
+    </head>
+    <body>
+        <div id="container"></div>
+        <script src="script/FocusOutShellSample.js"></script>
+    </body>
+</html>

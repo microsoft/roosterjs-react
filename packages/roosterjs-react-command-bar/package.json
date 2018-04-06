@@ -1,0 +1,8 @@
+{
+  "name": "roosterjs-react-command-bar",
+  "description": "CommandBar (Office Fabric) for roosterjs-react editor",
+  "dependencies": {
+    "roosterjs-react-common": ""
+  },
+  "main": "./lib/index.ts"
+}

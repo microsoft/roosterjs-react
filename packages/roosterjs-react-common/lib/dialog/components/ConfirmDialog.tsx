@@ -12,6 +12,7 @@ interface ConfirmDialogProps {
     initialValue?: string;
     subText?: string;
     strings?: Strings;
+    className?: string;
 }
 
 interface ConfirmDialogState {
@@ -36,7 +37,7 @@ class ConfirmDialog extends React.Component<ConfirmDialogProps, ConfirmDialogSta
         let onCancel = () => this.onClick(null);
         let strings = this.props.strings;
         return (
-            <Dialog
+            <Dialog className={this.props.className}
                 isOpen={this.state.isShown}
                 onDismissed={this.onDismissed}
                 title={this.props.title}>
@@ -104,21 +105,24 @@ export default function confirm(
     title: string,
     subText: string,
     initialValue?: string,
-    strings?: Strings
+    strings?: Strings,
+    className?: string
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         let confirmDialogDiv = document.createElement('div');
         document.body.appendChild(confirmDialogDiv);
         ReactDOM.render(
             <ConfirmDialog
+                className={className}
                 title={title}
                 subText={subText}
                 onOkCallback={value => resolve(value)}
                 initialValue={initialValue}
                 strings={strings}
-                onClose={() => {
+                onClose={(ev?: any) => {
                     ReactDOM.unmountComponentAtNode(confirmDialogDiv);
                     document.body.removeChild(confirmDialogDiv);
+                    reject();
                 }}
             />,
             confirmDialogDiv

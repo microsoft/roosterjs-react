@@ -1,6 +1,6 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
 import * as React from 'react';
-import { closest, css } from 'roosterjs-react-common';
+import { closest, css, NullFunction } from 'roosterjs-react-common';
 
 export type FocusEventHandler = (ev: React.FocusEvent<HTMLElement>) => void;
 
@@ -9,28 +9,37 @@ export interface FocusOutShellProps {
     className?: string;
     onBlur?: FocusEventHandler;
     onFocus?: FocusEventHandler;
-    renderChildren: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
+    onRenderContent: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
 }
 
-export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, {}> {
+export interface FocusOutShellState {
+    isFocused?: boolean;
+}
+
+export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, FocusOutShellState> {
     private static readonly BaseClassName = 'focus-out-shell';
     private static readonly CalloutClassName = `${FocusOutShell.BaseClassName}-callout`;
     private static NextId = 0;
 
     private _calloutClassName = `${FocusOutShell.CalloutClassName}-${FocusOutShell.NextId++}`;
     private _containerDiv: HTMLDivElement;
-    private _hasFocus: boolean;
+
+    constructor(props: FocusOutShellProps) {
+        super(props);
+
+        this.state = { isFocused: false };
+    }
 
     public render(): JSX.Element {
-        const { className, renderChildren } = this.props;
+        const { className, onRenderContent } = this.props;
         return (
             <div
-                className={css(FocusOutShell.BaseClassName, className)}
+                className={css(FocusOutShell.BaseClassName, className, { 'is-focused': this.state.isFocused })}
                 ref={this._containerDivOnRef}
                 onBlur={this._onBlur}
                 onFocus={this._onFocus}
                 onMouseDown={this._onMouseDown}>
-                {renderChildren(this._calloutClassName, this._calloutOnDismiss)}
+                {onRenderContent(this._calloutClassName, this._calloutOnDismiss)}
             </div>
         );
     }
@@ -42,11 +51,10 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         if (this._shouldCallBlur(nextTarget)) {
             // delay so callout dismiss can complete
             requestAnimationFrame(() => {
-                if (this.props.onBlur) {
-                    this.props.onBlur(ev);
-                }
+                const { onBlur = NullFunction } = this.props;
 
-                this._hasFocus = false;
+                onBlur(ev);
+                this.setState({ isFocused: false });
             });
         }
     };
@@ -56,11 +64,10 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         const nextTarget = ev.relatedTarget as HTMLElement;
 
         if (this._shouldCallBlur(nextTarget)) {
-            if (this.props.onBlur) {
-                this.props.onBlur(ev);
-            }
+            const { onBlur = NullFunction } = this.props;
 
-            this._hasFocus = false;
+            onBlur(ev);
+            this.setState({ isFocused: false });
         }
     };
 
@@ -79,18 +86,19 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     }
 
     private _onFocus = (ev: React.FocusEvent<HTMLElement>): void => {
-        if (!this._hasFocus) {
-            this._hasFocus = true;
+        if (!this.state.isFocused) {
+            const { onFocus = NullFunction } = this.props;
 
-            if (this.props.onFocus) {
-                this.props.onFocus(ev);
-            }
+            this.setState({ isFocused: true });
+            onFocus(ev);
         }
     };
 
     private _onMouseDown = (ev: React.MouseEvent<HTMLElement>): void => {
+        const { allowMouseDown = NullFunction } = this.props;
         const { target } = ev;
-        if (this.props.allowMouseDown && this.props.allowMouseDown(target as HTMLElement)) {
+
+        if (allowMouseDown(target as HTMLElement)) {
             return;
         }
 

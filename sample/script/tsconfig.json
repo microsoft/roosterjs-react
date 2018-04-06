@@ -16,6 +16,12 @@
             "roosterjs-react": [
                 "packages/roosterjs-react/lib/index"
             ],
+            "roosterjs-react-command-bar/lib/*": [
+                "packages/roosterjs-react-command-bar/lib/*"
+            ],
+            "roosterjs-react-command-bar": [
+                "packages/roosterjs-react-command-bar/lib/index"
+            ],
             "roosterjs-react-common/lib/*": [
                 "packages/roosterjs-react-common/lib/*"
             ],
