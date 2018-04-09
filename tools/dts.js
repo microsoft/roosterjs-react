@@ -8,8 +8,8 @@ var regImportFrom = /import[^;]+from[^;]+;/gm;
 var singleLineComment = /\/\/[^\n]*\n/g;
 var multiLineComment = /(^\/\*(\*(?!\/)|[^*])*\*\/\s*)/m;
 
-// 1. [export ][default |declare ](class|interface) <NAME>[ extends| implements <BASECLASS>] {...}
-var regClassInterface = /(\/\*(\*(?!\/)|[^*])*\*\/\s*)?(export\s+)?(default\s+|declare\s+)?(interface|class)\s+([a-zA-Z0-9_<>]+)((\s+extends|\s+implements)(\s+[0-9a-zA-Z_\.]+(<[^>]+>)?))?\s*{/gm;
+// 1. [export ][default |declare ](class|interface) <NAME>[ extends| implements <BASECLASS|INTERFACES>] {...}
+var regClassInterface = /(\/\*(\*(?!\/)|[^*])*\*\/\s*)?(export\s+)?(default\s+|declare\s+)?(interface|class)\s+([a-zA-Z0-9_<>]+)((\s+extends|\s+implements)(,?\s+[0-9a-zA-Z_\.]+(<[^>]+>)?)+)?\s*{/gm;
 // 2. [export ][default |declare ]function <NAME>(...)[: <TYPE>];
 var regFunction = /(\/\*(\*(?!\/)|[^*])*\*\/\s*)?(export\s+)?(default\s+|declare\s+)?function\s+([a-zA-Z0-9_<>]+)\s*(\([^;]+;)/gm;
 // 3. [export ][default |declare ]const enum <NAME> {...}

@@ -1,6 +1,6 @@
 const CssHandlers = {
     object: (obj: any, result: string[]) => {
-        for (const key of obj) {
+        for (const key in obj) {
             if (obj[key]) {
                 result.push(key);
             }

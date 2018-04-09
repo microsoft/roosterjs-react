@@ -19,7 +19,7 @@
     "no-function-expression": false,
     "no-increment-decrement": false,
     "no-invalid-regexp": true,
-    "no-for-in": true,
+    "no-for-in": false,
     "no-missing-visibility-modifiers": false,
     "no-multiline-string": true,
     "no-multiple-var-decl": true,

@@ -1,8 +1,11 @@
 module.exports = {
-    entry: './sample/script/sample.tsx',
+    entry: {
+        'sample': './sample/script/sample.tsx',
+        'FocusOutShellSample': './sample/script/FocusOutShellSample'
+    },
     devtool: 'source-map',
     output: {
-        filename: 'sample.js',
+        filename: '[name].js',
         path: __dirname + '/sample/script',
         publicPath: '/sample/script/',
         sourceMapFilename: '[name].map'
@@ -24,7 +27,7 @@ module.exports = {
                 test: /\.svg$/,
                 loader: 'url-loader',
                 options: {
-                    mimetype: 'image/svg+xml'                        
+                    mimetype: 'image/svg+xml'
                 }
             },
             // {
@@ -41,7 +44,7 @@ module.exports = {
             //             loader: 'postcss-loader',
             //             options: {
             //                 plugins: loader => [
-            //                     autoprefixer({browsers: 'last 2 versions'}),
+            //                     autoprefixer({ browsers: 'last 2 versions' }),
             //                     inlineRtl,
             //                 ]
             //             }
