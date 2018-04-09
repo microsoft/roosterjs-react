@@ -27,19 +27,7 @@ export const OOB_COMMAND_BAR_ITEMS: IContextualMenuItem[] = [
         key: "bold",
         iconProps: getIconProps("Bold"),
         getChecked: (formatState: FormatState) => formatState.isBold,
-        handleChange: (editor: Editor) => toggleBold(editor),
-        items: [{
-            key: "italic",
-            iconProps: getIconProps("Italic"),
-            getChecked: (formatState: FormatState) => formatState.isItalic,
-            handleChange: (editor: Editor) => toggleItalic(editor)
-        },
-        {
-            key: "underline",
-            iconProps: getIconProps("Underline"),
-            getChecked: (formatState: FormatState) => formatState.isUnderline,
-            handleChange: (editor: Editor) => toggleUnderline(editor)
-        }]
+        handleChange: (editor: Editor) => toggleBold(editor)
     },
     {
         key: "italic",
