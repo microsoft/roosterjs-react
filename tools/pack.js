@@ -26,31 +26,16 @@ if (isAmd) {
     output.library = 'roosterjs';
 };
 
-var externals = {
-    "react": "react",
-    "react-dom": "react-dom",
-    "office-ui-fabric-react": "OfficeFabric",
-    "office-ui-fabric-react/lib/Button": "OfficeFabric/Button",
-    "office-ui-fabric-react/lib/Dialog": "OfficeFabric/Dialog",
-    "office-ui-fabric-react/lib/FocusZone": "OfficeFabric/FocusZone",
-    "office-ui-fabric-react/lib/ContextualMenu": "OfficeFabric/ContextualMenu",
-    "office-ui-fabric-react/lib/Callout": "OfficeFabric/Callout",
-    "office-ui-fabric-react/lib/Image": "OfficeFabric/Image",
-    "office-ui-fabric-react/lib/components/Button": "OfficeFabric/components/Button/Button",
-    "office-ui-fabric-react/lib/components/Dialog": "OfficeFabric/components/Dialog/Dialog",
-    "office-ui-fabric-react/lib/components/FocusZone": "OfficeFabric/components/FocusZone/FocusZone",
-    "office-ui-fabric-react/lib/components/ContextualMenu": "OfficeFabric/components/ContextualMenu/ContextualMenu",
-    "office-ui-fabric-react/lib/components/Callout": "OfficeFabric/components/Callout/Callout",
-    "office-ui-fabric-react/lib/components/Image": "OfficeFabric/components/Image/Image"
-};
+var externalMap = new Map([
+    ["react", "react"],
+    ["react-dom", "react-dom"],
+    ["office-ui-fabric-react", "OfficeFabric"],
+    [/^office-ui-fabric-react\/lib\/([^/]+)$/, "OfficeFabric/$1"],
+    [/^office-ui-fabric-react\/lib\/components\/([^/]+)$/, "OfficeFabric/components/$1/$1"],
+]);
 
 if (skipRooster) {
-    externals["roosterjs-plugin-image-resize"] = "roosterjs";
-    externals["roosterjs-editor-plugins"] = "roosterjs";
-    externals["roosterjs-editor-api"] = "roosterjs";
-    externals["roosterjs-editor-core"] = "roosterjs";
-    externals["roosterjs-editor-dom"] = "roosterjs";
-    externals["roosterjs-editor-types"] = "roosterjs";
+    externalMap.set(/^roosterjs\-(?!react).*$/, "roosterjs");
 }
 
 var webpackConfig = {
@@ -78,7 +63,18 @@ var webpackConfig = {
             }
         ]
     },
-    externals: externals,
+    externals: function (context, request, callback) {
+        for (const [key, value] of externalMap) {
+            if (key instanceof RegExp && key.test(request)) {
+                return callback(null, request.replace(key, value));
+            }
+            else if (request === key) {
+                return callback(null, value);
+            }
+        }
+
+        callback();
+    },
     stats: 'minimal',
     plugins: isProduction ? [
         new webpack.optimize.UglifyJsPlugin({
