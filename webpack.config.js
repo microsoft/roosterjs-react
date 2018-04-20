@@ -58,6 +58,9 @@ module.exports = {
     stats: "minimal",
     devServer: {
         host: "0.0.0.0", // This makes the server public so that others can test by http://hostname ...
-        port: 3000
+        port: 3003,
+        open: true,
+        openPage: "sample",
+        public: "localhost:3003"
     }
 }
