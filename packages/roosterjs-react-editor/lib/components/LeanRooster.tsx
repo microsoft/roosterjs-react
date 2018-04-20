@@ -4,6 +4,7 @@ import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-edit
 import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
 import EditorViewState from '../schema/EditorViewState';
+import './LeanRooster.scss.g';
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
 
