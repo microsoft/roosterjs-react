@@ -3,8 +3,8 @@ import { css, NullFunction } from 'roosterjs-react-common';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';
 import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
-
 import EditorViewState from '../schema/EditorViewState';
+import './LeanRooster.scss.g';
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
 
@@ -35,11 +35,22 @@ export interface LeanRoosterProps {
 export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {}> {
     private _contentDiv: HTMLDivElement;
     private _editor: Editor;
+    private _mode: LeanRoosterModes = LeanRoosterModes.View;
+    // Note: set react DIV up with an intial inner HTML, but don't change it afterwards otherwise
+    // react will recreate the elements defined by the inner HTML
+    private _initialContent: { __html: string } = undefined;
+
+    constructor(props: LeanRoosterProps) {
+        super(props);
+
+        const { viewState } = this.props;
+        const hasContent = viewState.content != null && viewState.content.length > 0;
+        this._initialContent = hasContent ? { __html: viewState.content } : undefined;
+    }
 
     public render(): JSX.Element {
-        const { className, isRtl, readonly, viewState } = this.props;
+        const { className, isRtl, readonly } = this.props;
 
-        const htmlContent = this._hasContent() ? { __html: viewState.content } : undefined;
         return <div
             className={css(
                 "lean-rooster",
@@ -56,7 +67,7 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
             style={ContentEditableDivStyle}
             suppressContentEditableWarning={true}
             tabIndex={0}
-            dangerouslySetInnerHTML={htmlContent} />;
+            dangerouslySetInnerHTML={this._initialContent} />;
     }
 
     public componentDidMount(): void {
@@ -69,7 +80,14 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
 
     public componentWillUnmount(): void {
         this.updateContentToViewState();
-        this._dispose();
+        if (this._editor) {
+            this._editor.dispose();
+            this._editor = null;
+        }
+    }
+
+    public shouldComponentUpdate(): boolean {
+        return false;
     }
 
     public updateContentToViewState(isInitializing?: boolean): void {
@@ -80,7 +98,7 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
     }
 
     public get mode(): LeanRoosterModes {
-        return this._editor ? LeanRoosterModes.Edit : LeanRoosterModes.View;
+        return this._mode;
     }
 
     public set mode(value: LeanRoosterModes) {
@@ -92,9 +110,10 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
         }
     }
 
-    private _hasContent(): boolean {
-        const { viewState } = this.props;
-        return viewState.content != null && viewState.content.length > 0;
+    public focus(): void {
+        if (this._editor) {
+            this._editor.focus();
+        }
     }
 
     private _getEditorOptions(): EditorOptions {
@@ -112,11 +131,12 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
         return { plugins, defaultFormat, undo, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */ };
     }
 
-    private _updateViewState(viewState: EditorViewState, content: string, isInitializing: boolean): void {
+    private _updateViewState = (viewState: EditorViewState, content: string, isInitializing: boolean): void => {
         if (viewState.content !== content) {
             viewState.content = content;
             if (!isInitializing) {
-                viewState.isDirty = true;
+                const originalContent = this._initialContent ? this._initialContent.__html : null;
+                viewState.isDirty = content !== originalContent;
             }
         }
     }
@@ -124,15 +144,18 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
     private _trySwithToEditMode(): boolean {
         const { readonly, onBeforeModeChange = NullFunction, onAfterModeChange = NullFunction } = this.props;
 
-        if (this._editor || readonly) {
+        if (this.mode === LeanRoosterModes.Edit || readonly) {
             return false;
         }
         if (onBeforeModeChange(LeanRoosterModes.Edit)) {
             return;
         }
+        const isInitializing = !this._editor;
+        if (isInitializing) {
+            this._editor = new Editor(this._contentDiv, this._getEditorOptions());
+        }
+        this._mode = LeanRoosterModes.Edit;
 
-        this._editor = new Editor(this._contentDiv, this._getEditorOptions());
-        const isInitializing = true;
         this.updateContentToViewState(isInitializing);
         this.forceUpdate();
         onAfterModeChange(LeanRoosterModes.Edit);
@@ -143,7 +166,7 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
     private _trySwitchToViewMode(): boolean {
         const { onBeforeModeChange = NullFunction, onAfterModeChange = NullFunction } = this.props;
 
-        if (!this._editor) {
+        if (this.mode === LeanRoosterModes.View) {
             return false;
         }
         if (onBeforeModeChange(LeanRoosterModes.View)) {
@@ -151,18 +174,11 @@ export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {
         }
 
         this.updateContentToViewState();
-        this._dispose();
+        this._mode = LeanRoosterModes.View;
         this.forceUpdate();
         onAfterModeChange(LeanRoosterModes.View);
 
         return true;
-    }
-
-    private _dispose(): void {
-        if (this._editor) {
-            this._editor.dispose();
-            this._editor = null;
-        }
     }
 
     private _onMouseDown = (ev: React.MouseEvent<HTMLDivElement>): void => {

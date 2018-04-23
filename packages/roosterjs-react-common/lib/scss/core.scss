@@ -1,0 +1,12 @@
+@keyframes roosterjsReactSpin {
+    0% { transform: rotateZ(0deg); }
+    100% { transform: rotateZ(360deg); }
+}
+
+.roosterjsReactSpinner {
+    animation-name: roosterjsReactSpin;
+    animation-duration: 1.3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: cubic-bezier(0.53, 0.21, 0.29, 0.67);
+    padding: 0 4px;
+}

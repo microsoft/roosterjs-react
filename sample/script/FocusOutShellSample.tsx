@@ -7,7 +7,8 @@ import {
     LeanRooster,
     LeanRoosterModes,
     RoosterCommandBar,
-    RoosterCommandBarPlugin
+    RoosterCommandBarPlugin,
+    PasteImagePlugin
 } from "roosterjs-react";
 
 function createEditor(name: string) {
@@ -22,6 +23,16 @@ function createEditor(name: string) {
 
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
     const commandBarPlugin = new RoosterCommandBarPlugin();
+
+    const imagePlugin = new PasteImagePlugin({
+        uploadImage: (dataUrl: string) => {
+            return new Promise<string>((resolve, reject) => {
+                const timeoutMs = Math.random() * 5000;
+                console.log(`Imitating uploading... (${timeoutMs}ms)`);
+                window.setTimeout(() => resolve(dataUrl), timeoutMs);
+            });
+        }
+    });
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
@@ -41,7 +52,7 @@ function createEditor(name: string) {
             <LeanRooster
                 key="rooster"
                 viewState={leanRoosterViewState}
-                plugins={[commandBarPlugin]}
+                plugins={[commandBarPlugin, imagePlugin]}
                 ref={leanRoosterOnRef}
                 contentDivRef={leanRoosterContentDivOnRef} />,
             <RoosterCommandBar
