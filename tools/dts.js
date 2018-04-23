@@ -4,7 +4,7 @@ var path = require('path');
 var exec = require('child_process').execSync;
 var namePlaceholder = '__NAME__';
 var regExportFrom = /export([^;]+)from\s+'([^']+)';/gm;
-var regImportFrom = /import[^;]+from[^;]+;/gm;
+var regImportFrom = /import[^;]+(from)?[^;]+;/gm;
 var singleLineComment = /\/\/[^\n]*\n/g;
 var multiLineComment = /(^\/\*(\*(?!\/)|[^*])*\*\/\s*)/m;
 
