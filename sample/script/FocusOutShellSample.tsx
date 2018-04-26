@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDom from "react-dom";
 import {
     createEditorViewState,
+    EditorViewState,
     FocusEventHandler,
     FocusOutShell,
     LeanRooster,
@@ -11,12 +12,20 @@ import {
     PasteImagePlugin
 } from "roosterjs-react";
 
-function createEditor(name: string) {
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+initializeIcons();
+
+function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
     const leanRoosterContentDivOnRef = (ref: HTMLDivElement) => leanRoosterContentDiv = ref;
 
     let leanRooster: LeanRooster;
-    const leanRoosterOnRef = (ref: LeanRooster) => leanRooster = ref;
+    const leanRoosterOnRef = (ref: LeanRooster) => {
+        leanRooster = ref;
+        if (onRef) {
+            onRef(ref, leanRoosterViewState);
+        }
+    }
 
     let commandBar: RoosterCommandBar;
     const commandBarOnRef = (ref: RoosterCommandBar) => commandBar = ref;
@@ -65,10 +74,21 @@ function createEditor(name: string) {
     />;
 }
 
+const secondEditorOnRef = (ref: LeanRooster, state: EditorViewState) => {
+    setTimeout(() => {
+        state.content += " changed via reloadContent()";
+        ref.reloadContent();
+    }, 2000);
+
+    setTimeout(() => {
+        state.content += " changed via reloadContent() again";
+        ref.reloadContent();
+    }, 4000);
+}
 const view = <div className="root-container">
     <div className="editor-container">
         {createEditor("editor #1")}
-        {createEditor("editor #2")}
+        {createEditor("editor #2", secondEditorOnRef)}
     </div>
 </div>;
 
