@@ -125,12 +125,12 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
     }
 
     private _onCommandBarItemClick = (item: OutOfBoxCommandBarItem | IContextualMenuItem) => {
-        const { roosterCommandBarPlugin, strings } = this.props;
+        const { roosterCommandBarPlugin } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
         if (editor && item.handleChange) {
             const outOfBoxItem: OutOfBoxCommandBarItem = item;
-            outOfBoxItem.handleChange(editor, this.props, this.state, strings);
+            outOfBoxItem.handleChange(editor, this.props, this.state);
         }
 
         // special case photo

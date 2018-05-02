@@ -29,7 +29,7 @@ export const RoosterCommandBarStringKeys = {
 };
 
 export interface OutOfBoxCommandBarItem extends ICommandBarItemProps {
-    handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState, strings?: { [key: string]: string }) => void;
+    handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => void;
     getSelected?: (formatState: FormatState) => boolean;
     getChecked?: (formatState: FormatState) => boolean;
 }
@@ -122,7 +122,9 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         name: "Link",
         iconProps: _getIconProps("Link"),
         getSelected: (formatState: FormatState) => formatState.isNumbering,
-        handleChange: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState, strings?: { [key: string]: string }) => {
+        handleChange: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => {
+            const { strings } = props;
+
             let message = "Enter address";
             if (strings) {
                 message = strings[RoosterCommandBarStringKeys.LinkPrompt] || message;
