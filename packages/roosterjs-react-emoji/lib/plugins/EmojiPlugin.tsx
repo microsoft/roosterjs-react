@@ -125,10 +125,8 @@ export default class EmojiPlugin implements EditorPlugin {
         let wordBeforeCursor = this.getWordBeforeCursor(event);
         switch (keyboardEvent.which) {
             case Key.Enter:
-                if (selectedEmoji && !selectedEmoji.codePoint) {
-                    this.handleEventOnKeyDown(event);
-                    this.pane.showFullPicker(wordBeforeCursor);
-                } else {
+                // check if selection is on the "..." and show full picker if so, otherwise try to apply emoji
+                if (!this.tryShowFullPicker(event, selectedEmoji)) {
                     // If the timer is not null, that means we have a search queued.
                     // We don't have the latest search results for the word before the cursor yet
                     // Check to see if the word before the cursor matches a shortcut first
@@ -140,7 +138,12 @@ export default class EmojiPlugin implements EditorPlugin {
                 }
                 break;
             case Key.Space:
-                // We only want to insert on space if the word before the cursor is a shrotcut
+                // check if selection is on the "..." and show full picker if so, otherwise try to apply emoji
+                if (this.tryShowFullPicker(event, selectedEmoji)) {
+                    break;
+                }
+
+                // We only want to insert on space if the word before the cursor is a shortcut
                 // If the timer is not null, that means we have a search queued.
                 // Check to see is the word before the cursor matches a shortcut first
                 // Otherwise if the search completed and it is a shortcut, insert the first item
@@ -163,6 +166,17 @@ export default class EmojiPlugin implements EditorPlugin {
         if (emoji && (this.canUndoEmoji = this.insertEmoji(emoji, wordBeforeCursor))) {
             this.handleEventOnKeyDown(event);
         }
+    }
+
+    private tryShowFullPicker(event: PluginDomEvent, selectedEmoji: Emoji): boolean {
+        if (selectedEmoji && !selectedEmoji.codePoint) {
+            const wordBeforeCursor = this.getWordBeforeCursor(event);
+            this.handleEventOnKeyDown(event);
+            this.pane.showFullPicker(wordBeforeCursor);
+            return true;
+        }
+
+        return false;
     }
 
     /**
