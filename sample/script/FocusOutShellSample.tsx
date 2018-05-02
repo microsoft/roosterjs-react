@@ -70,7 +70,6 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     ref={leanRoosterOnRef}
                     contentDivRef={leanRoosterContentDivOnRef} />,
                 <RoosterCommandBar
-                    className={name.replace(" #", "")}
                     key="cmd"
                     roosterCommandBarPlugin={commandBarPlugin}
                     emojiPlugin={emojiPlugin}

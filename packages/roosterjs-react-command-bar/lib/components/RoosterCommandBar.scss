@@ -17,7 +17,7 @@
         font-size: 21px;
         font-weight: bold;
     }
-    
+
     .rooster-command-bar-header3 span {
         font-size: 16px;
         font-weight: bold;
@@ -27,25 +27,25 @@
         padding: 2px;
         background: #fff;
         overflow: hidden;
-    
+
         & ul {
             width: 192px;
         }
     }
-    
+
     .rooster-command-bar-color-item {
         display: inline-block;
         width: 32px;
         height: 32px;
         background: #fff;
-    
+
         & button {
             padding: 0;
             min-width: 0;
             border: 0;
         }
     }
-    
+
     .rooster-command-bar-color-cell {
         width: 20px;
         height: 20px;
@@ -57,7 +57,7 @@
         @media screen and (-ms-high-contrast: active) {
             border-color: Background;
         }
-    
+
         &:hover,
         &:focus {
             border-color: red;
