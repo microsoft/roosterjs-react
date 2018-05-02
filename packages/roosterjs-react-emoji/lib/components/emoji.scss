@@ -5,20 +5,15 @@
 }
 
 .emoji {
-    width: 32px;
-    height: 32px;
-    padding: 0 2px;
     &.selected {
         background-color: #ccc;
-        border-radius: 4px;
+    }
+
+    div {
+        font-size: 18px;
     }
 }
 
 .header {
     border-bottom: solid 1px #aaa;
-}
-
-.searchBox {
-    width: 240px;
-    outline: none;
 }

@@ -1,0 +1,66 @@
+:global {
+    .rooster-command-bar {
+        .is-selected {
+            background: #eaeaea;
+        }
+        .rooster-command-bar-icon {
+            color: #333;
+        }
+    }
+
+    .rooster-command-bar-header1 span {
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .rooster-command-bar-header2 span {
+        font-size: 21px;
+        font-weight: bold;
+    }
+    
+    .rooster-command-bar-header3 span {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .rooster-command-bar-color-container {
+        padding: 2px;
+        background: #fff;
+        overflow: hidden;
+    
+        & ul {
+            width: 192px;
+        }
+    }
+    
+    .rooster-command-bar-color-item {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: #fff;
+    
+        & button {
+            padding: 0;
+            min-width: 0;
+            border: 0;
+        }
+    }
+    
+    .rooster-command-bar-color-cell {
+        width: 20px;
+        height: 20px;
+        margin: 4px;
+        border-style: solid;
+        border-width: 2px;
+        border-color: transparent;
+
+        @media screen and (-ms-high-contrast: active) {
+            border-color: Background;
+        }
+    
+        &:hover,
+        &:focus {
+            border-color: red;
+        }
+    }
+}

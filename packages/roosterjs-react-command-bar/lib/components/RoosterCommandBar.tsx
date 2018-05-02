@@ -1,38 +1,30 @@
 import * as React from 'react';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
-// TODO-1 import { CommandBar, ICommandBarItemProps } from '@uifabric/experiments/lib/CommandBar';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { createFormatState } from 'roosterjs-react-editor';
 import { Editor } from 'roosterjs-editor-core';
-import { FormatState } from 'roosterjs-editor-types';
+import { ChangeSource, FormatState } from 'roosterjs-editor-types';
 import { getFormatState } from 'roosterjs-editor-api';
-import { OOB_COMMAND_BAR_ITEMS, OOB_COMMAND_BAR_ITEM_MAP } from '../utils/OutOfBoxCommands';
-import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
+import { OutOfBoxCommandBarItems, OutOfBoxCommandBarItemMap, OutOfBoxCommandBarItem } from '../utils/OutOfBoxCommandBarItem';
+import { RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { insertImage } from 'roosterjs-editor-api';
 
-export interface RoosterCommandBarProps {
-    buttonNames?: { [key: string]: string };
-    className?: string;
-    roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
-    visibleButtonKeys?: string[];
-    calloutClassName?: string;
-    calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
-}
+import './RoosterCommandBar.scss.g';
 
-export interface RoosterCommandBarState {
-    formatState: FormatState;
-}
+const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
 
 export default class RoosterCommandBar extends React.Component<RoosterCommandBarProps, RoosterCommandBarState> {
     private _buttonKeys: string[];
     private _async: Async;
     private _updateFormatStateDebounced: () => void;
+    private _fileInput: HTMLInputElement;
 
     constructor(props: RoosterCommandBarProps) {
         super(props);
 
         this.state = { formatState: createFormatState() };
-        this._buttonKeys = props.visibleButtonKeys || OOB_COMMAND_BAR_ITEMS.map(item => item.key);
+        this._buttonKeys = props.visibleButtonKeys || OutOfBoxCommandBarItems.map(item => item.key);
         this._async = new Async();
         this._updateFormatStateDebounced = this._async.debounce(() => this._updateFormatState(), 100);
     }
@@ -43,24 +35,25 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         return (
             <div className={css("rooster-command-bar", className)}>
                 <CommandBar
-                    // TODO-1 update experimental OfficeFabric CommandBar
-                    /* overflowItemProps={{ menuClassName: calloutClassName, onAfterMenuDismiss: calloutOnDismiss, } as IOverflowItemProps} */
-                    className={css("command-bar")}
+                    className={"command-bar"}
                     items={this._buttonKeys
-                        .map(key => this._getMenuItem(OOB_COMMAND_BAR_ITEM_MAP[key]))
+                        .map(key => this._getMenuItem(OutOfBoxCommandBarItemMap[key]))
                         .filter(menuItem => !!menuItem)}
                 />
+                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
         );
     }
 
     public componentDidMount(): void {
         const { roosterCommandBarPlugin } = this.props;
+
         roosterCommandBarPlugin.registerRoosterCommandBar(this);
     }
 
     public componentWillUnmount(): void {
         const { roosterCommandBarPlugin } = this.props;
+
         roosterCommandBarPlugin.unregisterRoosterCommandBar(this);
 
         if (this._async) {
@@ -73,39 +66,78 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         this._updateFormatStateDebounced();
     }
 
-    private _getMenuItem(commandBarItem: IContextualMenuItem): IContextualMenuItem {
+    private _fileInputOnRef = (ref: HTMLInputElement): void => {
+        this._fileInput = ref;
+    }
+
+    private _fileInputOnChange = (): void => {
+        const { roosterCommandBarPlugin, imageManager } = this.props;
+
+        const editor: Editor = roosterCommandBarPlugin.getEditor();
+        const file = this._fileInput.files[0];
+        if (editor && !editor.isDisposed() && file) {
+            if (imageManager) {
+                const placeholder = imageManager.upload(editor, file);
+                editor.insertNode(placeholder);
+                editor.triggerContentChangedEvent(ChangeSource.Format);
+                editor.addUndoSnapshot();
+            } else {
+                insertImage(editor, file);
+            }
+            this._fileInput.value = "";
+        }
+    }
+
+    private _getMenuItem = (commandBarItem: OutOfBoxCommandBarItem): IContextualMenuItem => {
         if (!commandBarItem) {
             return null;
         }
 
-        const { buttonNames } = this.props;
+        const { strings, calloutClassName, calloutOnDismiss } = this.props;
         const { formatState } = this.state;
         const item = { ...commandBarItem }; // make a copy of the OOB item template
 
         if (item.getChecked) {
             item.checked = item.getChecked(formatState);
-            item.className = css({ "is-checked": item.checked });
+        }
+        if (item.getSelected) {
+            item.className = css({ "is-selected": item.getSelected(formatState) });
         }
         if (item.getDisabled) {
             item.disabled = item.getDisabled(formatState);
         }
         item.onClick = this._onCommandBarItemClick.bind(this, item);
         item.iconOnly = true;
-        if (buttonNames) {
-            item.name = buttonNames[item.key];
+        if (strings) {
+            item.name = strings[item.key];
+        }
+        if (item.name && item.title == null) {
             item.title = item.name;
+        }
+        if (item.subMenuProps && item.subMenuProps.items) {
+            item.subMenuProps = { ...item.subMenuProps };
+            item.subMenuProps.items = item.subMenuProps.items.map(this._getMenuItem);
+            item.subMenuProps.calloutProps = { className: calloutClassName };
+            item.subMenuProps.onDismiss = calloutOnDismiss;
         }
 
         return item;
     }
 
-    private _onCommandBarItemClick = (item: IContextualMenuItem) => {
-        const { roosterCommandBarPlugin } = this.props;
+    private _onCommandBarItemClick = (item: OutOfBoxCommandBarItem | IContextualMenuItem) => {
+        const { roosterCommandBarPlugin, strings } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
         if (editor && item.handleChange) {
-            item.handleChange(editor);
+            const outOfBoxItem: OutOfBoxCommandBarItem = item;
+            outOfBoxItem.handleChange(editor, this.props, this.state, strings);
         }
+
+        // special case photo
+        if (item.key === "photo") {
+            this._fileInput.click();
+        }
+
         this._updateFormatState();
     };
 
@@ -121,6 +153,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
 
     private _isFormatStateChanged(newState: FormatState): boolean {
         const { formatState } = this.state;
+
         for (const key in formatState) {
             if (formatState[key] !== newState[key]) {
                 return true;

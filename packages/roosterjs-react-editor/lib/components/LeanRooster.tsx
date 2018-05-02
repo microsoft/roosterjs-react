@@ -32,7 +32,7 @@ export interface LeanRoosterProps {
     viewState: EditorViewState;
 }
 
-export default class LeanRooster extends React.PureComponent<LeanRoosterProps, {}> {
+export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _contentDiv: HTMLDivElement;
     private _editor: Editor;
     private _mode: LeanRoosterModes = LeanRoosterModes.View;

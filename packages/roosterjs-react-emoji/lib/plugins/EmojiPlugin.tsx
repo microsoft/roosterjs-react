@@ -43,7 +43,7 @@ export default class EmojiPlugin implements EditorPlugin {
     private canUndoEmoji: boolean;
     private timer: number;
 
-    constructor(private strings?: Strings) {}
+    constructor(private strings?: Strings, private calloutClassName?: string, private onCalloutDismiss?: (ev?: any) => void) { }
 
     initialize(editor: Editor) {
         this.editor = editor;
@@ -297,12 +297,12 @@ export default class EmojiPlugin implements EditorPlugin {
         let gap = (cursorRect.bottom - cursorRect.top) / 2 + 5;
         return (
             <Callout
-                targetPoint={point}
-                useTargetPoint={true}
+                className={this.calloutClassName}
+                target={point}
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 isBeakVisible={false}
                 gapSpace={gap}
-                onDismiss={() => this.setIsSuggesting(false)}>
+                onDismiss={this.onCalloutDismissInternal}>
                 <EmojiPane
                     ref={ref => (this.pane = ref)}
                     onSelect={this.onSelectFromPane}
@@ -310,6 +310,13 @@ export default class EmojiPlugin implements EditorPlugin {
                 />
             </Callout>
         );
+    }
+
+    private onCalloutDismissInternal = (ev?: any): void => {
+        this.setIsSuggesting(false);
+        if (this.onCalloutDismiss) {
+            this.onCalloutDismiss(ev);
+        }
     }
 
     private tryPatchEmojiFont() {

@@ -2,7 +2,9 @@
   "name": "roosterjs-react-command-bar",
   "description": "CommandBar (Office Fabric) for roosterjs-react editor",
   "dependencies": {
-    "roosterjs-react-editor": ""
+    "roosterjs-react-common": "",
+    "roosterjs-react-editor": "",
+    "roosterjs-react-emoji": ""
   },
   "main": "./lib/index.ts"
 }
