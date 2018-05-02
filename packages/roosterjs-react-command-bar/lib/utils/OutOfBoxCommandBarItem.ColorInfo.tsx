@@ -59,10 +59,10 @@ export const HighlightColorInfoList = [
     { title: "Black", color: "#000000" },
 ] as ColorInfo[];
 
-function _setName(color: ColorInfo): void {
+function _setKey(color: ColorInfo): void {
     const { title } = color;
     color.key = title.substr(0, 1).toLowerCase() + title.substr(1).replace(/\s/g, "");
 }
 
-FontColorInfoList.forEach(_setName);
-HighlightColorInfoList.forEach(_setName);
+FontColorInfoList.forEach(_setKey);
+HighlightColorInfoList.forEach(_setKey);
