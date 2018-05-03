@@ -1,18 +1,22 @@
 import * as React from "react";
 import * as ReactDom from "react-dom";
 import {
-    createEditorViewState,
     EditorViewState,
     FocusEventHandler,
     FocusOutShell,
+    ImageManager,
+    ImageManagerOptions,
     LeanRooster,
     LeanRoosterModes,
+    PasteImagePlugin,
     RoosterCommandBar,
     RoosterCommandBarPlugin,
-    PasteImagePlugin
+    createEditorViewState,
+    EmojiPlugin,
 } from "roosterjs-react";
 
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import { emoji } from '../../packages/roosterjs-react-emoji/lib/components/emoji.scss.g';
 initializeIcons();
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
@@ -30,18 +34,16 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     let commandBar: RoosterCommandBar;
     const commandBarOnRef = (ref: RoosterCommandBar) => commandBar = ref;
 
+    const imageManager = new ImageManager({
+        uploadImage: (dataUrl: string) => new Promise<string>((resolve, reject) => {
+            const timeoutMs = Math.random() * 5000;
+            console.log(`Imitating uploading... (${timeoutMs}ms)`);
+            window.setTimeout(() => resolve(dataUrl), timeoutMs);
+        })
+    } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
     const commandBarPlugin = new RoosterCommandBarPlugin();
-
-    const imagePlugin = new PasteImagePlugin({
-        uploadImage: (dataUrl: string) => {
-            return new Promise<string>((resolve, reject) => {
-                const timeoutMs = Math.random() * 5000;
-                console.log(`Imitating uploading... (${timeoutMs}ms)`);
-                window.setTimeout(() => resolve(dataUrl), timeoutMs);
-            });
-        }
-    });
+    const imagePlugin = new PasteImagePlugin(imageManager);
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
@@ -52,25 +54,31 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
         console.log(`FocusOutShell (${name}) lost focus`);
         leanRooster.mode = LeanRoosterModes.View;
     };
+    let emojiPlugin: EmojiPlugin = null;
 
     return <FocusOutShell
         allowMouseDown={focusOutShellAllowMouseDown}
         onBlur={focusOutShellOnBlur}
         onFocus={focusOutShellOnFocus}
-        onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => [
-            <LeanRooster
-                key="rooster"
-                viewState={leanRoosterViewState}
-                plugins={[commandBarPlugin, imagePlugin]}
-                ref={leanRoosterOnRef}
-                contentDivRef={leanRoosterContentDivOnRef} />,
-            <RoosterCommandBar
-                key="cmd"
-                roosterCommandBarPlugin={commandBarPlugin}
-                calloutClassName={calloutClassName}
-                calloutOnDismiss={calloutOnDismiss}
-                ref={commandBarOnRef} />
-        ]}
+        onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
+            emojiPlugin = emojiPlugin || new EmojiPlugin(null, calloutClassName, calloutOnDismiss);
+            return [
+                <LeanRooster
+                    key="rooster"
+                    viewState={leanRoosterViewState}
+                    plugins={[commandBarPlugin, imagePlugin, emojiPlugin]}
+                    ref={leanRoosterOnRef}
+                    contentDivRef={leanRoosterContentDivOnRef} />,
+                <RoosterCommandBar
+                    key="cmd"
+                    roosterCommandBarPlugin={commandBarPlugin}
+                    emojiPlugin={emojiPlugin}
+                    calloutClassName={calloutClassName}
+                    calloutOnDismiss={calloutOnDismiss}
+                    imageManager={imageManager}
+                    ref={commandBarOnRef} />
+            ];
+        }}
     />;
 }
 

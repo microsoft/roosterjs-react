@@ -6,6 +6,7 @@ import emojiList, { EmojiFamily, commonEmojis, moreEmoji } from '../utils/emojiL
 import { Strings } from '../strings/emojiStrings';
 import { searchEmojis } from '../utils/searchEmojis';
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
 
 export interface EmojiPaneState {
     index: number;
@@ -22,7 +23,7 @@ export interface EmojiPaneProps {
 }
 
 export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPaneState> {
-    private searchBox: HTMLInputElement;
+    private searchBox: TextField;
 
     constructor(props: EmojiPaneProps) {
         super(props);
@@ -44,9 +45,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
         let newIndex = this.state.index + change;
         let length = this.state.emojis.length;
         if (newIndex >= 0 && newIndex < length) {
-            this.setState({
-                index: newIndex,
-            });
+            this.setState({ index: newIndex });
         }
     }
 
@@ -102,25 +101,19 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
         return (
             <div>
                 <div>
-                    <input
-                        className={Styles.searchBox}
-                        type={'text'}
-                        ref={this.searchRefCallback}
-                        value={this.state.searchInBox}
-                        onChange={this.onSearchChange}
-                    />
+                    <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} />
                 </div>
                 <FocusZone className={Styles.emojiPane}>
                     {this.state.emojis
                         ? this.state.emojis.map((emoji, index) => (
-                              <EmojiIcon
-                                  key={emoji.key}
-                                  strings={this.props.strings}
-                                  emoji={emoji}
-                                  isSelected={false}
-                                  onClick={e => this.onSelect(e, emoji)}
-                              />
-                          ))
+                            <EmojiIcon
+                                key={emoji.key}
+                                strings={this.props.strings}
+                                emoji={emoji}
+                                isSelected={false}
+                                onClick={e => this.onSelect(e, emoji)}
+                            />
+                        ))
                         : this.renderFullList()}
                 </FocusZone>
             </div>
@@ -156,20 +149,19 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
         );
     }
 
-    private searchRefCallback = (ref: HTMLInputElement) => {
+    private searchRefCallback = (ref: TextField) => {
         this.searchBox = ref;
         if (this.searchBox) {
             this.searchBox.focus();
-            this.searchBox.selectionStart = this.searchBox.value.length;
+            this.searchBox.setSelectionStart(this.searchBox.value.length);
         }
     };
 
-    private onSearchChange = () => {
-        let search = this.searchBox.value;
+    private onSearchChange = (newValue: string) => {
         this.setState({
             index: 0,
-            emojis: this.getSearchResult(search, this.state.isFullPicker),
-            searchInBox: search,
+            emojis: this.getSearchResult(newValue, this.state.isFullPicker),
+            searchInBox: newValue,
         });
     };
 
