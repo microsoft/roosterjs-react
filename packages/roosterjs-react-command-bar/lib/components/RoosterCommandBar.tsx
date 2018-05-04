@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
+import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { createFormatState } from 'roosterjs-react-editor';
 import { Editor } from 'roosterjs-editor-core';
@@ -40,7 +41,13 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
                         .map(key => this._getMenuItem(OutOfBoxCommandBarItemMap[key]))
                         .filter(menuItem => !!menuItem)}
                 />
-                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
+                <input
+                    type="file"
+                    ref={this._fileInputOnRef}
+                    accept="image/*"
+                    style={DisplayNoneStyle}
+                    onChange={this._fileInputOnChange}
+                />
             </div>
         );
     }
@@ -68,7 +75,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
 
     private _fileInputOnRef = (ref: HTMLInputElement): void => {
         this._fileInput = ref;
-    }
+    };
 
     private _fileInputOnChange = (): void => {
         const { roosterCommandBarPlugin, imageManager } = this.props;
@@ -86,7 +93,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
             }
             this._fileInput.value = "";
         }
-    }
+    };
 
     private _getMenuItem = (commandBarItem: OutOfBoxCommandBarItem): IContextualMenuItem => {
         if (!commandBarItem) {
@@ -117,12 +124,12 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         if (item.subMenuProps && item.subMenuProps.items) {
             item.subMenuProps = { ...item.subMenuProps };
             item.subMenuProps.items = item.subMenuProps.items.map(this._getMenuItem);
-            item.subMenuProps.calloutProps = { className: calloutClassName };
+            item.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
             item.subMenuProps.onDismiss = calloutOnDismiss;
         }
 
         return item;
-    }
+    };
 
     private _onCommandBarItemClick = (item: OutOfBoxCommandBarItem | IContextualMenuItem) => {
         const { roosterCommandBarPlugin } = this.props;
@@ -149,7 +156,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         if (formatState && this._isFormatStateChanged(formatState)) {
             this.setState({ formatState });
         }
-    }
+    };
 
     private _isFormatStateChanged(newState: FormatState): boolean {
         const { formatState } = this.state;

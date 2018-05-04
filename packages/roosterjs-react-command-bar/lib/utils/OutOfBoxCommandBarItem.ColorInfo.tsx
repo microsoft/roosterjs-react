@@ -51,7 +51,7 @@ export const HighlightColorInfoList = [
     { title: "Light Orange", color: "#ffc080" },
     { title: "Light Red", color: "#ff8080" },
     { title: "Light Magenta", color: "#ff80ff" },
-    { title: "White", color: "#ffffff", borderColor: "#bebebe" },
+    { title: "White", color: "#ffffff", cellBorderColor: "#bebebe" },
     { title: "Light Gray", color: "#cccccc" },
     { title: "Gray", color: "#999999" },
     { title: "Dark Gray", color: "#666666" },

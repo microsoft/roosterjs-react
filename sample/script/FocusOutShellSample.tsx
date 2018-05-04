@@ -12,16 +12,17 @@ import {
     RoosterCommandBar,
     RoosterCommandBarPlugin,
     createEditorViewState,
-    EmojiPlugin,
+    EmojiPlugin
 } from "roosterjs-react";
 
-import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
-import { emoji } from '../../packages/roosterjs-react-emoji/lib/components/emoji.scss.g';
+import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
+import { emoji } from "../../packages/roosterjs-react-emoji/lib/components/emoji.scss.g";
+import UndoWithImagePlugin from "../../packages/roosterjs-react-common/lib/plugins/UndoWithImagePlugin";
 initializeIcons();
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
-    const leanRoosterContentDivOnRef = (ref: HTMLDivElement) => leanRoosterContentDiv = ref;
+    const leanRoosterContentDivOnRef = (ref: HTMLDivElement) => (leanRoosterContentDiv = ref);
 
     let leanRooster: LeanRooster;
     const leanRoosterOnRef = (ref: LeanRooster) => {
@@ -29,23 +30,31 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
         if (onRef) {
             onRef(ref, leanRoosterViewState);
         }
-    }
+    };
 
     let commandBar: RoosterCommandBar;
-    const commandBarOnRef = (ref: RoosterCommandBar) => commandBar = ref;
+    const commandBarOnRef = (ref: RoosterCommandBar) => (commandBar = ref);
 
     const imageManager = new ImageManager({
-        uploadImage: (dataUrl: string) => new Promise<string>((resolve, reject) => {
-            const timeoutMs = Math.random() * 5000;
-            console.log(`Imitating uploading... (${timeoutMs}ms)`);
-            window.setTimeout(() => resolve(dataUrl), timeoutMs);
-        })
+        uploadImage: (image: File) =>
+            new Promise<string>((resolve, reject) => {
+                const timeoutMs = Math.random() * 5000;
+                console.log(`Imitating uploading... (${timeoutMs}ms)`);
+
+                const reader = new FileReader();
+                reader.onload = (event: ProgressEvent) => {
+                    const dataURL: string = (event.target as FileReader).result;
+                    window.setTimeout(() => resolve(dataURL), timeoutMs);
+                };
+                reader.readAsDataURL(image);
+            })
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
     const commandBarPlugin = new RoosterCommandBarPlugin();
     const imagePlugin = new PasteImagePlugin(imageManager);
 
-    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
+    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
+        leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
@@ -56,30 +65,35 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     };
     let emojiPlugin: EmojiPlugin = null;
 
-    return <FocusOutShell
-        allowMouseDown={focusOutShellAllowMouseDown}
-        onBlur={focusOutShellOnBlur}
-        onFocus={focusOutShellOnFocus}
-        onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
-            emojiPlugin = emojiPlugin || new EmojiPlugin(null, calloutClassName, calloutOnDismiss);
-            return [
-                <LeanRooster
-                    key="rooster"
-                    viewState={leanRoosterViewState}
-                    plugins={[commandBarPlugin, imagePlugin, emojiPlugin]}
-                    ref={leanRoosterOnRef}
-                    contentDivRef={leanRoosterContentDivOnRef} />,
-                <RoosterCommandBar
-                    key="cmd"
-                    roosterCommandBarPlugin={commandBarPlugin}
-                    emojiPlugin={emojiPlugin}
-                    calloutClassName={calloutClassName}
-                    calloutOnDismiss={calloutOnDismiss}
-                    imageManager={imageManager}
-                    ref={commandBarOnRef} />
-            ];
-        }}
-    />;
+    return (
+        <FocusOutShell
+            allowMouseDown={focusOutShellAllowMouseDown}
+            onBlur={focusOutShellOnBlur}
+            onFocus={focusOutShellOnFocus}
+            onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
+                emojiPlugin = emojiPlugin || new EmojiPlugin(null, calloutClassName, calloutOnDismiss);
+                return [
+                    <LeanRooster
+                        key="rooster"
+                        viewState={leanRoosterViewState}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin]}
+                        undo={new UndoWithImagePlugin(imageManager)}
+                        ref={leanRoosterOnRef}
+                        contentDivRef={leanRoosterContentDivOnRef}
+                    />,
+                    <RoosterCommandBar
+                        key="cmd"
+                        roosterCommandBarPlugin={commandBarPlugin}
+                        emojiPlugin={emojiPlugin}
+                        calloutClassName={calloutClassName}
+                        calloutOnDismiss={calloutOnDismiss}
+                        imageManager={imageManager}
+                        ref={commandBarOnRef}
+                    />
+                ];
+            }}
+        />
+    );
 }
 
 const secondEditorOnRef = (ref: LeanRooster, state: EditorViewState) => {
@@ -92,12 +106,14 @@ const secondEditorOnRef = (ref: LeanRooster, state: EditorViewState) => {
         state.content += " changed via reloadContent() again";
         ref.reloadContent();
     }, 4000);
-}
-const view = <div className="root-container">
-    <div className="editor-container">
-        {createEditor("editor #1")}
-        {createEditor("editor #2", secondEditorOnRef)}
+};
+const view = (
+    <div className="root-container">
+        <div className="editor-container">
+            {createEditor("editor #1")}
+            {createEditor("editor #2", secondEditorOnRef)}
+        </div>
     </div>
-</div>;
+);
 
 ReactDom.render(view, document.getElementById("container"), null);
