@@ -14,17 +14,18 @@ import './RoosterCommandBar.scss.g';
 
 const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
 
-export default class RoosterCommandBar extends React.Component<RoosterCommandBarProps, RoosterCommandBarState> {
-    private _buttonKeys: string[];
+export default class RoosterCommandBar extends React.PureComponent<RoosterCommandBarProps, RoosterCommandBarState> {
     private _async: Async;
     private _updateFormatStateDebounced: () => void;
     private _fileInput: HTMLInputElement;
+    private _buttonKeys: string[];
 
     constructor(props: RoosterCommandBarProps) {
         super(props);
 
         this.state = { formatState: createFormatState() };
-        this._buttonKeys = props.visibleButtonKeys || OutOfBoxCommandBarItems.map(item => item.key);
+        this._initButtonKeys(props);
+
         this._async = new Async();
         this._updateFormatStateDebounced = this._async.debounce(() => this._updateFormatState(), 100);
     }
@@ -32,15 +33,17 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
     public render(): JSX.Element {
         const { className } = this.props;
 
+        const items = this._createItems(); // with the newest changes on the editor, get create the latest items
         return (
             <div className={css("rooster-command-bar", className)}>
-                <CommandBar
-                    className={"command-bar"}
-                    items={this._buttonKeys
-                        .map(key => this._getMenuItem(OutOfBoxCommandBarItemMap[key]))
-                        .filter(menuItem => !!menuItem)}
+                <CommandBar className={"command-bar"} items={items} />
+                <input
+                    type="file"
+                    ref={this._fileInputOnRef}
+                    accept="image/*"
+                    style={DisplayNoneStyle}
+                    onChange={this._fileInputOnChange}
                 />
-                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
         );
     }
@@ -62,13 +65,25 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         }
     }
 
+    public componentWillUpdate(nextProps: RoosterCommandBarProps, nextState: RoosterCommandBarState) {
+        this._initButtonKeys(nextProps);
+    }
+
     public refreshFormatState(): void {
         this._updateFormatStateDebounced();
     }
 
+    private _initButtonKeys(props: RoosterCommandBarProps): void {
+        this._buttonKeys = props.visibleButtonKeys || OutOfBoxCommandBarItems.map(item => item.key);
+    }
+
+    private _createItems(): IContextualMenuItem[] {
+        return this._buttonKeys.map(key => this._getMenuItem(OutOfBoxCommandBarItemMap[key])).filter(menuItem => !!menuItem);
+    }
+
     private _fileInputOnRef = (ref: HTMLInputElement): void => {
         this._fileInput = ref;
-    }
+    };
 
     private _fileInputOnChange = (): void => {
         const { roosterCommandBarPlugin, imageManager } = this.props;
@@ -86,7 +101,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
             }
             this._fileInput.value = "";
         }
-    }
+    };
 
     private _getMenuItem = (commandBarItem: OutOfBoxCommandBarItem): IContextualMenuItem => {
         if (!commandBarItem) {
@@ -108,7 +123,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         }
         item.onClick = this._onCommandBarItemClick.bind(this, item);
         item.iconOnly = true;
-        if (strings) {
+        if (strings && strings[item.key]) {
             item.name = strings[item.key];
         }
         if (item.name && item.title == null) {
@@ -122,7 +137,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         }
 
         return item;
-    }
+    };
 
     private _onCommandBarItemClick = (item: OutOfBoxCommandBarItem | IContextualMenuItem) => {
         const { roosterCommandBarPlugin } = this.props;
@@ -149,7 +164,7 @@ export default class RoosterCommandBar extends React.Component<RoosterCommandBar
         if (formatState && this._isFormatStateChanged(formatState)) {
             this.setState({ formatState });
         }
-    }
+    };
 
     private _isFormatStateChanged(newState: FormatState): boolean {
         const { formatState } = this.state;

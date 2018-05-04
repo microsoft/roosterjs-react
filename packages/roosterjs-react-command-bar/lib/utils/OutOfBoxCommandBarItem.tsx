@@ -3,7 +3,6 @@ import { IContextualMenuItem, DirectionalHint } from 'office-ui-fabric-react/lib
 import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import {
     clearFormat,
-    createLink,
     removeLink,
     setIndentation,
     setBackgroundColor,
@@ -23,10 +22,7 @@ import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
 import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
-
-export const RoosterCommandBarStringKeys = {
-    LinkPrompt: "linkPrompt"
-};
+import { createLinkWithPrompt } from 'roosterjs-react-common';
 
 export interface OutOfBoxCommandBarItem extends ICommandBarItemProps {
     handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => void;
@@ -121,20 +117,8 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         key: "link",
         name: "Link",
         iconProps: _getIconProps("Link"),
-        getSelected: (formatState: FormatState) => formatState.isNumbering,
-        handleChange: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => {
-            const { strings } = props;
-
-            let message = "Enter address";
-            if (strings) {
-                message = strings[RoosterCommandBarStringKeys.LinkPrompt] || message;
-            }
-
-            const link = prompt(message);
-            if (link) {
-                createLink(editor, link);
-            }
-        }
+        handleChange: (editor: Editor, props: RoosterCommandBarProps) =>
+            createLinkWithPrompt(editor, props.strings)
     },
     {
         key: "highlight",
@@ -146,14 +130,17 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
-            items: HighlightColorInfoList.map((color: ColorInfo) => ({
-                className: "rooster-command-bar-color-item",
-                key: color.key,
-                title: color.title,
-                onRender: _colorCellOnRender,
-                data: color,
-                handleChange: _handleChangeForHighlight
-            }) as IContextualMenuItem)
+            items: HighlightColorInfoList.map(
+                (color: ColorInfo) =>
+                    ({
+                        className: "rooster-command-bar-color-item",
+                        key: color.key,
+                        title: color.title,
+                        onRender: _colorCellOnRender,
+                        data: color,
+                        handleChange: _handleChangeForHighlight
+                    } as IContextualMenuItem)
+            )
         }
     },
     {
@@ -168,7 +155,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         iconProps: _getIconProps("Emoji2"),
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => {
             props.emojiPlugin.setIsSuggesting(true);
-            editor.insertContent(':');
+            editor.insertContent(":");
         }
     },
     {
@@ -180,13 +167,13 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         key: "indent",
         name: "Increase indent",
         iconProps: _getIconProps("IncreaseIndentLegacy"),
-        handleChange: (editor) => setIndentation(editor, Indentation.Increase)
+        handleChange: editor => setIndentation(editor, Indentation.Increase)
     },
     {
         key: "outdent",
         name: "Decrease indent",
         iconProps: _getIconProps("DecreaseIndentLegacy"),
-        handleChange: (editor) => setIndentation(editor, Indentation.Decrease)
+        handleChange: editor => setIndentation(editor, Indentation.Decrease)
     },
     {
         key: "strikethrough",
@@ -205,14 +192,17 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
-            items: FontColorInfoList.map((color: ColorInfo) => ({
-                className: "rooster-command-bar-color-item",
-                key: color.key,
-                title: color.title,
-                onRender: _colorCellOnRender,
-                data: color,
-                handleChange: _handleChangeForFontColor
-            }) as IContextualMenuItem)
+            items: FontColorInfoList.map(
+                (color: ColorInfo) =>
+                    ({
+                        className: "rooster-command-bar-color-item",
+                        key: color.key,
+                        title: color.title,
+                        onRender: _colorCellOnRender,
+                        data: color,
+                        handleChange: _handleChangeForFontColor
+                    } as IContextualMenuItem)
+            )
         }
     },
     {
@@ -229,7 +219,8 @@ export const OutOfBoxCommandBarItemMap = OutOfBoxCommandBarItems.reduce(
         result[item.key] = item;
         return result;
     },
-    {} as { [key: string]: IContextualMenuItem });
+    {} as { [key: string]: IContextualMenuItem }
+);
 
 function _getIconProps(name: string): IIconProps {
     return { className: `rooster-command-bar-icon ms-Icon ms-Icon--${name}` };
@@ -250,7 +241,11 @@ function _handleChangeForHeader(editor: Editor, props: RoosterCommandBarProps, s
 function _colorCellOnRender(item: IContextualMenuItem): JSX.Element {
     const { color, cellBorderColor } = item.data as ColorInfo;
     return (
-        <DefaultButton title={item.title} key={item.key} onClick={(ev) => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}>
+        <DefaultButton
+            title={item.title}
+            key={item.key}
+            onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}
+        >
             <div className="rooster-command-bar-color-cell" style={{ backgroundColor: color, borderColor: cellBorderColor }} />
         </DefaultButton>
     );
