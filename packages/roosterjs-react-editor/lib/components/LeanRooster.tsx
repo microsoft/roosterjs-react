@@ -122,6 +122,30 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
+    public selectAll(): void {
+        const contentDiv = this._contentDiv;
+        if (!contentDiv) {
+            return;
+        }
+
+        if (this._editor && !this._editor.isDisposed()) {
+            const range = this._editor.getDocument().createRange();
+            range.selectNodeContents(contentDiv);
+            this._editor.updateSelection(range);
+        } else {
+            const range = contentDiv.ownerDocument.createRange();
+            range.selectNodeContents(contentDiv);
+            const selection = window.getSelection();
+
+            // Workaround IE exception 800a025e
+            try {
+                selection.removeAllRanges();
+            } catch (e) { }
+
+            selection.addRange(range);
+        }
+    }
+
     private _setInitialReactContent(): void {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
@@ -158,7 +182,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
                 viewState.isDirty = content !== originalContent;
             }
         }
-    }
+    };
 
     private _trySwithToEditMode(): boolean {
         const { readonly, onBeforeModeChange = NullFunction, onAfterModeChange = NullFunction } = this.props;
