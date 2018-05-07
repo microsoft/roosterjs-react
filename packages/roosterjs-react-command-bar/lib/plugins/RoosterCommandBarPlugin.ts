@@ -57,7 +57,7 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     }
 
     private handleShortcuts(event: PluginEvent) {
-        let keyboardEvent = (event as PluginDomEvent).rawEvent as KeyboardEvent;
+        const keyboardEvent = (event as PluginDomEvent).rawEvent as KeyboardEvent;
         if (keyboardEvent.defaultPrevented) {
             return;
         }

@@ -33,7 +33,8 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     public render(): JSX.Element {
         const { className } = this.props;
 
-        const items = this._createItems(); // with the newest changes on the editor, get create the latest items
+        // with the newest changes on the editor, create the latest items (e.g. bold item being selected if text selected is bold)
+        const items = this._createItems();
         return (
             <div className={css("rooster-command-bar", className)}>
                 <CommandBar className={"command-bar"} items={items} />

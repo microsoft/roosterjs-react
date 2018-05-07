@@ -45,14 +45,14 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     }
 
     private _calloutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {
-        // For Callout component, target is the event object from the document.body focus event
-        const nextTarget = ev && (ev.target as HTMLElement);
-
         // command bar can trigger dismiss event w/o an event object for submenu (when 
         // button is clicked again to hide submenu)
         if (!ev) {
             return;
         }
+
+        // For Callout component, target is the event object from the document.body focus event
+        const nextTarget = ev && (ev.target as HTMLElement);
 
         if (this._shouldCallBlur(nextTarget)) {
             // delay so callout dismiss can complete
