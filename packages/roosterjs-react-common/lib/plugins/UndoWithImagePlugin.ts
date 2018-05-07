@@ -1,42 +1,10 @@
-import { Undo } from 'roosterjs-editor-core';
-import { UndoSnapshotsService } from 'roosterjs-editor-core/lib/undo/UndoSnapshots';
-import { ImageManagerInteface, hasPlaceholder, UpdatePlaceholdersResult } from '../utils/ImageManager';
+import { Undo } from "roosterjs-editor-core";
+import { UndoSnapshotsService } from "roosterjs-editor-core/lib/undo/UndoSnapshots";
+import { ImageManagerInteface, hasPlaceholder, UpdatePlaceholdersResult } from "../utils/ImageManager";
 
 // Max stack size that cannot be exceeded. When exceeded, old undo history will be dropped
 // to keep size under limit. This is kept at 10MB.
 const MAXSIZELIMIT = 10000000;
-
-export default class UndoWithImagePlugin extends Undo {
-    /**
-     * Create an instance of Undo
-     * @param preserveSnapshots True to preserve the snapshots after dispose, this allows
-     * this object to be reused when editor is disposed and created again
-     * @param bufferSize The buffer size for snapshots. Default value is 10MB, it is possible after
-     * placeholder to image resolution that buffer size is greater.
-     */
-    constructor(
-        private imageManager: ImageManagerInteface,
-        preserveSnapshots?: boolean,
-        private bufferSize: number = MAXSIZELIMIT
-    ) {
-        super(preserveSnapshots, bufferSize);
-    }
-
-    /**
-     * Dispose this plugin
-     */
-    public dispose(): void {
-        super.dispose();
-    }
-
-    protected getSnapshotsManager(): UndoSnapshotsService {
-        if (!this.undoSnapshots) {
-            this.undoSnapshots = new UndoSnapshotsWithImage(this.imageManager, this.bufferSize);
-        }
-
-        return this.undoSnapshots;
-    }
-}
 
 interface Snapshot {
     value: string;
@@ -66,6 +34,11 @@ class UndoSnapshotsWithImage implements UndoSnapshotsService {
 
         this.currentIndex += delta;
         const snapshot = this.snapshots[this.currentIndex];
+
+        // There is a chance snapshots were saved with placeholders. To resolve that,
+        // we optimistically ask Image Manager to replace the placeholders with images,
+        // since the manager caches placeholder IDs to final image URLs (when they are resolved).
+        // The manager returns the final HTML and also if all of the placeholders are resolved.
         if (snapshot.hasPlaceholder) {
             const originalValue = snapshot.value;
             const result: UpdatePlaceholdersResult = this.imageManager.updatePlaceholders(originalValue);
@@ -103,13 +76,40 @@ class UndoSnapshotsWithImage implements UndoSnapshotsService {
     }
 
     public clearRedo(): void {
-        if (this.canMove(1)) {
-            let removedSize = 0;
-            for (let i = this.currentIndex + 1; i < this.snapshots.length; ++i) {
-                removedSize += this.snapshots[i].value.length;
-            }
-            this.snapshots.splice(this.currentIndex + 1);
-            this.totalSize -= removedSize;
+        if (!this.canMove(1)) {
+            return;
         }
+        
+        let removedSize = 0;
+        for (let i = this.currentIndex + 1; i < this.snapshots.length; ++i) {
+            removedSize += this.snapshots[i].value.length;
+        }
+        this.snapshots.splice(this.currentIndex + 1);
+        this.totalSize -= removedSize;
+    }
+}
+
+export default class UndoWithImagePlugin extends Undo {
+    /**
+     * Create an instance of Undo
+     * @param preserveSnapshots True to preserve the snapshots after dispose, this allows
+     * this object to be reused when editor is disposed and created again
+     * @param bufferSize The buffer size for snapshots. Default value is 10MB, it is possible after
+     * placeholder to image resolution that buffer size is greater.
+     */
+    constructor(
+        private imageManager: ImageManagerInteface,
+        preserveSnapshots?: boolean,
+        private bufferSize: number = MAXSIZELIMIT
+    ) {
+        super(preserveSnapshots, bufferSize);
+    }
+
+    protected getSnapshotsManager(): UndoSnapshotsService {
+        if (!this.undoSnapshots) {
+            this.undoSnapshots = new UndoSnapshotsWithImage(this.imageManager, this.bufferSize);
+        }
+
+        return this.undoSnapshots;
     }
 }
