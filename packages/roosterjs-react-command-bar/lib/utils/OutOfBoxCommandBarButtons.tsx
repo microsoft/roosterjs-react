@@ -1,8 +1,8 @@
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { DirectionalHint, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
-import * as React from 'react';
+import { DefaultButton } from "office-ui-fabric-react/lib/Button";
+import { DirectionalHint, IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
+import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
+import { IIconProps } from "office-ui-fabric-react/lib/Icon";
+import * as React from "react";
 import {
     clearFormat,
     removeLink,
@@ -15,14 +15,14 @@ import {
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
-    toggleUnderline,
-} from 'roosterjs-editor-api';
-import { Editor } from 'roosterjs-editor-core';
-import { FormatState, Indentation } from 'roosterjs-editor-types';
+    toggleUnderline
+} from "roosterjs-editor-api";
+import { Editor } from "roosterjs-editor-core";
+import { FormatState, Indentation } from "roosterjs-editor-types";
 
-import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
-import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
-import { createLinkWithPrompt } from 'roosterjs-react-common';
+import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
+import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from "./OutOfBoxCommandBarItem.ColorInfo";
+import { createLinkWithPrompt } from "roosterjs-react-common";
 
 const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
 
@@ -30,24 +30,24 @@ export const RoosterCommandBarStringKeys = {
     LinkPrompt: "linkPrompt"
 };
 
- export const RoosterCommmandBarButtonKeys = {
-     Header: "header",
-     Bold: "bold",
-     Italic: "itatlic",
-     Underline: "underline",
-     BulletedList: "bulleted-list",
-     NumberedList: "numbered-list",
-     Link: "link",
-     Highlight: "highlight",
-     ClearFormat: "clear-format",
-     Emoji: "emoji",
-     InsertImage: "insert-image",
-     Indent: "indent",
-     Outdent: "outdent",
-     Strikethrough: "strikethrough",
-     FontColor: "font-color",
-     Unlink: "unlink"
- };
+export const RoosterCommmandBarButtonKeys = {
+    Header: "header",
+    Bold: "bold",
+    Italic: "itatlic",
+    Underline: "underline",
+    BulletedList: "bulleted-list",
+    NumberedList: "numbered-list",
+    Link: "link",
+    Highlight: "highlight",
+    ClearFormat: "clear-format",
+    Emoji: "emoji",
+    InsertImage: "insert-image",
+    Indent: "indent",
+    Outdent: "outdent",
+    Strikethrough: "strikethrough",
+    FontColor: "font-color",
+    Unlink: "unlink"
+};
 
 export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     {
@@ -136,8 +136,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.Link,
         name: "Link",
         iconProps: _getIconProps("Link"),
-        handleChange: (editor: Editor, props: RoosterCommandBarProps) =>
-            createLinkWithPrompt(editor, props.strings)
+        handleChange: (editor: Editor, props: RoosterCommandBarProps) => createLinkWithPrompt(editor, props.strings)
     },
     {
         key: RoosterCommmandBarButtonKeys.Highlight,
@@ -171,7 +170,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     {
         key: RoosterCommmandBarButtonKeys.Emoji,
         name: "Emjoi",
-        iconProps: { className:`${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
+        iconProps: { className: `${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => {
             props.emojiPlugin.setIsSuggesting(true);
             editor.insertContent(":");
@@ -265,7 +264,16 @@ function _colorCellOnRender(item: IContextualMenuItem): JSX.Element {
             key={item.key}
             onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}
         >
-            <div className="rooster-command-bar-color-cell" style={{ backgroundColor: color, borderColor: cellBorderColor }} />
+            <svg
+                className="rooster-command-bar-color-cell"
+                viewBox="0 0 20 20"
+                fill={color}
+                strokeWidth="1"
+                stroke={cellBorderColor}
+                focusable="false"
+            >
+                <rect width="100%" height="100%" />
+            </svg>
         </DefaultButton>
     );
 }
