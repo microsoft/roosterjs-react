@@ -1,38 +1,57 @@
-import * as React from 'react';
-import { IContextualMenuItem, DirectionalHint } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
+import { DirectionalHint, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import * as React from 'react';
 import {
     clearFormat,
     removeLink,
-    setIndentation,
     setBackgroundColor,
+    setIndentation,
     setTextColor,
     toggleBold,
     toggleBullet,
+    toggleHeader,
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
     toggleUnderline,
-    toggleHeader
 } from 'roosterjs-editor-api';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState, Indentation } from 'roosterjs-editor-types';
-import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
-import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
-import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+
+import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
 import { createLinkWithPrompt } from 'roosterjs-react-common';
 
-export interface OutOfBoxCommandBarItem extends ICommandBarItemProps {
-    handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => void;
-    getSelected?: (formatState: FormatState) => boolean;
-    getChecked?: (formatState: FormatState) => boolean;
-}
+const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
 
-export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
+export const RoosterCommandBarStringKeys = {
+    LinkPrompt: "linkPrompt"
+};
+
+ export const RoosterCommmandBarButtonKeys = {
+     Header: "header",
+     Bold: "bold",
+     Italic: "itatlic",
+     Underline: "underline",
+     BulletedList: "bulleted-list",
+     NumberedList: "numbered-list",
+     Link: "link",
+     Highlight: "highlight",
+     ClearFormat: "clear-format",
+     Emoji: "emoji",
+     InsertImage: "insert-image",
+     Indent: "indent",
+     Outdent: "outdent",
+     Strikethrough: "strikethrough",
+     FontColor: "font-color",
+     Unlink: "unlink"
+ };
+
+export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     {
-        key: "header",
+        key: RoosterCommmandBarButtonKeys.Header,
         name: "Header",
         iconProps: _getIconProps("FontSize"),
         subMenuProps: {
@@ -74,7 +93,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         }
     },
     {
-        key: "bold",
+        key: RoosterCommmandBarButtonKeys.Bold,
         name: "Bold",
         iconProps: _getIconProps("Bold"),
         canCheck: true,
@@ -82,7 +101,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         handleChange: (editor: Editor) => toggleBold(editor)
     },
     {
-        key: "italic",
+        key: RoosterCommmandBarButtonKeys.Italic,
         name: "Italic",
         iconProps: _getIconProps("Italic"),
         canCheck: true,
@@ -90,7 +109,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         handleChange: (editor: Editor) => toggleItalic(editor)
     },
     {
-        key: "underline",
+        key: RoosterCommmandBarButtonKeys.Underline,
         name: "Underline",
         iconProps: _getIconProps("Underline"),
         canCheck: true,
@@ -98,7 +117,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         handleChange: (editor: Editor) => toggleUnderline(editor)
     },
     {
-        key: "bulleted-list",
+        key: RoosterCommmandBarButtonKeys.BulletedList,
         name: "Bulleted list",
         iconProps: _getIconProps("BulletedList"),
         canCheck: true,
@@ -106,7 +125,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         handleChange: (editor: Editor) => toggleBullet(editor)
     },
     {
-        key: "numbered-list",
+        key: RoosterCommmandBarButtonKeys.NumberedList,
         name: "Numbered list",
         iconProps: _getIconProps("NumberedList"),
         canCheck: true,
@@ -114,14 +133,14 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         handleChange: (editor: Editor) => toggleNumbering(editor)
     },
     {
-        key: "link",
+        key: RoosterCommmandBarButtonKeys.Link,
         name: "Link",
         iconProps: _getIconProps("Link"),
         handleChange: (editor: Editor, props: RoosterCommandBarProps) =>
             createLinkWithPrompt(editor, props.strings)
     },
     {
-        key: "highlight",
+        key: RoosterCommmandBarButtonKeys.Highlight,
         name: "Highlight",
         iconProps: _getIconProps("Highlight"),
         subMenuProps: {
@@ -144,46 +163,46 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         }
     },
     {
-        key: "clear-format",
+        key: RoosterCommmandBarButtonKeys.ClearFormat,
         name: "Clear format",
         iconProps: _getIconProps("ClearFormatting"),
         handleChange: (editor: Editor) => clearFormat(editor)
     },
     {
-        key: "emoji",
+        key: RoosterCommmandBarButtonKeys.Emoji,
         name: "Emjoi",
-        iconProps: _getIconProps("Emoji2"),
+        iconProps: { className:`${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => {
             props.emojiPlugin.setIsSuggesting(true);
             editor.insertContent(":");
         }
     },
     {
-        key: "photo",
+        key: RoosterCommmandBarButtonKeys.InsertImage,
         name: "Insert image",
         iconProps: _getIconProps("Photo2")
     },
     {
-        key: "indent",
+        key: RoosterCommmandBarButtonKeys.Indent,
         name: "Increase indent",
         iconProps: _getIconProps("IncreaseIndentLegacy"),
         handleChange: editor => setIndentation(editor, Indentation.Increase)
     },
     {
-        key: "outdent",
+        key: RoosterCommmandBarButtonKeys.Outdent,
         name: "Decrease indent",
         iconProps: _getIconProps("DecreaseIndentLegacy"),
         handleChange: editor => setIndentation(editor, Indentation.Decrease)
     },
     {
-        key: "strikethrough",
+        key: RoosterCommmandBarButtonKeys.Strikethrough,
         name: "Strikethrough",
         iconProps: _getIconProps("Strikethrough"),
         getSelected: (formatState: FormatState) => formatState.isStrikeThrough,
         handleChange: (editor: Editor) => toggleStrikethrough(editor)
     },
     {
-        key: "font-color",
+        key: RoosterCommmandBarButtonKeys.FontColor,
         name: "Font color",
         iconProps: _getIconProps("FontColor"),
         subMenuProps: {
@@ -206,7 +225,7 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
         }
     },
     {
-        key: "unlink",
+        key: RoosterCommmandBarButtonKeys.Unlink,
         name: "Unlink",
         iconProps: _getIconProps("RemoveLink"),
         getDisabled: (formatState: FormatState) => !formatState.canUnlink,
@@ -214,16 +233,16 @@ export const OutOfBoxCommandBarItems: OutOfBoxCommandBarItem[] = [
     }
 ];
 
-export const OutOfBoxCommandBarItemMap = OutOfBoxCommandBarItems.reduce(
-    (result: { [key: string]: IContextualMenuItem }, item: IContextualMenuItem) => {
+export const OutOfBoxCommandBarButtonMap = OutOfBoxCommandBarButtons.reduce(
+    (result: { [key: string]: RoosterCommandBarButton }, item: RoosterCommandBarButton) => {
         result[item.key] = item;
         return result;
     },
-    {} as { [key: string]: IContextualMenuItem }
+    {} as { [key: string]: RoosterCommandBarButton }
 );
 
 function _getIconProps(name: string): IIconProps {
-    return { className: `rooster-command-bar-icon ms-Icon ms-Icon--${name}` };
+    return { className: `${RoosterCommandBarIconClassName} ms-Icon ms-Icon--${name}` };
 }
 
 function _getCheckedForHeader(formatState: FormatState): boolean {

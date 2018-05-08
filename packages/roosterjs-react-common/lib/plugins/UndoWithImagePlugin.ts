@@ -79,7 +79,7 @@ class UndoSnapshotsWithImage implements UndoSnapshotsService {
         if (!this.canMove(1)) {
             return;
         }
-        
+
         let removedSize = 0;
         for (let i = this.currentIndex + 1; i < this.snapshots.length; ++i) {
             removedSize += this.snapshots[i].value.length;

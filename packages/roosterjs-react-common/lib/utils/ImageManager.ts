@@ -96,6 +96,7 @@ export default class ImageManager implements ImageManagerInteface {
             img.src = url;
             if (editor) {
                 editor.replaceNode(placeholder, img);
+                editor.addUndoSnapshot();
             } else {
                 doc.replaceChild(img, placeholder);
             }

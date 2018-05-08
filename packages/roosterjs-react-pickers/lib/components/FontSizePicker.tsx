@@ -3,7 +3,7 @@ import {
     ContextualMenu,
     DirectionalHint,
     IContextualMenuItem,
-} from 'office-ui-fabric-react/lib/components/ContextualMenu';
+} from 'office-ui-fabric-react/lib/ContextualMenu';
 import * as Styles from './Picker.scss.g';
 
 const FONTSIZE_REGEX = /(\d+)pt/i;
