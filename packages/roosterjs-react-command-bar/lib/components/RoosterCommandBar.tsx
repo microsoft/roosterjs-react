@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
+import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
 import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { createFormatState } from 'roosterjs-react-editor';
 import { Editor } from 'roosterjs-editor-core';
@@ -38,6 +39,13 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return (
             <div className={css("rooster-command-bar", className)}>
                 <CommandBar className={"command-bar"} items={items} />
+                <input
+                    type="file"
+                    ref={this._fileInputOnRef}
+                    accept="image/*"
+                    style={DisplayNoneStyle}
+                    onChange={this._fileInputOnChange}
+                />
                 <input
                     type="file"
                     ref={this._fileInputOnRef}
@@ -133,7 +141,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         if (item.subMenuProps && item.subMenuProps.items) {
             item.subMenuProps = { ...item.subMenuProps };
             item.subMenuProps.items = item.subMenuProps.items.map(this._getMenuItem);
-            item.subMenuProps.calloutProps = { className: calloutClassName };
+            item.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
             item.subMenuProps.onDismiss = calloutOnDismiss;
         }
 

@@ -52,7 +52,7 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
 
         // For Callout component, target is the event object from the document.body focus event
-        const nextTarget = ev && (ev.target as HTMLElement);
+        const nextTarget = ev.target as HTMLElement;
 
         if (this._shouldCallBlur(nextTarget)) {
             // delay so callout dismiss can complete
