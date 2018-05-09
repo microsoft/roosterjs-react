@@ -3,8 +3,17 @@
         .is-selected {
             background: #eaeaea;
         }
+
         .rooster-command-bar-icon {
             color: #333;
+
+            &.rooster-emoji {
+                font-style: normal;
+
+                &:before {
+                    content: "😃";
+                }
+            }
         }
     }
 

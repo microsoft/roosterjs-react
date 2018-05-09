@@ -20,7 +20,7 @@
                 overflow: auto;
             }
             .lean-rooster.view-mode + .rooster-command-bar {
-                display: none;
+               display: none;
             }
             .focus-out-shell {
                 border-color: transparent;
@@ -30,6 +30,11 @@
             }
             .focus-out-shell.is-focused {
                 border-color: rgb(16, 110, 190);;
+            }
+
+            /* SVG won't have disabled color so we'll dim the svg instead */
+            .lean-cmdbar button:disabled svg {
+                opacity: 0.3;
             }
         </style>
         <link rel="stylesheet" href="//static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.0/css/fabric.min.css">
