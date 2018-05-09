@@ -1,24 +1,46 @@
-import * as React from "react";
-import * as ReactDom from "react-dom";
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import {
+    createEditorViewState,
     EditorViewState,
+    EmojiPlugin,
     FocusEventHandler,
     FocusOutShell,
     ImageManager,
     ImageManagerOptions,
+    ImageResize,
     LeanRooster,
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
     RoosterCommandBarPlugin,
-    createEditorViewState,
-    EmojiPlugin
-} from "roosterjs-react";
+    RoosterCommmandBarButtonKeys,
+} from 'roosterjs-react';
 
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { emoji } from "../../packages/roosterjs-react-emoji/lib/components/emoji.scss.g";
-import UndoWithImagePlugin from "../../packages/roosterjs-react-common/lib/plugins/UndoWithImagePlugin";
+function createLinkedSvg(name: string): JSX.Element {
+    return (
+        <svg height="40" width="20">
+            <use xlinkHref={`script/sprites/command-bar-sprites.svg#rooster-svg-${name}`} />
+        </svg>
+    );
+}
+
 initializeIcons();
+registerIcons({
+    icons: {
+        "RoosterSvg-Color": createLinkedSvg("color"),
+        "RoosterSvg-Bullets": createLinkedSvg("bullets"),
+        "RoosterSvg-Link": createLinkedSvg("link"),
+        "RoosterSvg-Numbering": createLinkedSvg("numbering"),
+        "RoosterSvg-Unlink": createLinkedSvg("unlink"),
+        "RoosterSvg-Highlight": createLinkedSvg("highlight"),
+        "RoosterSvg-Indent": createLinkedSvg("indent"),
+        "RoosterSvg-Outdent": createLinkedSvg("outdent"),
+        "RoosterSvg-ClearFormat": createLinkedSvg("clear-format")
+    }
+});
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
@@ -76,13 +98,32 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     <LeanRooster
                         key="rooster"
                         viewState={leanRoosterViewState}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin]}
-                        undo={new UndoWithImagePlugin(imageManager)}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize()]}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
                     />,
                     <RoosterCommandBar
                         key="cmd"
+                        className="lean-cmdbar"
+                        buttonIconProps={{
+                            [RoosterCommmandBarButtonKeys.FontColor]: { iconName: "RoosterSvg-Color" },
+                            [RoosterCommmandBarButtonKeys.BulletedList]: { iconName: "RoosterSvg-Bullets" },
+                            [RoosterCommmandBarButtonKeys.NumberedList]: { iconName: "RoosterSvg-Numbering" },
+                            [RoosterCommmandBarButtonKeys.Highlight]: { iconName: "RoosterSvg-Highlight" },
+                            [RoosterCommmandBarButtonKeys.Indent]: { iconName: "RoosterSvg-Indent" },
+                            [RoosterCommmandBarButtonKeys.Outdent]: { iconName: "RoosterSvg-Outdent" },
+                            [RoosterCommmandBarButtonKeys.Link]: { iconName: "RoosterSvg-Link" },
+                            [RoosterCommmandBarButtonKeys.Unlink]: { iconName: "RoosterSvg-Unlink" },
+                            [RoosterCommmandBarButtonKeys.ClearFormat]: { iconName: "RoosterSvg-ClearFormat" }
+                        }}
+                        additionalButtons={[
+                            {
+                                key: "vacation",
+                                name: "Vacation",
+                                iconProps: { className: "ms-Icon ms-Icon--Vacation" },
+                                handleChange: () => alert("Hello")
+                            }
+                        ]}
                         roosterCommandBarPlugin={commandBarPlugin}
                         emojiPlugin={emojiPlugin}
                         calloutClassName={calloutClassName}
@@ -96,22 +137,11 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     );
 }
 
-const secondEditorOnRef = (ref: LeanRooster, state: EditorViewState) => {
-    setTimeout(() => {
-        state.content += " changed via reloadContent()";
-        ref.reloadContent();
-    }, 2000);
-
-    setTimeout(() => {
-        state.content += " changed via reloadContent() again";
-        ref.reloadContent();
-    }, 4000);
-};
 const view = (
     <div className="root-container">
         <div className="editor-container">
             {createEditor("editor #1")}
-            {createEditor("editor #2", secondEditorOnRef)}
+            {createEditor("editor #2")}
         </div>
     </div>
 );
