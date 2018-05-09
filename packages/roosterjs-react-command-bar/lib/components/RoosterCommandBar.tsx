@@ -170,12 +170,12 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
         const formatState = editor ? getFormatState(editor) : null;
-        if (formatState && this._isFormatStateChanged(formatState)) {
+        if (formatState && this._hasFormatStateChanged(formatState)) {
             this.setState({ formatState });
         }
     };
 
-    private _isFormatStateChanged(newState: FormatState): boolean {
+    private _hasFormatStateChanged(newState: FormatState): boolean {
         const { formatState } = this.state;
 
         for (const key in formatState) {

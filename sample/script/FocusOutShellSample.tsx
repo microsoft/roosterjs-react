@@ -1,23 +1,24 @@
-import * as React from "react";
-import * as ReactDom from "react-dom";
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import {
+    createEditorViewState,
     EditorViewState,
+    EmojiPlugin,
     FocusEventHandler,
     FocusOutShell,
     ImageManager,
     ImageManagerOptions,
+    ImageResize,
     LeanRooster,
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
     RoosterCommandBarPlugin,
-    createEditorViewState,
-    EmojiPlugin
-} from "roosterjs-react";
+    TableResize,
+    UndoWithImagePlugin,
+} from 'roosterjs-react';
 
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { emoji } from "../../packages/roosterjs-react-emoji/lib/components/emoji.scss.g";
-import UndoWithImagePlugin from "../../packages/roosterjs-react-common/lib/plugins/UndoWithImagePlugin";
 initializeIcons();
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
@@ -56,11 +57,11 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
         leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
-        console.log(`FocusOutShell (${name}) gained focus`);
+        console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
     };
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
-        console.log(`FocusOutShell (${name}) lost focus`);
+        console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
     };
     let emojiPlugin: EmojiPlugin = null;
@@ -76,7 +77,8 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     <LeanRooster
                         key="rooster"
                         viewState={leanRoosterViewState}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin]}
+                        placeholder={`${name} placeholder`}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize()]}
                         undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}

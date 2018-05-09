@@ -6,4 +6,5 @@ export { default as createLinkWithPrompt, CreateLinkWithPromptStringKey } from '
 export { default as confirm } from './dialog/components/ConfirmDialog';
 export { default as ImageManager, ImageManagerInteface, ImageManagerOptions, UpdatePlaceholdersResult } from './utils/ImageManager';
 export { default as PasteImagePlugin } from './plugins/PasteImagePlugin';
+export { default as UndoWithImagePlugin } from './plugins/UndoWithImagePlugin';
 export { Base64Svgs } from './resources/Images';
