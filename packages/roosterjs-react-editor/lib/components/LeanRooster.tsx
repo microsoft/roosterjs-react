@@ -162,6 +162,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
         this._initialContent = hasContent ? { __html: viewState.content } : undefined;
+        this._placeholderVisible = !hasContent;
     }
 
     private _updateContentToViewState(isInitializing?: boolean): string {
