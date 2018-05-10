@@ -60,7 +60,7 @@
   <symbol id="rooster-svg-indent-rtl" viewBox="12 0 20 32">
     <use xlink:href="#rooster-svg-outdent" transform="translate(32,0) scale(-1, 1)" />
   </symbol>
-  <symbol id="rooster-svg-numbering" viewBox="-10536 -10457 20 32">
+  <symbol id="rooster-svg-numbering" viewBox="-10530 -10457 20 32">
     <g transform="translate(-11603 -10912.999)">
       <rect fill="none" width="32" height="32" rx="2" transform="translate(1067 455.999)"/>
       <rect fill="#666" width="12" height="1" transform="translate(1079 466.999)"/>
