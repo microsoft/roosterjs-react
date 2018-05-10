@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "A react component wrapper for roosterjs with more plugins",
   "main": "lib/index.js",
   "repository": {

@@ -1,7 +1,15 @@
-:global { 
+:global {
     .lean-rooster {
+        padding: 4px;
+
         img {
             max-width: 100%;
+        }
+
+        &.show-placeholder::before {
+            content: attr(data-placeholder);
+            color: #999;
+            font-style: italic;
         }
     }
 }

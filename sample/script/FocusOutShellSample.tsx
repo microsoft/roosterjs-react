@@ -17,6 +17,8 @@ import {
     RoosterCommandBar,
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys,
+    TableResize,
+    UndoWithImagePlugin,
 } from 'roosterjs-react';
 
 function createLinkedSvg(name: string): JSX.Element {
@@ -78,11 +80,11 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
         leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
-        console.log(`FocusOutShell (${name}) gained focus`);
+        console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
     };
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
-        console.log(`FocusOutShell (${name}) lost focus`);
+        console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
     };
     let emojiPlugin: EmojiPlugin = null;
@@ -98,7 +100,9 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     <LeanRooster
                         key="rooster"
                         viewState={leanRoosterViewState}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize()]}
+                        placeholder={`${name} placeholder`}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize()]}
+                        undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
                     />,
