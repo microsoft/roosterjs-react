@@ -3,8 +3,8 @@ import { forEachEmoji } from './emojiList';
 import { Strings, getKeywordString } from '../strings/emojiStrings';
 
 export function searchEmojis(search: string, strings: Strings): Emoji[] {
-    search = search.toLowerCase();
     let shortcutMatch = matchShortcut(search);
+    search = search.toLowerCase();
     let fullMatch: Emoji[] = shortcutMatch ? [shortcutMatch] : [];
     let partialMatch: Emoji[] = [];
     let partialSearch = ' ' + (search[0] == ':' ? search.substr(1) : search);

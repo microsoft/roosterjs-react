@@ -169,7 +169,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     },
     {
         key: RoosterCommmandBarButtonKeys.Emoji,
-        name: "Emjoi",
+        name: "Emoji",
         iconProps: { className: `${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => {
             props.emojiPlugin.setIsSuggesting(true);
