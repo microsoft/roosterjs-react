@@ -229,7 +229,7 @@ function process(baseDir, queue, index, projDir) {
 }
 
 function output(filename, library, queue) {
-	var packageJson = require(path.join(__dirname, '..', 'package.json'));
+    var packageJson = require(path.join(__dirname, '..', 'package.json'));
     var version = packageJson.version;
     var content = '';
     content += `// Type definitions for ${packageJson.name} (Version ${packageJson.version})\r\n`;
