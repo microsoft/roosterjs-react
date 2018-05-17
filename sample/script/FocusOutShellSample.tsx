@@ -143,7 +143,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                             { key: RoosterCommmandBarButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
                             { key: RoosterCommmandBarButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
                             { key: RoosterCommmandBarButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
-                            { key: RoosterCommmandBarButtonKeys.Strikethrough, hidden: true },
+                            { key: RoosterCommmandBarButtonKeys.Strikethrough, exclude: true },
                             {
                                 key: "vacation",
                                 name: "Vacation",

@@ -95,7 +95,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             }
         }
 
-        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(button => !!button && !button.hidden);
+        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(button => !!button && !button.exclude);
         this._buttons.sort((l: RoosterCommandBarButton, r: RoosterCommandBarButton) => {
             if (l.order !== r.order) {
                 const leftOrder = l.order == null ? Number.MAX_VALUE : l.order;
