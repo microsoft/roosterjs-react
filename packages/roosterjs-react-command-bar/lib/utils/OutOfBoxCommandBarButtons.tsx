@@ -182,16 +182,16 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         iconProps: _getIconProps("Photo2")
     },
     {
-        key: RoosterCommmandBarButtonKeys.Indent,
-        name: "Increase indent",
-        iconProps: _getIconProps("IncreaseIndentLegacy"),
-        handleChange: editor => setIndentation(editor, Indentation.Increase)
-    },
-    {
         key: RoosterCommmandBarButtonKeys.Outdent,
         name: "Decrease indent",
         iconProps: _getIconProps("DecreaseIndentLegacy"),
         handleChange: editor => setIndentation(editor, Indentation.Decrease)
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Indent,
+        name: "Increase indent",
+        iconProps: _getIconProps("IncreaseIndentLegacy"),
+        handleChange: editor => setIndentation(editor, Indentation.Increase)
     },
     {
         key: RoosterCommmandBarButtonKeys.Strikethrough,

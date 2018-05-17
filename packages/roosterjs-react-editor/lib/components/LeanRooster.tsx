@@ -278,9 +278,15 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _onFocus = (ev: React.FocusEvent<HTMLDivElement>): void => {
         const { onFocus = NullFunction } = this.props;
 
-        if (this._trySwithToEditMode()) {
+        let forceUpdate = false;
+        if (this._placeholderVisible) {
+            this._placeholderVisible = false;
+            forceUpdate = true;
+        }
+        if (this._trySwithToEditMode(forceUpdate)) {
             this._editor.focus();
         }
+        
         onFocus(ev);
     };
 
