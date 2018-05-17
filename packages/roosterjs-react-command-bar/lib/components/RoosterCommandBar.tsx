@@ -14,6 +14,7 @@ import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
+    RoosterCommandBarIconClassName,
     RoosterCommmandBarButtonKeys,
 } from '../utils/OutOfBoxCommandBarButtons';
 
@@ -43,7 +44,6 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return (
             <div className={css("rooster-command-bar", className)}>
                 <CommandBar className={"command-bar"} items={this._buttons} />
-                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
         );
@@ -162,6 +162,13 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
         button.onClick = button.onClick || this._onCommandBarItemClick.bind(this, button);
         button.iconOnly = true;
+        if (button.iconProps) {
+            const { className = "" } = button.iconProps;
+            button.iconProps = {
+                ...button.iconProps,
+                className: className.split(" ").indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
+            };
+        }
         if (strings && strings[button.key]) {
             button.name = strings[button.key];
         }

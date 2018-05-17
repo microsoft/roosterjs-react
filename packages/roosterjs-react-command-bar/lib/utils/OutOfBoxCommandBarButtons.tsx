@@ -24,7 +24,7 @@ import { createLinkWithPrompt } from 'roosterjs-react-common';
 import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
 
-const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
+export const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
 
 export const RoosterCommandBarStringKeys = {
     LinkPrompt: "linkPrompt"
