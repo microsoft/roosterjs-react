@@ -23,8 +23,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     private _async: Async;
     private _updateFormatStateDebounced: () => void;
     private _fileInput: HTMLInputElement;
-    private _visibleButtonKeys: string[];
-    private _buttonMap: { [key: string]: RoosterCommandBarButton };
+    private _buttons: RoosterCommandBarButton[];
 
     constructor(props: RoosterCommandBarProps) {
         super(props);
@@ -39,25 +38,13 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     public render(): JSX.Element {
         const { className } = this.props;
 
-        // with the newest changes on the editor, create the latest items (e.g. bold item being selected if text selected is bold)
-        const items = this._createItems();
+        // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
+        this._buttons.forEach(this._refreshButtonStates);
         return (
             <div className={css("rooster-command-bar", className)}>
-                <CommandBar className={"command-bar"} items={items} />
-                <input
-                    type="file"
-                    ref={this._fileInputOnRef}
-                    accept="image/*"
-                    style={DisplayNoneStyle}
-                    onChange={this._fileInputOnChange}
-                />
-                <input
-                    type="file"
-                    ref={this._fileInputOnRef}
-                    accept="image/*"
-                    style={DisplayNoneStyle}
-                    onChange={this._fileInputOnChange}
-                />
+                <CommandBar className={"command-bar"} items={this._buttons} />
+                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
+                <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
         );
     }
@@ -79,8 +66,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
     }
 
-    public componentWillUpdate(nextProps: RoosterCommandBarProps, nextState: RoosterCommandBarState) {
-        this._initButtons(nextProps);
+    public componentWillReceiveProps(nextProps: RoosterCommandBarProps, nextState: RoosterCommandBarState) {
+        if (nextProps.buttonOverrides !== this.props.buttonOverrides) {
+            this._initButtons(nextProps);
+        }
     }
 
     public refreshFormatState(): void {
@@ -88,28 +77,34 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     private _initButtons(props: RoosterCommandBarProps): void {
-        const { visibleButtonKeys, buttonOverrides = [] } = this.props;
+        const { buttonOverrides = [] } = this.props;
 
-        this._buttonMap = { ...OutOfBoxCommandBarButtonMap };
-        this._visibleButtonKeys = visibleButtonKeys ? [...visibleButtonKeys] : OutOfBoxCommandBarButtons.map(item => item.key);
+        const buttonMap = { ...OutOfBoxCommandBarButtonMap };
+        const visibleButtonKeys = OutOfBoxCommandBarButtons.map(item => item.key);
 
         for (const button of buttonOverrides) {
             if (!button) {
                 continue;
             }
 
-            const currentButton = this._buttonMap[button.key];
-            this._buttonMap[button.key] = currentButton ? { ...currentButton, ...button } : button;
+            const currentButton = buttonMap[button.key];
+            buttonMap[button.key] = currentButton ? { ...currentButton, ...button } : button;
 
-            // only add to button keys if visibleButtonKeys property wasn't passed in and the key isn't already added
-            if (!visibleButtonKeys && this._visibleButtonKeys.indexOf(button.key) === -1) {
-                this._visibleButtonKeys.push(button.key);
+            if (visibleButtonKeys.indexOf(button.key) === -1) {
+                visibleButtonKeys.push(button.key);
             }
         }
-    }
 
-    private _createItems(): IContextualMenuItem[] {
-        return this._visibleButtonKeys.map(key => this._getMenuItem(this._buttonMap[key])).filter(menuItem => !!menuItem);
+        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(button => !!button && !button.hidden);
+        this._buttons.sort((l: RoosterCommandBarButton, r: RoosterCommandBarButton) => {
+            if (l.order !== r.order) {
+                const leftOrder = l.order == null ? Number.MAX_VALUE : l.order;
+                const rightOrder = r.order == null ? Number.MAX_VALUE : r.order;
+                return leftOrder - rightOrder;
+            }
+
+            return visibleButtonKeys.indexOf(l.key) - visibleButtonKeys.indexOf(r.key);
+        });
     }
 
     private _fileInputOnRef = (ref: HTMLInputElement): void => {
@@ -134,50 +129,66 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
     };
 
-    private _getMenuItem = (commandBarItem: RoosterCommandBarButton): IContextualMenuItem => {
-        if (!commandBarItem) {
+    private _refreshButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+        if (!commandBarButton) {
+            return null;
+        }
+
+        const { formatState } = this.state;
+
+        if (commandBarButton.getChecked) {
+            commandBarButton.checked = commandBarButton.getChecked(formatState);
+        }
+        if (commandBarButton.getSelected) {
+            commandBarButton.className = css({ "is-selected": commandBarButton.getSelected(formatState) });
+        }
+        if (commandBarButton.getDisabled) {
+            commandBarButton.disabled = commandBarButton.getDisabled(formatState);
+        }
+        if (commandBarButton.subMenuProps && commandBarButton.subMenuProps.items) {
+            commandBarButton.subMenuProps.items.forEach(this._refreshButtonStates);
+        }
+
+        return commandBarButton;
+    };
+
+    private _createButtons = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+        if (!commandBarButton) {
             return null;
         }
 
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
-        const { formatState } = this.state;
-        const item = { ...commandBarItem }; // make a copy of the OOB item template
+        const button = { ...commandBarButton }; // make a copy of the OOB button template since we're changing its properties
 
-        if (item.getChecked) {
-            item.checked = item.getChecked(formatState);
+        button.onClick = button.onClick || this._onCommandBarItemClick.bind(this, button);
+        button.iconOnly = true;
+        if (strings && strings[button.key]) {
+            button.name = strings[button.key];
         }
-        if (item.getSelected) {
-            item.className = css({ "is-selected": item.getSelected(formatState) });
-        }
-        if (item.getDisabled) {
-            item.disabled = item.getDisabled(formatState);
-        }
-        item.onClick = item.onClick || this._onCommandBarItemClick.bind(this, item);
-        item.iconOnly = true;
-        if (strings && strings[item.key]) {
-            item.name = strings[item.key];
-        }
-        if (item.subMenuProps && item.subMenuProps.items) {
-            item.subMenuProps = { ...item.subMenuProps };
-            item.subMenuProps.items = item.subMenuProps.items.map(this._getMenuItem);
-            item.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
-            item.subMenuProps.onDismiss = calloutOnDismiss;
+        if (button.subMenuProps && button.subMenuProps.items) {
+            button.subMenuProps = { ...button.subMenuProps }; // make a copy of the OOB submenu properties since we're changing them
+            button.subMenuProps.items = button.subMenuProps.items.map(this._createButtons);
+            button.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
+            button.subMenuProps.onDismiss = calloutOnDismiss;
         }
 
-        return item;
+        // make sure the initial states are correct
+        this._refreshButtonStates(button);
+
+        return button;
     };
 
-    private _onCommandBarItemClick = (item: RoosterCommandBarButton | IContextualMenuItem) => {
+    private _onCommandBarItemClick = (button: RoosterCommandBarButton | IContextualMenuItem) => {
         const { roosterCommandBarPlugin } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
-        if (editor && item.handleChange) {
-            const outOfBoxItem: RoosterCommandBarButton = item;
+        if (editor && button.handleChange) {
+            const outOfBoxItem: RoosterCommandBarButton = button;
             outOfBoxItem.handleChange(editor, this.props, this.state);
         }
 
         // special case insert image
-        if (item.key === RoosterCommmandBarButtonKeys.InsertImage) {
+        if (button.key === RoosterCommmandBarButtonKeys.InsertImage) {
             this._fileInput.click();
         }
 

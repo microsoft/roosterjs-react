@@ -1,8 +1,8 @@
-import { DefaultButton } from "office-ui-fabric-react/lib/Button";
-import { DirectionalHint, IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
-import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
-import { IIconProps } from "office-ui-fabric-react/lib/Icon";
-import * as React from "react";
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
+import { DirectionalHint, IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
+import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
+import * as React from 'react';
 import {
     clearFormat,
     removeLink,
@@ -15,14 +15,14 @@ import {
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
-    toggleUnderline
-} from "roosterjs-editor-api";
-import { Editor } from "roosterjs-editor-core";
-import { FormatState, Indentation } from "roosterjs-editor-types";
+    toggleUnderline,
+} from 'roosterjs-editor-api';
+import { Editor } from 'roosterjs-editor-core';
+import { FormatState, Indentation } from 'roosterjs-editor-types';
+import { createLinkWithPrompt } from 'roosterjs-react-common';
 
-import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
-import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from "./OutOfBoxCommandBarItem.ColorInfo";
-import { createLinkWithPrompt } from "roosterjs-react-common";
+import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
 
 const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
 
@@ -259,19 +259,8 @@ function _handleChangeForHeader(editor: Editor, props: RoosterCommandBarProps, s
 function _colorCellOnRender(item: IContextualMenuItem): JSX.Element {
     const { color, cellBorderColor } = item.data as ColorInfo;
     return (
-        <DefaultButton
-            title={item.title}
-            key={item.key}
-            onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}
-        >
-            <svg
-                className="rooster-command-bar-color-cell"
-                viewBox="0 0 20 20"
-                fill={color}
-                strokeWidth="1"
-                stroke={cellBorderColor}
-                focusable="false"
-            >
+        <DefaultButton title={item.title} key={item.key} onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}>
+            <svg className="rooster-command-bar-color-cell" viewBox="0 0 20 20" fill={color} strokeWidth="1" stroke={cellBorderColor} focusable="false">
                 <rect width="100%" height="100%" />
             </svg>
         </DefaultButton>
