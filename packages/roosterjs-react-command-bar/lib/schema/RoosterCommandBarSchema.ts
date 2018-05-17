@@ -13,7 +13,6 @@ export interface RoosterCommandBarProps {
     roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
     emojiPlugin?: EmojiPlugin;
     buttonOverrides?: RoosterCommandBarButton[];
-    visibleButtonKeys?: string[];
     calloutClassName?: string;
     calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
 }
@@ -26,4 +25,6 @@ export interface RoosterCommandBarButton extends ICommandBarItemProps {
     handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => void;
     getSelected?: (formatState: FormatState) => boolean;
     getChecked?: (formatState: FormatState) => boolean;
+    order?: number;
+    exclude?: boolean;
 }

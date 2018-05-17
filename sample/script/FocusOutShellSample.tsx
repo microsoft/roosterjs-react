@@ -143,11 +143,13 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                             { key: RoosterCommmandBarButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
                             { key: RoosterCommmandBarButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
                             { key: RoosterCommmandBarButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
+                            { key: RoosterCommmandBarButtonKeys.Strikethrough, exclude: true },
                             {
                                 key: "vacation",
                                 name: "Vacation",
                                 iconProps: { className: "ms-Icon ms-Icon--Vacation" },
-                                handleChange: () => alert("Hello")
+                                handleChange: () => alert("Hello"),
+                                order: 0
                             }
                         ]}
                         roosterCommandBarPlugin={commandBarPlugin}
