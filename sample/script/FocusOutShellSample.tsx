@@ -1,5 +1,8 @@
+import { CommandBarButton, IButton } from 'office-ui-fabric-react/lib/Button';
+import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
 import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
+import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import {
@@ -77,8 +80,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const commandBarPlugin = new RoosterCommandBarPlugin();
     const imagePlugin = new PasteImagePlugin(imageManager);
 
-    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
-        leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
+    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
@@ -88,6 +90,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
         leanRooster.mode = LeanRoosterModes.View;
     };
     let emojiPlugin: EmojiPlugin = null;
+    let cmdButton: IButton;
 
     return (
         <FocusOutShell
@@ -109,18 +112,37 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     <RoosterCommandBar
                         key="cmd"
                         className="lean-cmdbar"
-                        buttonIconProps={{
-                            [RoosterCommmandBarButtonKeys.FontColor]: { iconName: "RoosterSvg-Color" },
-                            [RoosterCommmandBarButtonKeys.BulletedList]: { iconName: "RoosterSvg-Bullets" },
-                            [RoosterCommmandBarButtonKeys.NumberedList]: { iconName: "RoosterSvg-Numbering" },
-                            [RoosterCommmandBarButtonKeys.Highlight]: { iconName: "RoosterSvg-Highlight" },
-                            [RoosterCommmandBarButtonKeys.Indent]: { iconName: "RoosterSvg-Indent" },
-                            [RoosterCommmandBarButtonKeys.Outdent]: { iconName: "RoosterSvg-Outdent" },
-                            [RoosterCommmandBarButtonKeys.Link]: { iconName: "RoosterSvg-Link" },
-                            [RoosterCommmandBarButtonKeys.Unlink]: { iconName: "RoosterSvg-Unlink" },
-                            [RoosterCommmandBarButtonKeys.ClearFormat]: { iconName: "RoosterSvg-ClearFormat" }
-                        }}
-                        additionalButtons={[
+                        buttonOverrides={[
+                            {
+                                key: RoosterCommmandBarButtonKeys.FontColor,
+                                onRender: (item: IContextualMenuItem) => (
+                                    <TooltipHost content={item.name}>
+                                        <CommandBarButton
+                                            componentRef={ref => (cmdButton = ref)}
+                                            {...item as any}
+                                            ariaLabel={item.name}
+                                            menuProps={
+                                                item.subMenuProps && {
+                                                    ...item.subMenuProps,
+                                                    onDismiss: ev => {
+                                                        item.subMenuProps.onDismiss(ev);
+                                                        cmdButton.dismissMenu();
+                                                    }
+                                                }
+                                            }
+                                            onRenderIcon={() => createLinkedSvg("color")}
+                                        />
+                                    </TooltipHost>
+                                )
+                            },
+                            { key: RoosterCommmandBarButtonKeys.BulletedList, iconProps: { iconName: "RoosterSvg-Bullets" } },
+                            { key: RoosterCommmandBarButtonKeys.NumberedList, iconProps: { iconName: "RoosterSvg-Numbering" } },
+                            { key: RoosterCommmandBarButtonKeys.Highlight, iconProps: { iconName: "RoosterSvg-Highlight" } },
+                            { key: RoosterCommmandBarButtonKeys.Indent, iconProps: { iconName: "RoosterSvg-Indent" } },
+                            { key: RoosterCommmandBarButtonKeys.Outdent, iconProps: { iconName: "RoosterSvg-Outdent" } },
+                            { key: RoosterCommmandBarButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
+                            { key: RoosterCommmandBarButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
+                            { key: RoosterCommmandBarButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
                             {
                                 key: "vacation",
                                 name: "Vacation",

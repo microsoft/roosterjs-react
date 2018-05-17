@@ -88,18 +88,18 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     private _initButtons(props: RoosterCommandBarProps): void {
-        const { visibleButtonKeys, additionalButtons } = this.props;
+        const { visibleButtonKeys, buttonOverrides = [] } = this.props;
 
         this._buttonMap = { ...OutOfBoxCommandBarButtonMap };
         this._visibleButtonKeys = visibleButtonKeys ? [...visibleButtonKeys] : OutOfBoxCommandBarButtons.map(item => item.key);
 
-        // don't push any more visible button keys if there aren't any additional buttons
-        if (!additionalButtons) {
-            return;
-        }
+        for (const button of buttonOverrides) {
+            if (!button) {
+                continue;
+            }
 
-        for (const button of additionalButtons) {
-            this._buttonMap[button.key] = button;
+            const currentButton = this._buttonMap[button.key];
+            this._buttonMap[button.key] = currentButton ? { ...currentButton, ...button } : button;
 
             // only add to button keys if visibleButtonKeys property wasn't passed in and the key isn't already added
             if (!visibleButtonKeys && this._visibleButtonKeys.indexOf(button.key) === -1) {
@@ -139,7 +139,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             return null;
         }
 
-        const { strings, calloutClassName, calloutOnDismiss, buttonIconProps } = this.props;
+        const { strings, calloutClassName, calloutOnDismiss } = this.props;
         const { formatState } = this.state;
         const item = { ...commandBarItem }; // make a copy of the OOB item template
 
@@ -157,17 +157,11 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         if (strings && strings[item.key]) {
             item.name = strings[item.key];
         }
-        if (item.name && item.title == null) {
-            item.title = item.name;
-        }
         if (item.subMenuProps && item.subMenuProps.items) {
             item.subMenuProps = { ...item.subMenuProps };
             item.subMenuProps.items = item.subMenuProps.items.map(this._getMenuItem);
             item.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
             item.subMenuProps.onDismiss = calloutOnDismiss;
-        }
-        if (buttonIconProps && buttonIconProps[item.key]) {
-            item.iconProps = buttonIconProps[item.key];
         }
 
         return item;

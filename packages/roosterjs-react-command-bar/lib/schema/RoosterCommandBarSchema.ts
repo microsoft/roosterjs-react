@@ -1,5 +1,4 @@
 import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
-import { IIconProps } from 'office-ui-fabric-react/lib/Icon';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState } from 'roosterjs-editor-types';
 import { ImageManagerInteface } from 'roosterjs-react-common';
@@ -13,9 +12,8 @@ export interface RoosterCommandBarProps {
     className?: string;
     roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
     emojiPlugin?: EmojiPlugin;
-    additionalButtons?: RoosterCommandBarButton[];
+    buttonOverrides?: RoosterCommandBarButton[];
     visibleButtonKeys?: string[];
-    buttonIconProps?: { [key: string]: IIconProps };
     calloutClassName?: string;
     calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
 }
