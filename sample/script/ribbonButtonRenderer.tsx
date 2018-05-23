@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { Image } from 'office-ui-fabric-react/lib/Image';
+import { Strings } from 'roosterjs-react-common';
 
 const BOLD_SVG = require('./icons/bold.svg');
 const ITALIC_SVG = require('./icons/italic.svg');
@@ -34,7 +35,7 @@ const FONTSIZE_SVG = require('./icons/fontsize.svg');
 const FONTNAME_SVG = require('./icons/fontname.svg');
 const EMOJI_SVG = require('./icons/emoji.svg');
 
-let buttonImages: { [key: string]: string } = {};
+let buttonImages: Strings = {};
 buttonImages['bold'] = BOLD_SVG;
 buttonImages['italic'] = ITALIC_SVG;
 buttonImages['underline'] = UNDERLINE_SVG;

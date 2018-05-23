@@ -1,6 +1,7 @@
-import { Undo } from "roosterjs-editor-core";
-import { UndoSnapshotsService } from "roosterjs-editor-core/lib/undo/UndoSnapshots";
-import { ImageManagerInteface, hasPlaceholder, UpdatePlaceholdersResult } from "../utils/ImageManager";
+import { Undo } from 'roosterjs-editor-core';
+import { UndoSnapshotsService } from 'roosterjs-editor-core/lib/undo/UndoSnapshots';
+
+import { hasPlaceholder, ImageManagerInteface, UpdatePlaceholdersResult } from '../utils/ImageManager';
 
 // Max stack size that cannot be exceeded. When exceeded, old undo history will be dropped
 // to keep size under limit. This is kept at 10MB.
@@ -32,6 +33,7 @@ class UndoSnapshotsWithImage implements UndoSnapshotsService {
             return null;
         }
 
+        const lastIndex = this.currentIndex;
         this.currentIndex += delta;
         const snapshot = this.snapshots[this.currentIndex];
 
@@ -44,10 +46,22 @@ class UndoSnapshotsWithImage implements UndoSnapshotsService {
             const result: UpdatePlaceholdersResult = this.imageManager.updatePlaceholders(originalValue);
             snapshot.hasPlaceholder = !result.resolvedAll;
             snapshot.value = result.html;
-            const delta = originalValue.length - result.html.length;
+            const sizeDelta = originalValue.length - result.html.length;
 
-            // it is possible total size is greater at this point (unlikely if default spinner is used)
-            this.totalSize -= delta;
+            // if we undo/redo and the content is the same after updating the placeholders, keep moving
+            // (we get two snapshots when inserting an image, one for the placeholder, and another when the placeholder is resolved)
+            const lastSnapshot = this.snapshots[lastIndex];
+            if (lastSnapshot && lastSnapshot.value === snapshot.value && delta !== 0) {
+                // since content is the same, remove the last "duplicated" snapshot
+                this.totalSize -= snapshot.value.length;
+                this.snapshots.splice(lastIndex);
+
+                // then, move again by one unit at a time and until content is different after resolving placeholders
+                return this.move(delta < 0 ? -1 : 1);
+            } else {
+                // it is possible total size is greater at this point (unlikely if default spinner is used)
+                this.totalSize -= sizeDelta;
+            }
         }
 
         return snapshot.value;
@@ -97,11 +111,7 @@ export default class UndoWithImagePlugin extends Undo {
      * @param bufferSize The buffer size for snapshots. Default value is 10MB, it is possible after
      * placeholder to image resolution that buffer size is greater.
      */
-    constructor(
-        private imageManager: ImageManagerInteface,
-        preserveSnapshots?: boolean,
-        private bufferSize: number = MAXSIZELIMIT
-    ) {
+    constructor(private imageManager: ImageManagerInteface, preserveSnapshots?: boolean, private bufferSize: number = MAXSIZELIMIT) {
         super(preserveSnapshots, bufferSize);
     }
 

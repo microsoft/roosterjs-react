@@ -64,6 +64,7 @@ const emojiList = {
         createEmoji('1f607', 'emjD1f607', 'emjK1f607'),
         common2,
         common1,
+        createEmoji('1f642', 'emjD1f642', 'emjK1f642'),
         createEmoji('1f60b', 'emjD1f60b', 'emjK1f60b'),
         createEmoji('1f60c', 'emjD1f60c', 'emjK1f60c'),
         createEmoji('1f60d', 'emjD1f60d', 'emjK1f60d'),

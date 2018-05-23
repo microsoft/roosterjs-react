@@ -1,21 +1,15 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import {
-    ReactEditor,
-    createEditorViewState,
-    Ribbon,
-    RibbonPlugin,
-    EmojiPlugin,
-    createEmojiButton,
-} from 'roosterjs-react';
+import { createEditorViewState, EmojiPlugin, ReactEditor, Ribbon, RibbonPlugin } from 'roosterjs-react';
+
 import ribbonButtonRenderer from './ribbonButtonRenderer';
 
-let container = document.getElementById('container');
-let viewState = createEditorViewState('Hello ReactEditor!');
-let ribbonPlugin = new RibbonPlugin();
-let emojiPlugin = new EmojiPlugin();
-let emojiButton = createEmojiButton(emojiPlugin);
-let ribbonButtons = [
+const container = document.getElementById('container');
+const viewState = createEditorViewState('Hello ReactEditor!');
+const ribbonPlugin = new RibbonPlugin();
+const emojiPlugin = new EmojiPlugin();
+const emojiButton = { name: 'btnEmoji', onClick: editor => emojiPlugin.startEmoji() };
+const ribbonButtons = [
     'emoji',
     'bold',
     'italic',
@@ -42,25 +36,13 @@ let ribbonButtons = [
     'rtl',
     'undo',
     'redo',
-    'unformat',
+    'unformat'
 ];
-let editor = (
+const editor = (
     <div>
-        <Ribbon
-            ribbonPlugin={ribbonPlugin}
-            className={'myRibbon'}
-            buttonRenderer={ribbonButtonRenderer}
-            buttonNames={ribbonButtons}
-            additionalButtons={{ emoji: emojiButton }}
-        />
-        <ReactEditor
-            className={'editor'}
-            viewState={viewState}
-            plugins={[ribbonPlugin, emojiPlugin]}
-        />
+        <Ribbon ribbonPlugin={ribbonPlugin} className={'myRibbon'} buttonRenderer={ribbonButtonRenderer} buttonNames={ribbonButtons} additionalButtons={{ emoji: emojiButton }} />
+        <ReactEditor className={'editor'} viewState={viewState} plugins={[ribbonPlugin, emojiPlugin]} />
     </div>
 );
-window.addEventListener('resize', () => {
-    ribbonPlugin.resize();
-});
+window.addEventListener('resize', () => ribbonPlugin.resize());
 ReactDom.render(editor, container, null);

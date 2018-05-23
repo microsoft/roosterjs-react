@@ -39,6 +39,10 @@ export default class ImageManager implements ImageManagerInteface {
     }
 
     public upload(editor: Editor, image: File): HTMLElement {
+        if (!image || image.size === 0) {
+            return null;
+        }
+
         const placeholder = this.options.createImagePlaceholder(editor, image);
         if (placeholder === null) {
             return null;
@@ -51,15 +55,17 @@ export default class ImageManager implements ImageManagerInteface {
         this.options.uploadImage(image).then((url: string) => {
             this.idToUrlImageCache[placeholdId] = url;
 
-            if (editor.isDisposed()) {
+            if (editor.isDisposed() || !editor.contains(placeholder)) {
                 return;
             }
 
             this.replacePlaceholder(placeholder, url, editor);
+            editor.triggerContentChangedEvent("ImageManager");
         });
 
         return placeholder;
     }
+
     public updatePlaceholders(html: string): UpdatePlaceholdersResult {
         // example: <TAG data-paste-image-placeholder-804b751e="10" />
         const container = document.createElement("div");

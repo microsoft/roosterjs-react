@@ -2,7 +2,7 @@ import './LeanRooster.scss.g';
 
 import * as React from 'react';
 import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from 'roosterjs-editor-core';
-import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
+import { ContentEdit, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
 import { css, NullFunction } from 'roosterjs-react-common';
 
@@ -158,6 +158,10 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
+    public getContent(): string {
+        return this._editor ? this._editor.getContent() : this._contentDiv.innerHTML;
+    }
+
     private _setInitialReactContent(): void {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
@@ -180,13 +184,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _createEditorOptions(): EditorOptions {
         const { plugins: additionalPlugins = [], undo = new Undo(), hyperlinkToolTipCallback, defaultFormat = {} } = this.props;
 
-        const plugins: EditorPlugin[] = [
-            new ContentEdit(),
-            new HyperLink(hyperlinkToolTipCallback),
-            new Paste(true /*useDirectPaste*/),
-            new DefaultShortcut(),
-            ...additionalPlugins
-        ];
+        const plugins: EditorPlugin[] = [new ContentEdit(), new HyperLink(hyperlinkToolTipCallback), new Paste(true /*useDirectPaste*/), ...additionalPlugins];
 
         // Important: don't set the initial content, the content editable already starts with initial HTML content
         return { plugins, defaultFormat, undo, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */ };
@@ -286,7 +284,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         if (this._trySwithToEditMode(forceUpdate)) {
             this._editor.focus();
         }
-        
+
         onFocus(ev);
     };
 
