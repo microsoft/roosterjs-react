@@ -5,9 +5,9 @@ import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 import {
+    ContentChangedPlugin,
     createEditorViewState,
     EditorViewState,
     EmojiPlugin,
@@ -51,16 +51,16 @@ registerIcons({
     }
 });
 
-class ContentChangedLoggerPlugin implements EditorPlugin {
-    public initialize(editor: Editor): void {}
+class ContentChangedLoggerPlugin extends ContentChangedPlugin {
+    constructor() {
+        super(_ => console.log("Content changed"));
+    }
 
     public onPluginEvent(event: PluginEvent): void {
         if (event && event.eventType === PluginEventType.ContentChanged) {
             console.log(`Content changed from ${(event as any).source}`);
         }
     }
-
-    public dispose(): void {}
 }
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
