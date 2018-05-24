@@ -185,6 +185,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
         if (strings && strings[button.key] != null) {
             button.name = strings[button.key];
+            if (button.title) {
+                button.title = button.name; // for buttons like color which has title/tooltip
+            }
         }
         if (button.subMenuProps && button.subMenuProps.items) {
             button.subMenuProps = { ...button.subMenuProps }; // make a copy of the OOB submenu properties since we're changing them
