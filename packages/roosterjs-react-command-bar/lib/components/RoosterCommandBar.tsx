@@ -183,7 +183,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                 className: className.split(" ").indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
             };
         }
-        if (strings && strings[button.key]) {
+        if (strings && strings[button.key] != null) {
             button.name = strings[button.key];
         }
         if (button.subMenuProps && button.subMenuProps.items) {
