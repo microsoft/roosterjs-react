@@ -1,22 +1,22 @@
-import "./RoosterCommandBar.scss.g";
+import './RoosterCommandBar.scss.g';
 
-import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
-import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
-import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
-import { Async, css } from "office-ui-fabric-react/lib/Utilities";
-import * as React from "react";
-import { getFormatState, insertImage } from "roosterjs-editor-api";
-import { Editor } from "roosterjs-editor-core";
-import { ChangeSource, FormatState } from "roosterjs-editor-types";
-import { createFormatState } from "roosterjs-react-editor";
+import { ICalloutProps } from 'office-ui-fabric-react/lib/Callout';
+import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
+import { IContextualMenuItem, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
+import * as React from 'react';
+import { getFormatState, insertImage } from 'roosterjs-editor-api';
+import { Editor } from 'roosterjs-editor-core';
+import { ChangeSource, FormatState } from 'roosterjs-editor-types';
+import { createFormatState } from 'roosterjs-react-editor';
 
-import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
+import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys as ButtonKeys
-} from "../utils/OutOfBoxCommandBarButtons";
+    RoosterCommmandBarButtonKeys as ButtonKeys,
+} from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
 
@@ -47,9 +47,13 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                     className={"command-bar"}
                     items={this._buttons}
                     overflowMenuProps={
-                        { calloutProps: { className: calloutClassName } as ICalloutProps, onDismiss: calloutOnDismiss, className: "rooster-command-bar-overflow" } as Partial<
-                            IContextualMenuProps
-                        >
+                        {
+                            calloutProps: {
+                                className: calloutClassName
+                            } as ICalloutProps,
+                            onDismiss: calloutOnDismiss,
+                            className: "rooster-command-bar-overflow"
+                        } as Partial<IContextualMenuProps>
                     }
                 />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
