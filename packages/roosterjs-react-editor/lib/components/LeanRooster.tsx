@@ -2,6 +2,7 @@ import './LeanRooster.scss.g';
 
 import * as React from 'react';
 import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from 'roosterjs-editor-core';
+import { isNodeEmpty } from 'roosterjs-editor-dom';
 import { ContentEdit, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
 import { css, NullFunction } from 'roosterjs-react-common';
@@ -156,6 +157,14 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
             selection.addRange(range);
         }
+    }
+
+    public isEmpty(trim?: boolean): boolean {
+        if (!this._editor || this._editor.isDisposed()) {
+            return isNodeEmpty(this._contentDiv, trim);
+        }
+
+        return this._editor.isEmpty(trim);
     }
 
     public getContent(): string {
