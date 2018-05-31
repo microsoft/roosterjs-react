@@ -25,9 +25,17 @@
             background-color: white;
         }
 
+        .rooster-command-bar button {
+            fill: #212121;
+        }
+
         @media screen and (-ms-high-contrast: active) {
             .lean-rooster {
                 background-color: Background;
+            }
+
+            .rooster-command-bar button {
+                fill: ButtonText;
             }
         }
 
@@ -54,6 +62,7 @@
         }
 
         /* SVG won't have disabled color so we'll dim the svg instead */
+
         .lean-cmdbar button:disabled svg {
             opacity: 0.3;
         }

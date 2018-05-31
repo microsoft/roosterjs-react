@@ -10,7 +10,6 @@ import { css, NullFunction } from 'roosterjs-react-common';
 import EditorViewState from '../schema/EditorViewState';
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
-const IsEmptyLengthThreshold = 500;
 
 export const enum LeanRoosterModes {
     View = 0,
@@ -35,6 +34,9 @@ export interface LeanRoosterProps {
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
     viewState: EditorViewState;
     placeholder?: string;
+    isEmptyFunction?: (element: HTMLDivElement, trim?: boolean) => boolean;
+    isEmptyCheckThreshold?: number;
+    isEmptyTrimValue?: boolean;
 }
 
 export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
@@ -129,9 +131,10 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
             this._editor.setContent(viewState.content);
             this._editorOptions.undo.clear();
             this._editor.addUndoSnapshot();
+            this._refreshPlaceholder();
         } else {
             this._setInitialReactContent();
-            this.forceUpdate();
+            this.forceUpdate(this._refreshPlaceholder);
         }
     }
 
@@ -159,23 +162,40 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
-    public isEmpty(trim?: boolean): boolean {
-        if (!this._editor || this._editor.isDisposed()) {
-            return isNodeEmpty(this._contentDiv, trim);
+    public isEmpty(): boolean {
+        const { isEmptyTrimValue = false, isEmptyCheckThreshold, viewState, isEmptyFunction = isNodeEmpty } = this.props;
+
+        if (!this._contentDiv) {
+            return !viewState.content || viewState.content.length === 0;
         }
 
-        return this._editor.isEmpty(trim);
+        if (isEmptyCheckThreshold && this._contentDiv.innerHTML.length >= isEmptyCheckThreshold) {
+            return false;
+        }
+
+        return isEmptyFunction(this._contentDiv, isEmptyTrimValue);
     }
 
     public getContent(): string {
         return this._editor ? this._editor.getContent() : this._contentDiv.innerHTML;
     }
 
+    private _refreshPlaceholder = (): void => {
+        const isEmpty = this.props.placeholder && this.isEmpty();
+        const wasPlaceholderVisible = this._placeholderVisible;
+        this._hasPlaceholder = isEmpty;
+        this._placeholderVisible = isEmpty;
+
+        // refresh if the placeholder's visibility was changed
+        if (wasPlaceholderVisible !== this._placeholderVisible) {
+            this.forceUpdate();
+        }
+    };
+
     private _setInitialReactContent(): void {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
         this._initialContent = hasContent ? { __html: viewState.content } : undefined;
-        this._placeholderVisible = !hasContent;
     }
 
     private _updateContentToViewState(isInitializing?: boolean): string {
@@ -272,11 +292,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
         this._hasPlaceholder = false; // reset flag each time we blur
         const content = this._updateContentToViewState();
-        if (content !== null && content.length <= IsEmptyLengthThreshold && this.props.placeholder) {
-            const trim = true;
-            this._hasPlaceholder = this._editor.isEmpty(trim); // set only if conditions are met
-            this._placeholderVisible = this._hasPlaceholder;
-            this.forceUpdate();
+        if (content !== null) {
+            this._refreshPlaceholder();
         }
 
         onBlur(ev);
