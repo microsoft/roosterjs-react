@@ -2,7 +2,7 @@ import './RoosterCommandBar.scss.g';
 
 import { ICalloutProps } from 'office-ui-fabric-react/lib/Callout';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
-import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { IContextualMenuItem, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
 import * as React from 'react';
 import { getFormatState, insertImage } from 'roosterjs-editor-api';
@@ -15,7 +15,7 @@ import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys,
+    RoosterCommmandBarButtonKeys as ButtonKeys,
 } from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
@@ -37,13 +37,25 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     public render(): JSX.Element {
-        const { className } = this.props;
+        const { className, calloutClassName, calloutOnDismiss } = this.props;
 
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
         return (
             <div className={css("rooster-command-bar", className)}>
-                <CommandBar className={"command-bar"} items={this._buttons} />
+                <CommandBar
+                    className={"command-bar"}
+                    items={this._buttons}
+                    overflowMenuProps={
+                        {
+                            calloutProps: {
+                                className: calloutClassName
+                            } as ICalloutProps,
+                            onDismiss: calloutOnDismiss,
+                            className: "rooster-command-bar-overflow"
+                        } as Partial<IContextualMenuProps>
+                    }
+                />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
         );
@@ -77,7 +89,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     private _initButtons(props: RoosterCommandBarProps): void {
-        const { buttonOverrides = [] } = this.props;
+        const { buttonOverrides = [], emojiPlugin } = this.props;
 
         const buttonMap = { ...OutOfBoxCommandBarButtonMap };
         const visibleButtonKeys = OutOfBoxCommandBarButtons.map(item => item.key);
@@ -94,8 +106,14 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                 visibleButtonKeys.push(button.key);
             }
         }
+        if (!emojiPlugin) {
+            const emojiIndex = visibleButtonKeys.indexOf(ButtonKeys.Emoji);
+            if (emojiIndex > -1) {
+                visibleButtonKeys.splice(emojiIndex, 1);
+            }
+        }
 
-        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(button => !!button && !button.exclude);
+        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(b => !!b && !b.exclude);
         this._buttons.sort((l: RoosterCommandBarButton, r: RoosterCommandBarButton) => {
             if (l.order !== r.order) {
                 const leftOrder = l.order == null ? Number.MAX_VALUE : l.order;
@@ -160,7 +178,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
         const button = { ...commandBarButton }; // make a copy of the OOB button template since we're changing its properties
 
-        button.onClick = button.onClick || this._onCommandBarItemClick.bind(this, button);
+        button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
         if (button.iconProps) {
             const { className = "" } = button.iconProps;
@@ -169,8 +187,11 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                 className: className.split(" ").indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
             };
         }
-        if (strings && strings[button.key]) {
+        if (strings && strings[button.key] != null) {
             button.name = strings[button.key];
+            if (button.title) {
+                button.title = button.name; // for buttons like color which has title/tooltip
+            }
         }
         if (button.subMenuProps && button.subMenuProps.items) {
             button.subMenuProps = { ...button.subMenuProps }; // make a copy of the OOB submenu properties since we're changing them
@@ -185,8 +206,8 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return button;
     };
 
-    private _onCommandBarItemClick = (button: RoosterCommandBarButton | IContextualMenuItem) => {
-        const { roosterCommandBarPlugin } = this.props;
+    private _onCommandBarButtonClick = (button: RoosterCommandBarButton | IContextualMenuItem) => {
+        const { roosterCommandBarPlugin, onButtonClicked } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
         if (editor && button.handleChange) {
@@ -195,11 +216,12 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
 
         // special case insert image
-        if (button.key === RoosterCommmandBarButtonKeys.InsertImage) {
+        if (button.key === ButtonKeys.InsertImage) {
             this._fileInput.click();
         }
 
         this._updateFormatState();
+        onButtonClicked && onButtonClicked(button.key);
     };
 
     private _updateFormatState = (): void => {

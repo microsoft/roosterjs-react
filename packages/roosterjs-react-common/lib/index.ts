@@ -7,4 +7,5 @@ export { default as confirm } from './dialog/components/ConfirmDialog';
 export { default as ImageManager, ImageManagerInteface, ImageManagerOptions, UpdatePlaceholdersResult } from './utils/ImageManager';
 export { default as PasteImagePlugin } from './plugins/PasteImagePlugin';
 export { default as UndoWithImagePlugin } from './plugins/UndoWithImagePlugin';
+export { default as ContentChangedPlugin } from './plugins/ContentChangedPlugin';
 export { Base64Svgs } from './resources/Images';

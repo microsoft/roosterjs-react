@@ -2,7 +2,7 @@
   "name": "roosterjs-react-emoji",
   "description": "Emoji plugin for roosterjs-react editor",
   "dependencies": {
-    "roosterjs-react-ribbon": ""
+    "roosterjs-react-common": ""
   },
   "main": "./lib/index.ts"
 }

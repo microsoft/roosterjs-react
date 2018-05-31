@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "A react component wrapper for roosterjs with more plugins",
   "main": "lib/index.js",
   "repository": {
@@ -22,12 +22,12 @@
   "author": "Jiuqing Song",
   "license": "MIT",
   "dependencies": {
-    "@microsoft/load-themed-styles": "1.7.14",
-    "office-ui-fabric-react": "~5.79.0",
+    "@microsoft/load-themed-styles": "^1.7.59",
+    "office-ui-fabric-react": "~5.106.1",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.10.4",
-    "roosterjs-plugin-image-resize": "^6.10.4"
+    "roosterjs-editor-plugins": "^6.10.6",
+    "roosterjs-plugin-image-resize": "^6.10.6"
   },
   "devDependencies": {
     "@types/node": "8.0.50",

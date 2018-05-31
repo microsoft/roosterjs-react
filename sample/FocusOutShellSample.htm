@@ -1,46 +1,69 @@
 <html>
-    <head>
-        <title>Rooster-React FocusOutShell Sample Page</title>
-        <style>
-            .editor-container {
-                display: flex;
-                flex-direction: column;
-                height: 900px;
-            }
-            .focus-out-shell {
-                display: flex;
-                flex: 1;
-                flex-direction: column;
-                margin-bottom: 40px;
-                border: solid 1px black;
-            }
-            .lean-rooster {
-                height: 100%;
-                outline: none;
-                overflow: auto;
-            }
-            .lean-rooster.view-mode + .rooster-command-bar {
-               display: none;
-            }
-            .focus-out-shell {
-                border-color: transparent;
-            }
-            .focus-out-shell:hover {
-                border-color: silver;
-            }
-            .focus-out-shell.is-focused {
-                border-color: rgb(16, 110, 190);;
-            }
 
-            /* SVG won't have disabled color so we'll dim the svg instead */
-            .lean-cmdbar button:disabled svg {
-                opacity: 0.3;
+<head>
+    <title>Rooster-React FocusOutShell Sample Page</title>
+    <style>
+        .editor-container {
+            display: flex;
+            flex-direction: column;
+            height: 900px;
+        }
+
+        .focus-out-shell {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            margin-bottom: 40px;
+            border: solid 1px black;
+            position: relative;
+        }
+
+        .lean-rooster {
+            height: 100%;
+            outline: none;
+            overflow: auto;
+            background-color: white;
+        }
+
+        @media screen and (-ms-high-contrast: active) {
+            .lean-rooster {
+                background-color: Background;
             }
-        </style>
-        <link rel="stylesheet" href="//static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.0/css/fabric.min.css">
-    </head>
-    <body>
-        <div id="container"></div>
-        <script src="script/FocusOutShellSample.js"></script>
-    </body>
+        }
+
+        .lean-rooster.view-mode+.rooster-command-bar {
+            position: absolute;
+            width: 100%;
+            z-index: -1;
+        }
+
+        .focus-out-shell {
+            border-color: transparent;
+        }
+
+        .focus-out-shell:hover {
+            border-color: silver;
+        }
+
+        .focus-out-shell.is-focused {
+            border-color: rgb(16, 110, 190);
+        }
+
+        .lean-cmdbar button {
+            height: 40px;
+        }
+
+        /* SVG won't have disabled color so we'll dim the svg instead */
+        .lean-cmdbar button:disabled svg {
+            opacity: 0.3;
+        }
+    </style>
+    <link rel="stylesheet" href="//static2.sharepointonline.com/files/fabric/office-ui-fabric-core/9.6.0/css/fabric.min.css">
+</head>
+
+<body>
+    <div id="container"></div>
+    <script src="script/FocusOutShellSample.js"></script>
+</body>
+
 </html>

@@ -1,14 +1,14 @@
-import { Editor, EditorPlugin, browserData } from 'roosterjs-editor-core';
-import { PluginEvent, PluginEventType, PluginDomEvent } from 'roosterjs-editor-types';
-import { DefaultShortcut } from 'roosterjs-editor-plugins';
-import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
-import { createLinkWithPrompt } from 'roosterjs-react-common';
+import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from 'roosterjs-editor-api';
+import { Editor, EditorPlugin } from 'roosterjs-editor-core';
+import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
+import { createLinkWithPrompt, NullFunction, Strings } from 'roosterjs-react-common';
 
 import RoosterCommandBar from '../components/RoosterCommandBar';
 import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
+import { getCommandFromEvent, RoosterCommandBarCommands } from './RoosterCommandBarPlugin.Shortcuts';
 
 export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCommandBarPluginInterface {
-    private static readonly EventTypesToHandle: { [eventType: number]: boolean } = {
+    private static readonly EventTypesToRefreshFormatState: { [eventType: number]: boolean } = {
         [PluginEventType.KeyUp]: true,
         [PluginEventType.MouseDown]: true,
         [PluginEventType.MouseUp]: true,
@@ -17,15 +17,13 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
 
     private editor: Editor;
     private commandBars: RoosterCommandBar[] = [];
-    private defaultShortcut: DefaultShortcut = new DefaultShortcut();
-    private strings: { [key: string]: string };
+    private strings: Strings;
 
-    constructor(strings?: { [key: string]: string }) {
+    constructor(strings?: Strings, private onShortcutTriggered: (command: RoosterCommandBarCommands) => void = NullFunction) {
         this.strings = strings;
     }
 
     public initialize(editor: Editor): void {
-        this.defaultShortcut.initialize(editor);
         this.editor = editor;
     }
 
@@ -38,15 +36,10 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
             this.commandBars.forEach((_, i) => (this.commandBars[i] = undefined));
             this.commandBars = [];
         }
-
-        if (this.defaultShortcut) {
-            this.defaultShortcut.dispose();
-            this.defaultShortcut = null;
-        }
     }
 
     public onPluginEvent(event: PluginEvent): void {
-        if (this.commandBars && RoosterCommandBarPlugin.EventTypesToHandle[event.eventType]) {
+        if (this.commandBars && RoosterCommandBarPlugin.EventTypesToRefreshFormatState[event.eventType]) {
             this.commandBars.forEach(commandBar => commandBar.refreshFormatState());
             return;
         }
@@ -57,14 +50,50 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     }
 
     private handleShortcuts(event: PluginEvent) {
-        const keyboardEvent = (event as PluginDomEvent).rawEvent as KeyboardEvent;
+        const pluginDomEvent = event as PluginDomEvent;
+        const keyboardEvent = pluginDomEvent.rawEvent as KeyboardEvent;
         if (keyboardEvent.defaultPrevented) {
             return;
         }
 
-        const isCommand = browserData.isMac ? keyboardEvent.metaKey : keyboardEvent.ctrlKey;
-        if (isCommand && keyboardEvent.which === KeyCodes.k && this.commandBars) {
-            createLinkWithPrompt(this.editor, this.strings);
+        const command = getCommandFromEvent(event);
+        if (command === RoosterCommandBarCommands.None) {
+            return;
+        }
+
+        const editor = this.editor;
+        let commandExecuted = true;
+        switch (command) {
+            case RoosterCommandBarCommands.Bold:
+                toggleBold(editor);
+                break;
+            case RoosterCommandBarCommands.Italic:
+                toggleItalic(editor);
+                break;
+            case RoosterCommandBarCommands.Underline:
+                toggleUnderline(editor);
+                break;
+            case RoosterCommandBarCommands.Undo:
+                editor.undo();
+                break;
+            case RoosterCommandBarCommands.Redo:
+                editor.redo();
+                break;
+            case RoosterCommandBarCommands.Bullet:
+                toggleBullet(editor);
+                break;
+            case RoosterCommandBarCommands.Numbering:
+                toggleNumbering(editor);
+                break;
+            case RoosterCommandBarCommands.InsertLink:
+                createLinkWithPrompt(editor, this.strings);
+                break;
+            default:
+                commandExecuted = false;
+        }
+
+        if (commandExecuted) {
+            this.onShortcutTriggered(command);
             keyboardEvent.preventDefault();
             keyboardEvent.stopPropagation();
         }

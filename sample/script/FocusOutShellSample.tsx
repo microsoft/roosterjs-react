@@ -5,7 +5,9 @@ import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
+import { PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 import {
+    ContentChangedPlugin,
     createEditorViewState,
     EditorViewState,
     EmojiPlugin,
@@ -18,16 +20,17 @@ import {
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
+    RoosterCommandBarCommands,
     RoosterCommandBarPlugin,
-    RoosterCommmandBarButtonKeys,
+    RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
     UndoWithImagePlugin,
 } from 'roosterjs-react';
 
 function createLinkedSvg(name: string): JSX.Element {
     return (
-        <svg height="40" width="20">
-            <use xlinkHref={`script/sprites/command-bar-sprites.svg#rooster-svg-${name}`} />
+        <svg height="40" width="16">
+            <use xlinkHref={`script/sprites/command-bar-sprite.svg#rooster-svg-${name}`} />
         </svg>
     );
 }
@@ -43,9 +46,22 @@ registerIcons({
         "RoosterSvg-Highlight": createLinkedSvg("highlight"),
         "RoosterSvg-Indent": createLinkedSvg("indent"),
         "RoosterSvg-Outdent": createLinkedSvg("outdent"),
-        "RoosterSvg-ClearFormat": createLinkedSvg("clear-format")
+        "RoosterSvg-ClearFormat": createLinkedSvg("clear-format"),
+        "RoosterSvg-Photo": createLinkedSvg("photo")
     }
 });
+
+class ContentChangedLoggerPlugin extends ContentChangedPlugin {
+    constructor() {
+        super(_ => console.log("Content changed"));
+    }
+
+    public onPluginEvent(event: PluginEvent): void {
+        if (event && event.eventType === PluginEventType.ContentChanged) {
+            console.log(`Content changed from ${(event as any).source}`);
+        }
+    }
+}
 
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
@@ -54,9 +70,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     let leanRooster: LeanRooster;
     const leanRoosterOnRef = (ref: LeanRooster) => {
         leanRooster = ref;
-        if (onRef) {
-            onRef(ref, leanRoosterViewState);
-        }
+        onRef && onRef(ref, leanRoosterViewState);
     };
 
     let commandBar: RoosterCommandBar;
@@ -77,7 +91,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             })
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin();
+    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterCommandBarCommands) => console.log(command));
     const imagePlugin = new PasteImagePlugin(imageManager);
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
@@ -104,19 +118,20 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         key="rooster"
                         viewState={leanRoosterViewState}
                         placeholder={`${name} placeholder`}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize()]}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize(), new ContentChangedLoggerPlugin()]}
                         undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
+                        hyperlinkToolTipCallback={(url: string) => `CTRL+Click to follow link\n${url}`}
                     />,
                     <RoosterCommandBar
                         key="cmd"
                         className="lean-cmdbar"
                         buttonOverrides={[
                             {
-                                key: RoosterCommmandBarButtonKeys.FontColor,
+                                key: ButtonKeys.FontColor,
                                 onRender: (item: IContextualMenuItem) => (
-                                    <TooltipHost content={item.name}>
+                                    <TooltipHost content={item.name} key={item.key}>
                                         <CommandBarButton
                                             componentRef={ref => (cmdButton = ref)}
                                             {...item as any}
@@ -135,20 +150,24 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                                     </TooltipHost>
                                 )
                             },
-                            { key: RoosterCommmandBarButtonKeys.BulletedList, iconProps: { iconName: "RoosterSvg-Bullets" } },
-                            { key: RoosterCommmandBarButtonKeys.NumberedList, iconProps: { iconName: "RoosterSvg-Numbering" } },
-                            { key: RoosterCommmandBarButtonKeys.Highlight, iconProps: { iconName: "RoosterSvg-Highlight" } },
-                            { key: RoosterCommmandBarButtonKeys.Indent, iconProps: { iconName: "RoosterSvg-Indent" } },
-                            { key: RoosterCommmandBarButtonKeys.Outdent, iconProps: { iconName: "RoosterSvg-Outdent" } },
-                            { key: RoosterCommmandBarButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
-                            { key: RoosterCommmandBarButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
-                            { key: RoosterCommmandBarButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
-                            { key: RoosterCommmandBarButtonKeys.Strikethrough, exclude: true },
+                            { key: ButtonKeys.BulletedList, iconProps: { iconName: "RoosterSvg-Bullets" } },
+                            { key: ButtonKeys.NumberedList, iconProps: { iconName: "RoosterSvg-Numbering" } },
+                            { key: ButtonKeys.Highlight, iconProps: { iconName: "RoosterSvg-Highlight" } },
+                            { key: ButtonKeys.Indent, iconProps: { iconName: "RoosterSvg-Indent" } },
+                            { key: ButtonKeys.Outdent, iconProps: { iconName: "RoosterSvg-Outdent" } },
+                            { key: ButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
+                            { key: ButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
+                            { key: ButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
+                            { key: ButtonKeys.InsertImage, iconProps: { iconName: "RoosterSvg-Photo" } },
+                            { key: ButtonKeys.Strikethrough, exclude: true },
                             {
                                 key: "vacation",
                                 name: "Vacation",
                                 iconProps: { className: "ms-Icon ms-Icon--Vacation" },
-                                handleChange: () => alert("Hello"),
+                                handleChange: () => {
+                                    console.log(leanRooster.getContent());
+                                    alert("Hello");
+                                },
                                 order: 0
                             }
                         ]}
@@ -158,6 +177,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         calloutOnDismiss={calloutOnDismiss}
                         imageManager={imageManager}
                         ref={commandBarOnRef}
+                        onButtonClicked={buttonKey => console.log(buttonKey)}
                     />
                 ];
             }}

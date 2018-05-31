@@ -22,7 +22,7 @@ import { FormatState, Indentation } from 'roosterjs-editor-types';
 import { createLinkWithPrompt } from 'roosterjs-react-common';
 
 import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
-import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarItem.ColorInfo';
+import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarButtons.ColorInfo';
 
 export const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
 
@@ -133,12 +133,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         handleChange: (editor: Editor) => toggleNumbering(editor)
     },
     {
-        key: RoosterCommmandBarButtonKeys.Link,
-        name: "Link",
-        iconProps: _getIconProps("Link"),
-        handleChange: (editor: Editor, props: RoosterCommandBarProps) => createLinkWithPrompt(editor, props.strings)
-    },
-    {
         key: RoosterCommmandBarButtonKeys.Highlight,
         name: "Highlight",
         iconProps: _getIconProps("Highlight"),
@@ -160,45 +154,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                     } as IContextualMenuItem)
             )
         }
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.ClearFormat,
-        name: "Clear format",
-        iconProps: _getIconProps("ClearFormatting"),
-        handleChange: (editor: Editor) => clearFormat(editor)
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.Emoji,
-        name: "Emoji",
-        iconProps: { className: `${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
-        handleChange: (editor: Editor, props: RoosterCommandBarProps) => {
-            props.emojiPlugin.setIsSuggesting(true);
-            editor.insertContent(":");
-        }
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.InsertImage,
-        name: "Insert image",
-        iconProps: _getIconProps("Photo2")
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.Outdent,
-        name: "Decrease indent",
-        iconProps: _getIconProps("DecreaseIndentLegacy"),
-        handleChange: editor => setIndentation(editor, Indentation.Decrease)
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.Indent,
-        name: "Increase indent",
-        iconProps: _getIconProps("IncreaseIndentLegacy"),
-        handleChange: editor => setIndentation(editor, Indentation.Increase)
-    },
-    {
-        key: RoosterCommmandBarButtonKeys.Strikethrough,
-        name: "Strikethrough",
-        iconProps: _getIconProps("Strikethrough"),
-        getSelected: (formatState: FormatState) => formatState.isStrikeThrough,
-        handleChange: (editor: Editor) => toggleStrikethrough(editor)
     },
     {
         key: RoosterCommmandBarButtonKeys.FontColor,
@@ -224,11 +179,53 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         }
     },
     {
+        key: RoosterCommmandBarButtonKeys.Emoji,
+        name: "Emoji",
+        iconProps: { className: `${RoosterCommandBarIconClassName} rooster-emoji` } as IIconProps,
+        handleChange: (editor: Editor, props: RoosterCommandBarProps) => props.emojiPlugin.startEmoji()
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Outdent,
+        name: "Decrease indent",
+        iconProps: _getIconProps("DecreaseIndentLegacy"),
+        handleChange: editor => setIndentation(editor, Indentation.Decrease)
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Indent,
+        name: "Increase indent",
+        iconProps: _getIconProps("IncreaseIndentLegacy"),
+        handleChange: editor => setIndentation(editor, Indentation.Increase)
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Strikethrough,
+        name: "Strikethrough",
+        iconProps: _getIconProps("Strikethrough"),
+        getSelected: (formatState: FormatState) => formatState.isStrikeThrough,
+        handleChange: (editor: Editor) => toggleStrikethrough(editor)
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.InsertImage,
+        name: "Insert image",
+        iconProps: _getIconProps("Photo2")
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Link,
+        name: "Link",
+        iconProps: _getIconProps("Link"),
+        handleChange: (editor: Editor, props: RoosterCommandBarProps) => createLinkWithPrompt(editor, props.strings)
+    },
+    {
         key: RoosterCommmandBarButtonKeys.Unlink,
         name: "Unlink",
         iconProps: _getIconProps("RemoveLink"),
         getDisabled: (formatState: FormatState) => !formatState.canUnlink,
         handleChange: (editor: Editor) => removeLink(editor)
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.ClearFormat,
+        name: "Clear format",
+        iconProps: _getIconProps("ClearFormatting"),
+        handleChange: (editor: Editor) => clearFormat(editor)
     }
 ];
 
@@ -259,8 +256,9 @@ function _handleChangeForHeader(editor: Editor, props: RoosterCommandBarProps, s
 function _colorCellOnRender(item: IContextualMenuItem): JSX.Element {
     const { color, cellBorderColor } = item.data as ColorInfo;
     return (
-        <DefaultButton title={item.title} key={item.key} onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}>
-            <svg className="rooster-command-bar-color-cell" viewBox="0 0 20 20" fill={color} strokeWidth="1" stroke={cellBorderColor} focusable="false">
+        <DefaultButton className="rooster-command-bar-color-button" title={item.title} key={item.key} onClick={ev => item.onClick(ev as React.MouseEvent<HTMLElement>, item)}>
+            {cellBorderColor && <div className="rooster-command-bar-color-cell-border" style={{ borderColor: cellBorderColor }} />}
+            <svg className="rooster-command-bar-color-cell" viewBox="0 0 30 30" fill={color} focusable="false">
                 <rect width="100%" height="100%" />
             </svg>
         </DefaultButton>

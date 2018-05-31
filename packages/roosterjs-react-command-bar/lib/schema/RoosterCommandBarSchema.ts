@@ -1,20 +1,21 @@
 import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState } from 'roosterjs-editor-types';
-import { ImageManagerInteface } from 'roosterjs-react-common';
+import { ImageManagerInteface, Strings } from 'roosterjs-react-common';
 import { EmojiPlugin } from 'roosterjs-react-emoji';
 
 import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
 
 export interface RoosterCommandBarProps {
     imageManager?: ImageManagerInteface;
-    strings?: { [key: string]: string };
+    strings?: Strings;
     className?: string;
     roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
     emojiPlugin?: EmojiPlugin;
     buttonOverrides?: RoosterCommandBarButton[];
     calloutClassName?: string;
     calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
+    onButtonClicked?: (buttonKey: string) => void;
 }
 
 export interface RoosterCommandBarState {

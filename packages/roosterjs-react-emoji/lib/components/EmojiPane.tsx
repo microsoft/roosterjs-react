@@ -54,7 +54,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
     }
 
     showFullPicker(search: string) {
-        let searchInBox = search.substr(1);
+        let searchInBox = search == null ? "" : search.substr(1);
         this.setState({
             index: 0,
             isFullPicker: true,
