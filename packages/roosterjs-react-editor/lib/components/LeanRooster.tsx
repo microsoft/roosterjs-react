@@ -301,7 +301,12 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
     private _onFocus = (ev: React.FocusEvent<HTMLDivElement>): void => {
         const { onFocus = NullFunction } = this.props;
+        onFocus(ev);
+    };
 
+    // When used with FocusOutShell and CommandBar, React doesn't fire focus event when toggle
+    // buttons with callout, so use the native event which is still triggered.
+    private _onFocusNative = (ev: FocusEvent): void => {
         let forceUpdate = false;
         if (this._placeholderVisible) {
             this._placeholderVisible = false;
@@ -310,14 +315,20 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         if (this._trySwithToEditMode(forceUpdate)) {
             this._editor.focus();
         }
-
-        onFocus(ev);
     };
 
     private _contentDivOnRef = (ref: HTMLDivElement): void => {
         const { contentDivRef = NullFunction } = this.props;
 
+        const eventName = "focus";
+        if (this._contentDiv) {
+            this._contentDiv.removeEventListener(eventName, this._onFocusNative);
+        }
+        if (ref) {
+            ref.addEventListener(eventName, this._onFocusNative);
+        }
         this._contentDiv = ref;
+
         contentDivRef(ref);
     };
 }
