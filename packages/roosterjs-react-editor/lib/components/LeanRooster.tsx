@@ -53,7 +53,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     constructor(props: LeanRoosterProps) {
         super(props);
 
-        this._setInitialReactContent();
+        this._setInitialReactContent(true);
         this._editorOptions = this._createEditorOptions();
     }
 
@@ -73,6 +73,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
                 onFocus={this._onFocus}
                 onMouseDown={this._onMouseDown}
                 onMouseUp={this._onMouseUp}
+                onDrop={this._onDrop}
                 ref={this._contentDivOnRef}
                 style={ContentEditableDivStyle}
                 suppressContentEditableWarning={true}
@@ -87,6 +88,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
         if (!readonly && activateRoosterOnMount) {
             this._trySwithToEditMode();
+        } else if (!this._hasPlaceholder) {
+            this._refreshPlaceholder();
         }
     }
 
@@ -121,6 +124,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     public focus(): void {
         if (this._editor) {
             this._editor.focus();
+        } else if (this._contentDiv) {
+            this._contentDiv.focus();
         }
     }
 
@@ -192,9 +197,13 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     };
 
-    private _setInitialReactContent(): void {
+    private _setInitialReactContent(fromConstructor: boolean = false): void {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
+        if (fromConstructor) {
+            this._hasPlaceholder = this.props.placeholder && !hasContent;
+            this._placeholderVisible = this._hasPlaceholder;
+        }
         this._initialContent = hasContent ? { __html: viewState.content } : undefined;
     }
 
@@ -314,6 +323,13 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
         if (this._trySwithToEditMode(forceUpdate)) {
             this._editor.focus();
+        }
+    };
+
+    private _onDrop = (ev: React.DragEvent<HTMLDivElement>): void => {
+        // handles the drop content scenario when editor is not yet activated and there's a placeholder
+        if (this._contentDiv) {
+            this.focus(); 
         }
     };
 
