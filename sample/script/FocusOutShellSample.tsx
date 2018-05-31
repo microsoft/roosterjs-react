@@ -1,11 +1,11 @@
-import { CommandBarButton, IButton } from "office-ui-fabric-react/lib/Button";
-import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
-import { initializeIcons } from "office-ui-fabric-react/lib/Icons";
-import { registerIcons } from "office-ui-fabric-react/lib/Styling";
-import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
-import * as React from "react";
-import * as ReactDom from "react-dom";
-import { PluginEvent, PluginEventType } from "roosterjs-editor-types";
+import { CommandBarButton, IButton } from 'office-ui-fabric-react/lib/Button';
+import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
+import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
+import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
+import * as React from 'react';
+import * as ReactDom from 'react-dom';
+import { PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 import {
     ContentChangedPlugin,
     createEditorViewState,
@@ -24,8 +24,8 @@ import {
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
-    UndoWithImagePlugin
-} from "roosterjs-react";
+    UndoWithImagePlugin,
+} from 'roosterjs-react';
 
 function createLinkedSvg(name: string): JSX.Element {
     return (
