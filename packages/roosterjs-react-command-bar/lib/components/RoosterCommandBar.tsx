@@ -37,7 +37,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     public render(): JSX.Element {
-        const { className, calloutClassName, calloutOnDismiss } = this.props;
+        const { className, calloutClassName, calloutOnDismiss, overflowMenuProps } = this.props;
 
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
@@ -48,11 +48,12 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                     items={this._buttons}
                     overflowMenuProps={
                         {
+                            ...overflowMenuProps,
                             calloutProps: {
                                 className: calloutClassName
                             } as ICalloutProps,
                             onDismiss: calloutOnDismiss,
-                            className: "rooster-command-bar-overflow"
+                            className: css("rooster-command-bar-overflow", overflowMenuProps.className)
                         } as Partial<IContextualMenuProps>
                     }
                 />
