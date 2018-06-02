@@ -11,6 +11,7 @@ export interface RoosterCommandBarProps {
     imageManager?: ImageManagerInteface;
     strings?: Strings;
     className?: string;
+    commandBarClassName?: string;
     roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
     emojiPlugin?: EmojiPlugin;
     buttonOverrides?: RoosterCommandBarButton[];
