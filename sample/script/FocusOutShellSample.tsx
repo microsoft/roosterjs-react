@@ -178,6 +178,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         imageManager={imageManager}
                         ref={commandBarOnRef}
                         onButtonClicked={buttonKey => console.log(buttonKey)}
+                        overflowMenuProps={{ className: "custom-overflow" }}
                     />
                 ];
             }}

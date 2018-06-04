@@ -1,16 +1,17 @@
 $color-picker-bg-color: #fff;
+$button-color: #212121;
 
 :global {
     .rooster-command-bar {
         .is-selected {
-            background: #eaeaea;
+            background: #dadada;
         }
     }
 
     .rooster-command-bar,
     .rooster-command-bar-overflow {
         .rooster-command-bar-icon {
-            color: #333;
+            color: $button-color;
 
             &.rooster-emoji {
                 font-style: normal;
@@ -19,6 +20,10 @@ $color-picker-bg-color: #fff;
                     content: "🙂";
                 }
             }
+        }
+
+        button:hover:not([disabled]) .rooster-command-bar-icon {
+            color: $button-color;
         }
     }
 
@@ -39,8 +44,12 @@ $color-picker-bg-color: #fff;
 
     .rooster-command-bar-color-container {
         padding: 2px;
-        background: $color-picker-bg-color;
         overflow: hidden;
+        background: $color-picker-bg-color;
+
+        @media screen and (-ms-high-contrast: active) {
+            background-color: Background;
+        }
 
         & ul {
             width: 180px;
@@ -63,6 +72,10 @@ $color-picker-bg-color: #fff;
         height: 30px;
         background: $color-picker-bg-color;
 
+        @media screen and (-ms-high-contrast: active) {
+            background-color: Background;
+        }
+
         button {
             padding: 0;
             min-width: 0;
@@ -76,6 +89,10 @@ $color-picker-bg-color: #fff;
                 top: 0;
                 bottom: 0;
                 border: 2px solid $color-picker-bg-color;
+
+                @media screen and (-ms-high-contrast: active) {
+                    border-color: Background;
+                }
             }
 
             &:hover {

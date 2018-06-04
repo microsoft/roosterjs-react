@@ -10,7 +10,6 @@ import { css, NullFunction } from 'roosterjs-react-common';
 import EditorViewState from '../schema/EditorViewState';
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
-const IsEmptyLengthThreshold = 500;
 
 export const enum LeanRoosterModes {
     View = 0,
@@ -35,6 +34,9 @@ export interface LeanRoosterProps {
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
     viewState: EditorViewState;
     placeholder?: string;
+    isEmptyFunction?: (element: HTMLDivElement, trim?: boolean) => boolean;
+    isEmptyCheckThreshold?: number;
+    isEmptyTrimValue?: boolean;
 }
 
 export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
@@ -51,7 +53,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     constructor(props: LeanRoosterProps) {
         super(props);
 
-        this._setInitialReactContent();
+        this._setInitialReactContent(true);
         this._editorOptions = this._createEditorOptions();
     }
 
@@ -71,6 +73,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
                 onFocus={this._onFocus}
                 onMouseDown={this._onMouseDown}
                 onMouseUp={this._onMouseUp}
+                onDrop={this._onDrop}
                 ref={this._contentDivOnRef}
                 style={ContentEditableDivStyle}
                 suppressContentEditableWarning={true}
@@ -85,6 +88,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
         if (!readonly && activateRoosterOnMount) {
             this._trySwithToEditMode();
+        } else if (!this._hasPlaceholder) {
+            this._refreshPlaceholder();
         }
     }
 
@@ -119,6 +124,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     public focus(): void {
         if (this._editor) {
             this._editor.focus();
+        } else if (this._contentDiv) {
+            this._contentDiv.focus();
         }
     }
 
@@ -129,9 +136,10 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
             this._editor.setContent(viewState.content);
             this._editorOptions.undo.clear();
             this._editor.addUndoSnapshot();
+            this._refreshPlaceholder();
         } else {
             this._setInitialReactContent();
-            this.forceUpdate();
+            this.forceUpdate(this._refreshPlaceholder);
         }
     }
 
@@ -159,23 +167,44 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
-    public isEmpty(trim?: boolean): boolean {
-        if (!this._editor || this._editor.isDisposed()) {
-            return isNodeEmpty(this._contentDiv, trim);
+    public isEmpty(): boolean {
+        const { isEmptyTrimValue = false, isEmptyCheckThreshold, viewState, isEmptyFunction = isNodeEmpty } = this.props;
+
+        if (!this._contentDiv) {
+            return !viewState.content || viewState.content.length === 0;
         }
 
-        return this._editor.isEmpty(trim);
+        if (isEmptyCheckThreshold && this._contentDiv.innerHTML.length >= isEmptyCheckThreshold) {
+            return false;
+        }
+
+        return isEmptyFunction(this._contentDiv, isEmptyTrimValue);
     }
 
     public getContent(): string {
         return this._editor ? this._editor.getContent() : this._contentDiv.innerHTML;
     }
 
-    private _setInitialReactContent(): void {
+    private _refreshPlaceholder = (): void => {
+        const isEmpty = this.props.placeholder && this.isEmpty();
+        const wasPlaceholderVisible = this._placeholderVisible;
+        this._hasPlaceholder = isEmpty;
+        this._placeholderVisible = isEmpty;
+
+        // refresh if the placeholder's visibility was changed
+        if (wasPlaceholderVisible !== this._placeholderVisible) {
+            this.forceUpdate();
+        }
+    };
+
+    private _setInitialReactContent(fromConstructor: boolean = false): void {
         const { viewState } = this.props;
         const hasContent = viewState.content != null && viewState.content.length > 0;
+        if (fromConstructor) {
+            this._hasPlaceholder = this.props.placeholder && !hasContent;
+            this._placeholderVisible = this._hasPlaceholder;
+        }
         this._initialContent = hasContent ? { __html: viewState.content } : undefined;
-        this._placeholderVisible = !hasContent;
     }
 
     private _updateContentToViewState(isInitializing?: boolean): string {
@@ -272,11 +301,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
         this._hasPlaceholder = false; // reset flag each time we blur
         const content = this._updateContentToViewState();
-        if (content !== null && content.length <= IsEmptyLengthThreshold && this.props.placeholder) {
-            const trim = true;
-            this._hasPlaceholder = this._editor.isEmpty(trim); // set only if conditions are met
-            this._placeholderVisible = this._hasPlaceholder;
-            this.forceUpdate();
+        if (content !== null) {
+            this._refreshPlaceholder();
         }
 
         onBlur(ev);
@@ -284,7 +310,12 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
     private _onFocus = (ev: React.FocusEvent<HTMLDivElement>): void => {
         const { onFocus = NullFunction } = this.props;
+        onFocus(ev);
+    };
 
+    // When used with FocusOutShell and CommandBar, React doesn't fire focus event when toggle
+    // buttons with callout, so use the native event which is still triggered.
+    private _onFocusNative = (ev: FocusEvent): void => {
         let forceUpdate = false;
         if (this._placeholderVisible) {
             this._placeholderVisible = false;
@@ -293,14 +324,27 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         if (this._trySwithToEditMode(forceUpdate)) {
             this._editor.focus();
         }
+    };
 
-        onFocus(ev);
+    private _onDrop = (ev: React.DragEvent<HTMLDivElement>): void => {
+        // handles the drop content scenario when editor is not yet activated and there's a placeholder
+        if (this._contentDiv) {
+            this.focus(); 
+        }
     };
 
     private _contentDivOnRef = (ref: HTMLDivElement): void => {
         const { contentDivRef = NullFunction } = this.props;
 
+        const eventName = "focus";
+        if (this._contentDiv) {
+            this._contentDiv.removeEventListener(eventName, this._onFocusNative);
+        }
+        if (ref) {
+            ref.addEventListener(eventName, this._onFocusNative);
+        }
         this._contentDiv = ref;
+
         contentDivRef(ref);
     };
 }

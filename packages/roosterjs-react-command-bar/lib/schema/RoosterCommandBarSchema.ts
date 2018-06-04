@@ -1,4 +1,5 @@
 import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';
+import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState } from 'roosterjs-editor-types';
 import { ImageManagerInteface, Strings } from 'roosterjs-react-common';
@@ -10,12 +11,14 @@ export interface RoosterCommandBarProps {
     imageManager?: ImageManagerInteface;
     strings?: Strings;
     className?: string;
+    commandBarClassName?: string;
     roosterCommandBarPlugin: RoosterCommandBarPluginInterface;
     emojiPlugin?: EmojiPlugin;
     buttonOverrides?: RoosterCommandBarButton[];
     calloutClassName?: string;
     calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     onButtonClicked?: (buttonKey: string) => void;
+    overflowMenuProps?: Partial<IContextualMenuProps>;
 }
 
 export interface RoosterCommandBarState {

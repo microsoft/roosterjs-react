@@ -1,5 +1,6 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
 import * as React from 'react';
+import { browserData } from 'roosterjs-editor-core';
 import { closest, css, NullFunction } from 'roosterjs-react-common';
 
 export type FocusEventHandler = (ev: React.FocusEvent<HTMLElement>) => void;
@@ -45,7 +46,7 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     }
 
     private _calloutOnDismiss = (ev: React.FocusEvent<HTMLElement>): void => {
-        // command bar can trigger dismiss event w/o an event object for submenu (when 
+        // command bar can trigger dismiss event w/o an event object for submenu (when
         // button is clicked again to hide submenu)
         if (!ev) {
             return;
@@ -84,6 +85,9 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
 
         // similarly, don't call blur if the next target is the callout or its children
+        if (nextTarget == null && browserData.isIE) {
+            nextTarget = document.activeElement as HTMLElement;
+        }
         if (nextTarget && closest(nextTarget, `.${this._calloutClassName}`)) {
             return false;
         }
