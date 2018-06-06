@@ -2,6 +2,7 @@ import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
+import { browserData } from 'roosterjs-editor-core';
 import { css } from 'roosterjs-react-common';
 
 import Emoji from '../schema/Emoji';
@@ -97,7 +98,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div key="quick" className={quickPickerClassName}>
+            <div className={quickPickerClassName}>
                 {this.state.emojis.map((emoji, index) => (
                     <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
                 ))}
@@ -109,18 +110,30 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
         const { fullPickerClassName } = this.props;
 
         return (
-            <div key="full" className={fullPickerClassName}>
+            <div className={fullPickerClassName}>
                 <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
                 {this.state.emojis ? this.renderPartialList() : this.renderFullList()}
             </div>
         );
     }
 
+    // For IE, fixed width not accounting for scroll bar glitches and content is overlapped with content.
+    // A workaround is to refresh the overflow value.
+    private _resizeOnRefForIE =
+        browserData.isIE &&
+        ((ref: HTMLDivElement): void => {
+            if (ref) {
+                const prevValue = ref.style.overflowY;
+                ref.style.overflowY = 'hidden';
+                requestAnimationFrame(() => (ref.style.overflowY = prevValue));
+            }
+        });
+
     private renderPartialList(): JSX.Element {
         const { partialListClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.partialList, partialListClassName)}>
+            <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
                 <FocusZone className={Styles.partialListContent}>
                     {this.state.emojis.map(emoji => <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />)}
                 </FocusZone>
@@ -133,7 +146,7 @@ export default class EmojiPane extends React.Component<EmojiPaneProps, EmojiPane
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div className={Styles.fullListBody}>
+                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
                     <Pivot
                         className={Styles.pivot}
                         linkFormat={PivotLinkFormat.links}

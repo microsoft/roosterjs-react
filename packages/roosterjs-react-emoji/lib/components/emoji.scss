@@ -3,6 +3,7 @@ $buttonWidth: 40px;
 $pivotItemCount: 7;
 $paneHorizontalPadding: 1px;
 $paneWidth: $buttonWidth * $pivotItemCount;
+$maxHeightForContent: 245px;
 
 .emoji {
     &.selected {
@@ -51,9 +52,16 @@ $paneWidth: $buttonWidth * $pivotItemCount;
 
 .partialList,
 .fullListBody {
-    max-height: 245px;
+    max-height: $maxHeightForContent;
     overflow: hidden;
     overflow-y: auto;
+}
+
+// consistency look by always having a scroll
+// (currently for Activities pivot where content doesn't overflow)
+.fullListBody {
+    height: $maxHeightForContent;
+    overflow-y: scroll;
 }
 
 .fullListContentContainer {
