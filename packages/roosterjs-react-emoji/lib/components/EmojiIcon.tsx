@@ -14,9 +14,9 @@ export interface EmojiIconProps {
 }
 
 export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
-    render() {
-        let { emoji, onClick, isSelected } = this.props;
-        let iconClassNames = `${Styles.emoji} ${isSelected ? Styles.selected : ''}`;
+    public render() {
+        const { emoji, onClick, isSelected } = this.props;
+        const iconClassNames = `${Styles.emoji} ${isSelected ? Styles.selected : ''}`;
 
         return (
             <CommandButton
@@ -25,6 +25,7 @@ export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
                 onClick={onClick}
                 text={emoji.codePoint || '...'}
                 data-is-focusable={true}
+                styles={{ textContainer: { flexGrow: 1 }, root: { width: 40 } }}
             />
         );
     }

@@ -1,8 +1,8 @@
-.emojiPane {
-    max-width: 244px;
-    max-height: 240px;
-    overflow-y: auto;
-}
+$buttonHeight: 40px;
+$buttonWidth: 40px;
+$pivotItemCount: 7;
+$paneHorizontalPadding: 1px;
+$paneWidth: $buttonWidth * $pivotItemCount;
 
 .emoji {
     &.selected {
@@ -12,8 +12,56 @@
     div {
         font-size: 18px;
     }
+
+    button {
+        width: $buttonWidth;
+    }
 }
 
-.header {
-    border-bottom: solid 1px #aaa;
+.emojiTextInput {
+    padding: 6px;
+}
+
+.fullList {
+    position: relative;
+}
+
+.pivot {
+    $buttonColor: #f4f4f4;
+    background-color: $buttonColor;
+    height: $buttonHeight;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    border-bottom: solid 1px #dadada;
+    padding: 0 $paneHorizontalPadding;
+
+    button {
+        background: $buttonColor;
+        height: $buttonHeight;
+        width: $buttonWidth;
+        margin-right: 0 !important;
+
+        span {
+            flex-grow: 1;
+        }
+    }
+}
+
+.partialList,
+.fullListBody {
+    max-height: 245px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.fullListContentContainer {
+    margin-top: $buttonHeight;
+}
+
+.partialListContent,
+.fullListContent {
+    width: $paneWidth;
+    padding: 0 $paneHorizontalPadding;
 }

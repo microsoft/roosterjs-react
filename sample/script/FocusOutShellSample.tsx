@@ -10,7 +10,9 @@ import {
     ContentChangedPlugin,
     createEditorViewState,
     EditorViewState,
+    EmojiFamilyKeys,
     EmojiPlugin,
+    EmojiPluginOptions,
     FocusEventHandler,
     FocusOutShell,
     ImageManager,
@@ -24,7 +26,7 @@ import {
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
-    UndoWithImagePlugin,
+    UndoWithImagePlugin
 } from 'roosterjs-react';
 
 function createLinkedSvg(name: string): JSX.Element {
@@ -38,22 +40,22 @@ function createLinkedSvg(name: string): JSX.Element {
 initializeIcons();
 registerIcons({
     icons: {
-        "RoosterSvg-Color": createLinkedSvg("color"),
-        "RoosterSvg-Bullets": createLinkedSvg("bullets"),
-        "RoosterSvg-Link": createLinkedSvg("link"),
-        "RoosterSvg-Numbering": createLinkedSvg("numbering"),
-        "RoosterSvg-Unlink": createLinkedSvg("unlink"),
-        "RoosterSvg-Highlight": createLinkedSvg("highlight"),
-        "RoosterSvg-Indent": createLinkedSvg("indent"),
-        "RoosterSvg-Outdent": createLinkedSvg("outdent"),
-        "RoosterSvg-ClearFormat": createLinkedSvg("clear-format"),
-        "RoosterSvg-Photo": createLinkedSvg("photo")
+        'RoosterSvg-Color': createLinkedSvg('color'),
+        'RoosterSvg-Bullets': createLinkedSvg('bullets'),
+        'RoosterSvg-Link': createLinkedSvg('link'),
+        'RoosterSvg-Numbering': createLinkedSvg('numbering'),
+        'RoosterSvg-Unlink': createLinkedSvg('unlink'),
+        'RoosterSvg-Highlight': createLinkedSvg('highlight'),
+        'RoosterSvg-Indent': createLinkedSvg('indent'),
+        'RoosterSvg-Outdent': createLinkedSvg('outdent'),
+        'RoosterSvg-ClearFormat': createLinkedSvg('clear-format'),
+        'RoosterSvg-Photo': createLinkedSvg('photo')
     }
 });
 
 class ContentChangedLoggerPlugin extends ContentChangedPlugin {
     constructor() {
-        super(_ => console.log("Content changed"));
+        super(_ => console.log('Content changed'));
     }
 
     public onPluginEvent(event: PluginEvent): void {
@@ -112,7 +114,8 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             onBlur={focusOutShellOnBlur}
             onFocus={focusOutShellOnFocus}
             onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
-                emojiPlugin = emojiPlugin || new EmojiPlugin(null, calloutClassName, calloutOnDismiss);
+                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss } as EmojiPluginOptions);
+
                 return [
                     <LeanRooster
                         key="rooster"
@@ -145,28 +148,28 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                                                     }
                                                 }
                                             }
-                                            onRenderIcon={() => createLinkedSvg("color")}
+                                            onRenderIcon={() => createLinkedSvg('color')}
                                         />
                                     </TooltipHost>
                                 )
                             },
-                            { key: ButtonKeys.BulletedList, iconProps: { iconName: "RoosterSvg-Bullets" } },
-                            { key: ButtonKeys.NumberedList, iconProps: { iconName: "RoosterSvg-Numbering" } },
-                            { key: ButtonKeys.Highlight, iconProps: { iconName: "RoosterSvg-Highlight" } },
-                            { key: ButtonKeys.Indent, iconProps: { iconName: "RoosterSvg-Indent" } },
-                            { key: ButtonKeys.Outdent, iconProps: { iconName: "RoosterSvg-Outdent" } },
-                            { key: ButtonKeys.Link, iconProps: { iconName: "RoosterSvg-Link" } },
-                            { key: ButtonKeys.Unlink, iconProps: { iconName: "RoosterSvg-Unlink" }, exclude: true },
-                            { key: ButtonKeys.ClearFormat, iconProps: { iconName: "RoosterSvg-ClearFormat" } },
-                            { key: ButtonKeys.InsertImage, iconProps: { iconName: "RoosterSvg-Photo" } },
+                            { key: ButtonKeys.BulletedList, iconProps: { iconName: 'RoosterSvg-Bullets' } },
+                            { key: ButtonKeys.NumberedList, iconProps: { iconName: 'RoosterSvg-Numbering' } },
+                            { key: ButtonKeys.Highlight, iconProps: { iconName: 'RoosterSvg-Highlight' } },
+                            { key: ButtonKeys.Indent, iconProps: { iconName: 'RoosterSvg-Indent' } },
+                            { key: ButtonKeys.Outdent, iconProps: { iconName: 'RoosterSvg-Outdent' } },
+                            { key: ButtonKeys.Link, iconProps: { iconName: 'RoosterSvg-Link' } },
+                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' }, exclude: true },
+                            { key: ButtonKeys.ClearFormat, iconProps: { iconName: 'RoosterSvg-ClearFormat' } },
+                            { key: ButtonKeys.InsertImage, iconProps: { iconName: 'RoosterSvg-Photo' } },
                             { key: ButtonKeys.Strikethrough, exclude: true },
                             {
-                                key: "vacation",
-                                name: "Vacation",
-                                iconProps: { className: "ms-Icon ms-Icon--Vacation" },
+                                key: 'vacation',
+                                name: 'Vacation',
+                                iconProps: { className: 'ms-Icon ms-Icon--Vacation' },
                                 handleChange: () => {
                                     console.log(leanRooster.getContent());
-                                    alert("Hello");
+                                    alert('Hello');
                                 },
                                 order: 0
                             }
@@ -178,7 +181,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         imageManager={imageManager}
                         ref={commandBarOnRef}
                         onButtonClicked={buttonKey => console.log(buttonKey)}
-                        overflowMenuProps={{ className: "custom-overflow" }}
+                        overflowMenuProps={{ className: 'custom-overflow' }}
                     />
                 ];
             }}
@@ -189,10 +192,10 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
 const view = (
     <div className="root-container">
         <div className="editor-container">
-            {createEditor("editor #1")}
-            {createEditor("editor #2")}
+            {createEditor('editor #1')}
+            {createEditor('editor #2')}
         </div>
     </div>
 );
 
-ReactDom.render(view, document.getElementById("container"), null);
+ReactDom.render(view, document.getElementById('container'), null);
