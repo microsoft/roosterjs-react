@@ -42,6 +42,8 @@ $maxHeightForContent: 245px;
         background: $buttonColor;
         height: $buttonHeight;
         width: $buttonWidth;
+
+        // Fabric doesn't have className override for this and we don't want margins
         margin-right: 0 !important;
 
         span {
