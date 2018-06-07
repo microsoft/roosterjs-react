@@ -22,7 +22,6 @@ export interface EmojiPaneState {
 }
 
 export interface EmojiPaneProps {
-    strings: Strings;
     quickPickerClassName?: string;
     fullPickerClassName?: string;
     fullListClassName?: string;
@@ -32,6 +31,7 @@ export interface EmojiPaneProps {
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
     onSelect: (emoji: Emoji, wordBeforeCursor: string) => void;
+    strings: Strings;
 }
 
 export default class EmojiPane extends React.Component<InternalEmojiPaneProps, EmojiPaneState> {
