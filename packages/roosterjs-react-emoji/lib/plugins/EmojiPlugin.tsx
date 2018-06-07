@@ -6,13 +6,13 @@ import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCu
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 
-import EmojiPane from '../components/EmojiPane';
+import EmojiPane, { EmojiPaneProps } from '../components/EmojiPane';
 import Emoji from '../schema/Emoji';
 import { Strings } from '../strings/emojiStrings';
 import { matchShortcut } from '../utils/searchEmojis';
 
 const EMOJI_SEARCH_DELAY = 300;
-const INTERNAL_EMOJI_FONT_NAME = "EmojiFont";
+const INTERNAL_EMOJI_FONT_NAME = 'EmojiFont';
 const EMOJI_FONT_LIST = "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'Segoe UI Symbol','Android Emoji',EmojiSymbols";
 // Regex looks for an emoji right before the : to allow contextual search immediately following an emoji
 // MATCHES: 0: 😃:r
@@ -21,6 +21,13 @@ const EMOJI_FONT_LIST = "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'S
 const EMOJI_BEFORE_COLON_REGEX = /([\u0023-\u0039][\u20e3]|[\ud800-\udbff][\udc00-\udfff]|[\u00a9-\u00ae]|[\u2122-\u3299])*([:;][^:]*)/;
 const KEYCODE_COLON = 186;
 const KEYCODE_COLON_FIREFOX = 59;
+
+export interface EmojiPluginOptions {
+    strings?: Strings;
+    calloutClassName?: string;
+    onCalloutDismiss?: (ev?: any) => void;
+    emojiPaneProps?: EmojiPaneProps;
+}
 
 export default class EmojiPlugin implements EditorPlugin {
     private editor: Editor;
@@ -31,13 +38,13 @@ export default class EmojiPlugin implements EditorPlugin {
     private canUndoEmoji: boolean;
     private timer: number;
 
-    constructor(private strings?: Strings, private calloutClassName?: string, private onCalloutDismiss?: (ev?: any) => void) {}
+    constructor(private options: EmojiPluginOptions = {}) {}
 
     public initialize(editor: Editor): void {
         this.editor = editor;
 
         const document = editor.getDocument();
-        this.contentDiv = document.createElement("div");
+        this.contentDiv = document.createElement('div');
         document.body.appendChild(this.contentDiv);
     }
 
@@ -92,7 +99,7 @@ export default class EmojiPlugin implements EditorPlugin {
         }
     }
 
-    public startEmoji(startingString: string = ":"): void {
+    public startEmoji(startingString: string = ':'): void {
         const { editor } = this;
         if (!editor) {
             return;
@@ -211,7 +218,7 @@ export default class EmojiPlugin implements EditorPlugin {
 
         const keyboardEvent = event.rawEvent as KeyboardEvent;
         const wordBeforeCursor = this.getWordBeforeCursor(event);
-        if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ":") {
+        if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ':') {
             this.setIsSuggesting(true);
         } else if (wordBeforeCursor) {
             const cursorData = cacheGetCursorEventData(event, this.editor);
@@ -235,7 +242,7 @@ export default class EmojiPlugin implements EditorPlugin {
         let inserted = false;
         this.editor.addUndoSnapshot();
 
-        const node = this.editor.getDocument().createElement("span");
+        const node = this.editor.getDocument().createElement('span');
         node.innerText = emoji.codePoint;
         if (wordBeforeCursor && replaceTextBeforeCursorWithNode(this.editor, wordBeforeCursor, node, false /*exactMatch*/)) {
             inserted = true;
@@ -264,11 +271,11 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     private triggerChangeEvent(): void {
-        this.editor.triggerContentChangedEvent("Emoji");
+        this.editor.triggerContentChangedEvent('Emoji');
     }
 
     private isModifierKey(key: string): boolean {
-        return key === "Shift" || key === "Control" || key === "Alt" || key === "Command";
+        return key === 'Shift' || key === 'Control' || key === 'Alt' || key === 'Command';
     }
 
     private handleEventOnKeyDown(event: PluginDomEvent): void {
@@ -278,6 +285,8 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     private getCallout(): JSX.Element {
+        const { calloutClassName, emojiPaneProps, strings } = this.options;
+
         const cursorRect = this.editor.getCursorRect();
         const point = {
             x: cursorRect.left,
@@ -287,22 +296,22 @@ export default class EmojiPlugin implements EditorPlugin {
 
         return (
             <Callout
-                className={this.calloutClassName}
+                className={calloutClassName}
                 target={point}
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 isBeakVisible={false}
                 gapSpace={gap}
                 onDismiss={this.onCalloutDismissInternal}
             >
-                <EmojiPane ref={ref => (this.pane = ref)} onSelect={this.onSelectFromPane} strings={this.strings} />
+                <EmojiPane {...emojiPaneProps} ref={ref => (this.pane = ref)} onSelect={this.onSelectFromPane} strings={strings} />
             </Callout>
         );
     }
 
     private onCalloutDismissInternal = (ev?: any): void => {
         this.setIsSuggesting(false);
-        if (this.onCalloutDismiss) {
-            this.onCalloutDismiss(ev);
+        if (this.options.onCalloutDismiss) {
+            this.options.onCalloutDismiss(ev);
         }
     };
 
@@ -316,8 +325,8 @@ export default class EmojiPlugin implements EditorPlugin {
         if (blockElement) {
             const blockNode = blockElement.getStartNode() as HTMLElement;
             const fontFamily = blockNode.style.fontFamily;
-            if (fontFamily && fontFamily.toLowerCase().indexOf("emoji") < 0) {
-                blockNode.style.fontFamily = fontFamily + "," + INTERNAL_EMOJI_FONT_NAME + "," + EMOJI_FONT_LIST;
+            if (fontFamily && fontFamily.toLowerCase().indexOf('emoji') < 0) {
+                blockNode.style.fontFamily = fontFamily + ',' + INTERNAL_EMOJI_FONT_NAME + ',' + EMOJI_FONT_LIST;
                 return true;
             }
         }

@@ -14,7 +14,7 @@ function getEmojiCodePoint(key: string): string {
     let surrogatePairs: number[];
     if (unicode >= 0x1f000 && unicode <= 0x1f700) {
         let hi = Math.floor((unicode - 0x10000) / 0x400) + 0xd800;
-        let lo = (unicode - 0x10000) % 0x400 + 0xdc00;
+        let lo = ((unicode - 0x10000) % 0x400) + 0xdc00;
         surrogatePairs = [hi, lo];
     } else if (unicode >= 0x00023 && unicode <= 0x04000) {
         surrogatePairs = [unicode];
@@ -23,18 +23,13 @@ function getEmojiCodePoint(key: string): string {
     return String.fromCharCode(...surrogatePairs);
 }
 
-function createEmoji(
-    key: string,
-    description: EmojiDescriptionStringKey,
-    keywords?: EmojiKeywordStringKey,
-    shortcut?: string
-): Emoji {
+function createEmoji(key: string, description: EmojiDescriptionStringKey, keywords?: EmojiKeywordStringKey, shortcut?: string): Emoji {
     return {
         key: key,
         description: description,
         keywords: keywords,
         shortcut: shortcut,
-        codePoint: getEmojiCodePoint(key),
+        codePoint: getEmojiCodePoint(key)
     };
 }
 
@@ -46,15 +41,25 @@ const common5 = createEmoji('1f603', 'emjD1f603', 'emjK1f603', ':D :-D');
 const moreEmoji: Emoji = {
     key: 'more',
     description: 'emjDMore',
-    codePoint: '',
+    codePoint: ''
 };
 export { moreEmoji };
 
 export const commonEmojis = [common1, common2, common3, common4, common5, moreEmoji];
 
+export const enum EmojiFamilyKeys {
+    People = 'People',
+    Nature = 'Nature',
+    Activies = 'Activies',
+    Food = 'Food',
+    Travel = 'Travel',
+    Symbols = 'Symbols',
+    Objects = 'Objects'
+}
+
 // NOTE: name for an emoji should be in lower case
-const emojiList = {
-    People: [
+const EmojiList = {
+    [EmojiFamilyKeys.People]: [
         createEmoji('1f601', 'emjD1f601', 'emjK1f601'),
         createEmoji('1f602', 'emjD1f602', 'emjK1f602'),
         common5,
@@ -200,9 +205,9 @@ const emojiList = {
         createEmoji('1f4bc', 'emjD1f4bc', 'emjK1f4bc'),
         createEmoji('1f453', 'emjD1f453', 'emjK1f453'),
         createEmoji('1f48d', 'emjD1f48d', 'emjK1f48d'),
-        createEmoji('1f302', 'emjD1f302', 'emjK1f302'),
+        createEmoji('1f302', 'emjD1f302', 'emjK1f302')
     ],
-    Nature: [
+    [EmojiFamilyKeys.Nature]: [
         createEmoji('1f436', 'emjD1f436', 'emjK1f436'),
         createEmoji('1f431', 'emjD1f431', 'emjK1f431'),
         createEmoji('1f42d', 'emjD1f42d', 'emjK1f42d'),
@@ -296,9 +301,9 @@ const emojiList = {
         createEmoji('02614', 'emjD02614', 'emjK02614'),
         createEmoji('1f4a7', 'emjD1f4a7'),
         createEmoji('1f4a6', 'emjD1f4a6'),
-        createEmoji('1f30a', 'emjD1f30a', 'emjK1f30a'),
+        createEmoji('1f30a', 'emjD1f30a', 'emjK1f30a')
     ],
-    Activies: [
+    [EmojiFamilyKeys.Activies]: [
         createEmoji('026bd', 'emjD026bd', 'emjK026bd'),
         createEmoji('1f3c0', 'emjD1f3c0', 'emjK1f3c0'),
         createEmoji('1f3c8', 'emjD1f3c8', 'emjK1f3c8'),
@@ -331,9 +336,9 @@ const emojiList = {
         createEmoji('1f3af', 'emjD1f3af', 'emjK1f3af'),
         createEmoji('1f3b2', 'emjD1f3b2', 'emjK1f3b2'),
         createEmoji('1f3b0', 'emjD1f3b0', 'emjK1f3b0'),
-        createEmoji('1f3b3', 'emjD1f3b3', 'emjK1f3b3'),
+        createEmoji('1f3b3', 'emjD1f3b3', 'emjK1f3b3')
     ],
-    Food: [
+    [EmojiFamilyKeys.Food]: [
         createEmoji('1f34f', 'emjD1f34f', 'emjK1f34f'),
         createEmoji('1f34e', 'emjD1f34e', 'emjK1f34e'),
         createEmoji('1f34a', 'emjD1f34a', 'emjK1f34a'),
@@ -389,9 +394,9 @@ const emojiList = {
         createEmoji('1f376', 'emjD1f376', 'emjK1f376'),
         createEmoji('1f375', 'emjD1f375', 'emjK1f375'),
         createEmoji('02615', 'emjD02615', 'emjK02615'),
-        createEmoji('1f374', 'emjD1f374', 'emjK1f374'),
+        createEmoji('1f374', 'emjD1f374', 'emjK1f374')
     ],
-    Travel: [
+    [EmojiFamilyKeys.Travel]: [
         createEmoji('1f697', 'emjD1f697', 'emjK1f697'),
         createEmoji('1f695', 'emjD1f695', 'emjK1f695'),
         createEmoji('1f687', 'emjD1f687', 'emjK1f687'),
@@ -457,9 +462,9 @@ const emojiList = {
         createEmoji('1f3e9', 'emjD1f3e9'),
         createEmoji('1f492', 'emjD1f492', 'emjK1f492'),
         createEmoji('026ea', 'emjD026ea', 'emjK026ea'),
-        createEmoji('1f320', 'emjD1f320', 'emjK1f320'),
+        createEmoji('1f320', 'emjD1f320', 'emjK1f320')
     ],
-    Symbols: [
+    [EmojiFamilyKeys.Symbols]: [
         common3,
         createEmoji('1f49b', 'emjD1f49b', 'emjK1f49b'),
         createEmoji('1f49a', 'emjD1f49a', 'emjK1f49a'),
@@ -617,9 +622,9 @@ const emojiList = {
         createEmoji('1f234', 'emjD1f234'),
         createEmoji('1f233', 'emjD1f233'),
         createEmoji('1f23a', 'emjD1f23a'),
-        createEmoji('1f235', 'emjD1f235'),
+        createEmoji('1f235', 'emjD1f235')
     ],
-    Objects: [
+    [EmojiFamilyKeys.Objects]: [
         createEmoji('0231a', 'emjD0231a'),
         createEmoji('1f4f1', 'emjD1f4f1', 'emjK1f4f1'),
         createEmoji('1f4f2', 'emjD1f4f2'),
@@ -729,25 +734,34 @@ const emojiList = {
         createEmoji('1f4dd', 'emjD1f4dd', 'emjK1f4dd'),
         createEmoji('0270f', 'emjD0270f', 'emjK0270f'),
         createEmoji('1f50d', 'emjD1f50d', 'emjK1f50d'),
-        createEmoji('1f50e', 'emjD1f50e'),
-    ],
+        createEmoji('1f50e', 'emjD1f50e')
+    ]
 };
 
-export default emojiList;
-export type EmojiFamily = keyof typeof emojiList;
+export default EmojiList;
 
-export function forEachEmojiFamily(callback: (emojis: Emoji[], family: EmojiFamily) => boolean) {
-    let families = Object.keys(emojiList);
-    for (let family of families) {
-        if (!callback(emojiList[family], <EmojiFamily>family)) {
+export const EmojiFabricIconCharacterMap = {
+    [EmojiFamilyKeys.Activies]: 'Soccer',
+    [EmojiFamilyKeys.Food]: 'EatDrink',
+    [EmojiFamilyKeys.Nature]: 'FangBody',
+    [EmojiFamilyKeys.Objects]: 'Lightbulb',
+    [EmojiFamilyKeys.People]: 'Emoji2',
+    [EmojiFamilyKeys.Symbols]: 'Heart',
+    [EmojiFamilyKeys.Travel]: 'Car'
+};
+
+export function forEachEmojiFamily(callback: (emojis: Emoji[], family: EmojiFamilyKeys) => boolean): void {
+    const families = Object.keys(EmojiList);
+    for (const family of families) {
+        if (!callback(EmojiList[family], family as EmojiFamilyKeys)) {
             break;
         }
     }
 }
 
-export function forEachEmoji(callback: (emoji: Emoji) => boolean) {
+export function forEachEmoji(callback: (emoji: Emoji) => boolean): void {
     forEachEmojiFamily(emojis => {
-        for (let emoji of emojis) {
+        for (const emoji of emojis) {
             if (!callback(emoji)) {
                 return false;
             }
