@@ -84,6 +84,16 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                 const timeoutMs = Math.random() * 5000;
                 console.log(`Imitating uploading... (${timeoutMs}ms)`);
 
+                // fake upload failure if type isn't image
+                if (image.type.indexOf('image/') !== 0) {
+                    window.setTimeout(() => {
+                        reject();
+                        console.log(`Upload failed`);
+                    }, timeoutMs);
+
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = (event: ProgressEvent) => {
                     const dataURL: string = (event.target as FileReader).result;
@@ -170,6 +180,10 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                                 handleChange: () => {
                                     console.log(leanRooster.getContent());
                                     alert('Hello');
+                                    setTimeout(() => {
+                                        leanRoosterViewState.content = '';
+                                        leanRooster.reloadContent();
+                                    }, 2000);
                                 },
                                 order: 0
                             }

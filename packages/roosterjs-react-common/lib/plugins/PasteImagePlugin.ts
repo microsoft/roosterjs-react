@@ -1,11 +1,15 @@
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
-import { PluginEvent, PluginEventType, PasteOption, BeforePasteEvent } from 'roosterjs-editor-types';
-import { ImageManagerInteface } from '../utils/ImageManager';
+import { BeforePasteEvent, ExtractContentEvent, PasteOption, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
+
+import { hasPlaceholder, ImageManagerInteface, PlaceholderDataAttribute } from '../utils/ImageManager';
+
+PlaceholderDataAttribute;
+const PlaceholderRegex = new RegExp(`<img [^>]*${PlaceholderDataAttribute}="\\d+"[^>]*>`, 'gm');
 
 export default class PasteImagePlugin implements EditorPlugin {
     private editor: Editor;
 
-    constructor(private imageManager: ImageManagerInteface) { }
+    constructor(private imageManager: ImageManagerInteface) {}
 
     public initialize(editor: Editor): void {
         this.editor = editor;
@@ -18,6 +22,17 @@ export default class PasteImagePlugin implements EditorPlugin {
     }
 
     public onPluginEvent(event: PluginEvent): void {
+        if (event.eventType === PluginEventType.ExtractContent) {
+            const extractContentEvent = event as ExtractContentEvent;
+            const content = extractContentEvent.content;
+            const runRemove = hasPlaceholder(content);
+            if (runRemove) {
+                extractContentEvent.content = content.replace(PlaceholderRegex, '');
+            }
+
+            return;
+        }
+
         if (event.eventType !== PluginEventType.BeforePaste) {
             return;
         }

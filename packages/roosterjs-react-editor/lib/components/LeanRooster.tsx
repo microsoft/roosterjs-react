@@ -188,8 +188,9 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _refreshPlaceholder = (): void => {
         const isEmpty = this.props.placeholder && this.isEmpty();
         const wasPlaceholderVisible = this._placeholderVisible;
+        const hasFocus = this._editor && this._editor.hasFocus();
         this._hasPlaceholder = isEmpty;
-        this._placeholderVisible = isEmpty;
+        this._placeholderVisible = isEmpty && !hasFocus;
 
         // refresh if the placeholder's visibility was changed
         if (wasPlaceholderVisible !== this._placeholderVisible) {

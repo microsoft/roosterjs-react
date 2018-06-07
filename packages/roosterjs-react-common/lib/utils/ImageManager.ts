@@ -1,8 +1,8 @@
-import { css } from '../utils/ReactUtil';
-import { Base64Svgs } from '../resources/Images';
 import { Editor } from 'roosterjs-editor-core';
 
+import { Base64Svgs } from '../resources/Images';
 import * as Styles from '../scss/core.scss.g';
+import { css } from '../utils/ReactUtil';
 
 export interface ImageManagerInteface {
     upload: (editor: Editor, image: File) => HTMLElement;
@@ -11,12 +11,12 @@ export interface ImageManagerInteface {
 
 export interface ImageManagerOptions {
     uploadImage: (file: File) => Promise<string>;
-    createImagePlaceholder?: (editor: Editor, image: File) => HTMLElement;
+    createImagePlaceholder?: (editor: Editor, image: File) => HTMLImageElement;
     placeHolderImageClassName?: string;
 }
 
-const PlaceholderDataName = "paste-image-placeholder-804b751e";
-const PlaceholderDataAttribute = `data-${PlaceholderDataName}`;
+const PlaceholderDataName = 'paste-image-placeholder-804b751e';
+export const PlaceholderDataAttribute = `data-${PlaceholderDataName}`;
 
 export function hasPlaceholder(html: string): boolean {
     return html.indexOf(PlaceholderDataAttribute) > -1; // quick and dirty check
@@ -38,7 +38,7 @@ export default class ImageManager implements ImageManagerInteface {
         this.options.createImagePlaceholder = this.options.createImagePlaceholder || this.defaultCreateImagePlaceholder;
     }
 
-    public upload(editor: Editor, image: File): HTMLElement {
+    public upload(editor: Editor, image: File): HTMLImageElement {
         if (!image || image.size === 0) {
             return null;
         }
@@ -52,23 +52,36 @@ export default class ImageManager implements ImageManagerInteface {
         const placeholdId = (ImageManager.Id++).toString(10);
         placeholder.setAttribute(PlaceholderDataAttribute, placeholdId);
 
-        this.options.uploadImage(image).then((url: string) => {
-            this.idToUrlImageCache[placeholdId] = url;
+        this.options.uploadImage(image).then(
+            (url: string) => {
+                // accepted, so replace the placeholder with final image
+                this.idToUrlImageCache[placeholdId] = url;
 
-            if (editor.isDisposed() || !editor.contains(placeholder)) {
-                return;
+                if (editor.isDisposed() || !editor.contains(placeholder)) {
+                    return;
+                }
+
+                this.replacePlaceholder(placeholder, url, editor);
+                this.triggerChangeEvent(editor);
+            },
+            () => {
+                // rejected, so remove the placeholder
+                if (editor.isDisposed() || !editor.contains(placeholder)) {
+                    return;
+                }
+
+                this.idToUrlImageCache[placeholdId] = null;
+                this.removePlaceholder(placeholder, editor);
+                this.triggerChangeEvent(editor);
             }
-
-            this.replacePlaceholder(placeholder, url, editor);
-            editor.triggerContentChangedEvent("ImageManager");
-        });
+        );
 
         return placeholder;
     }
 
     public updatePlaceholders(html: string): UpdatePlaceholdersResult {
         // example: <TAG data-paste-image-placeholder-804b751e="10" />
-        const container = document.createElement("div");
+        const container = document.createElement('div');
         container.innerHTML = html;
         const placeholders = container.querySelectorAll(`[${PlaceholderDataAttribute}]`);
         let resolvedAll = true;
@@ -76,29 +89,49 @@ export default class ImageManager implements ImageManagerInteface {
             const placeholder = placeholders[i];
             const id = placeholder.getAttribute(PlaceholderDataAttribute);
             const url = this.idToUrlImageCache[id];
-            if (!url) {
+            if (url === undefined) {
                 resolvedAll = false;
                 continue;
             }
 
-            this.replacePlaceholder(placeholder as HTMLElement, url);
+            if (url === null) {
+                this.removePlaceholder(placeholder as HTMLElement);
+            } else {
+                this.replacePlaceholder(placeholder as HTMLElement, url);
+            }
         }
 
         return { html: container.innerHTML, resolvedAll };
     }
 
-    private replacePlaceholder(placeholder: HTMLElement, url: string, editor?: Editor) {
+    private triggerChangeEvent(editor: Editor): void {
+        editor.triggerContentChangedEvent('ImageManager');
+    }
+
+    private removePlaceholder(placeholder: HTMLElement, editor?: Editor): void {
+        if (editor) {
+            editor.deleteNode(placeholder);
+            editor.addUndoSnapshot();
+        } else {
+            const parent = placeholder.parentNode;
+            if (parent) {
+                parent.removeChild(placeholder);
+            }
+        }
+    }
+
+    private replacePlaceholder(placeholder: HTMLElement, url: string, editor?: Editor): void {
         // just update attributes if placeholder is already an image tag
-        if (placeholder.tagName === "IMG") {
+        if (placeholder.tagName === 'IMG') {
             const img = placeholder as HTMLImageElement;
             img.src = url;
             img.classList.remove(Styles.roosterjsReactSpinner, this.options.placeHolderImageClassName);
             placeholder.removeAttribute(PlaceholderDataAttribute);
         } else {
-            const doc = editor ? editor.getDocument() : document;
+            const doc = editor ? editor.getDocument() : document; // editor can be null when called from updatePlaceholders
 
             // create final IMG node
-            const img = doc.createElement("img") as HTMLImageElement;
+            const img = doc.createElement('img') as HTMLImageElement;
             img.src = url;
             if (editor) {
                 editor.replaceNode(placeholder, img);
@@ -109,12 +142,12 @@ export default class ImageManager implements ImageManagerInteface {
         }
     }
 
-    private defaultCreateImagePlaceholder = (editor: Editor, image: File): HTMLElement => {
+    private defaultCreateImagePlaceholder = (editor: Editor, image: File): HTMLImageElement => {
         if (editor.isDisposed()) {
             return null;
         }
 
-        const result = editor.getDocument().createElement("img") as HTMLImageElement;
+        const result = editor.getDocument().createElement('img') as HTMLImageElement;
         result.src = Base64Svgs.RoosterJsReactSpinner;
         result.className = css(Styles.roosterjsReactSpinner, this.options.placeHolderImageClassName);
 
