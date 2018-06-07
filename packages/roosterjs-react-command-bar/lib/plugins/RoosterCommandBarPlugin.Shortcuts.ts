@@ -2,7 +2,7 @@ import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
 import { browserData } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 
-export const enum RoosterCommandBarCommands {
+export const enum RoosterShortcutCommands {
     None = 0,
     Bold = 1,
     Italic = 2,
@@ -19,7 +19,7 @@ interface ShortcutCommand {
     ctrlKey: boolean;
     shiftKey: boolean;
     which: number;
-    command: RoosterCommandBarCommands;
+    command: RoosterShortcutCommands;
 }
 
 const macCommands: ShortcutCommand[] = [
@@ -29,7 +29,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.b,
-        command: RoosterCommandBarCommands.Bold
+        command: RoosterShortcutCommands.Bold
     },
     // Italic for Mac: Command (Meta) + I
     {
@@ -37,7 +37,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.i,
-        command: RoosterCommandBarCommands.Italic
+        command: RoosterShortcutCommands.Italic
     },
     // Underline for Mac: Command (Meta) + U
     {
@@ -45,7 +45,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.u,
-        command: RoosterCommandBarCommands.Underline
+        command: RoosterShortcutCommands.Underline
     },
     // Undo for Mac: Command (Meta) + Z
     {
@@ -53,7 +53,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.z,
-        command: RoosterCommandBarCommands.Undo
+        command: RoosterShortcutCommands.Undo
     },
     // Redo for Mac: Command (meta) + SHIFT + Z
     {
@@ -61,7 +61,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: true,
         which: KeyCodes.z,
-        command: RoosterCommandBarCommands.Redo
+        command: RoosterShortcutCommands.Redo
     },
     // Bullet for Mac: Command (meta) + .
     {
@@ -69,7 +69,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.period,
-        command: RoosterCommandBarCommands.Bullet
+        command: RoosterShortcutCommands.Bullet
     },
     // Numbering for Mac: Command (meta) + /
     {
@@ -77,7 +77,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.forwardSlash,
-        command: RoosterCommandBarCommands.Numbering
+        command: RoosterShortcutCommands.Numbering
     },
     // Insert link for Mac: Command (meta) + k
     {
@@ -85,7 +85,7 @@ const macCommands: ShortcutCommand[] = [
         ctrlKey: false,
         shiftKey: false,
         which: KeyCodes.k,
-        command: RoosterCommandBarCommands.InsertLink
+        command: RoosterShortcutCommands.InsertLink
     }
 ];
 
@@ -96,7 +96,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.b,
-        command: RoosterCommandBarCommands.Bold
+        command: RoosterShortcutCommands.Bold
     },
     // Italic for Windows: Ctrl + I
     {
@@ -104,7 +104,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.i,
-        command: RoosterCommandBarCommands.Italic
+        command: RoosterShortcutCommands.Italic
     },
     // Underline for Windows: Ctrl + U
     {
@@ -112,7 +112,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.u,
-        command: RoosterCommandBarCommands.Underline
+        command: RoosterShortcutCommands.Underline
     },
     // Undo for Windows: Ctrl + Z
     {
@@ -120,7 +120,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.z,
-        command: RoosterCommandBarCommands.Undo
+        command: RoosterShortcutCommands.Undo
     },
     // Redo for Windows: Ctrl + Y
     {
@@ -128,7 +128,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.y,
-        command: RoosterCommandBarCommands.Redo
+        command: RoosterShortcutCommands.Redo
     },
     // Bullet for Windows: Ctrl + .
     {
@@ -136,7 +136,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.period,
-        command: RoosterCommandBarCommands.Bullet
+        command: RoosterShortcutCommands.Bullet
     },
     // Numbering for Windows: Ctrl + /
     {
@@ -144,7 +144,7 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.forwardSlash,
-        command: RoosterCommandBarCommands.Numbering
+        command: RoosterShortcutCommands.Numbering
     },
     // Insert link for Windows: Ctrl + k
     {
@@ -152,13 +152,13 @@ const winCommands: ShortcutCommand[] = [
         ctrlKey: true,
         shiftKey: false,
         which: KeyCodes.k,
-        command: RoosterCommandBarCommands.InsertLink
+        command: RoosterShortcutCommands.InsertLink
     }
 ];
 
-export function getCommandFromEvent(event: PluginEvent): RoosterCommandBarCommands {
+export function getCommandFromEvent(event: PluginEvent): RoosterShortcutCommands {
     if (event.eventType !== PluginEventType.KeyDown) {
-        return RoosterCommandBarCommands.None;
+        return RoosterShortcutCommands.None;
     }
 
     const commands = browserData.isMac ? macCommands : winCommands;
@@ -175,5 +175,5 @@ export function getCommandFromEvent(event: PluginEvent): RoosterCommandBarComman
         }
     }
 
-    return RoosterCommandBarCommands.None;
+    return RoosterShortcutCommands.None;
 }

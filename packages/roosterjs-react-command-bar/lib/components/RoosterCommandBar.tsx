@@ -18,7 +18,7 @@ import {
     RoosterCommmandBarButtonKeys as ButtonKeys,
 } from '../utils/OutOfBoxCommandBarButtons';
 
-const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
+const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
 
 export default class RoosterCommandBar extends React.PureComponent<RoosterCommandBarProps, RoosterCommandBarState> {
     private _async: Async;
@@ -42,9 +42,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
         return (
-            <div className={css("rooster-command-bar", className)}>
+            <div className={css('rooster-command-bar', className)}>
                 <CommandBar
-                    className={css("command-bar", commandBarClassName) }
+                    className={css('command-bar', commandBarClassName)}
                     items={this._buttons}
                     overflowMenuProps={
                         {
@@ -53,7 +53,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                                 className: calloutClassName
                             } as ICalloutProps,
                             onDismiss: calloutOnDismiss,
-                            className: css("rooster-command-bar-overflow", overflowMenuProps && overflowMenuProps.className)
+                            className: css('rooster-command-bar-overflow', overflowMenuProps && overflowMenuProps.className)
                         } as Partial<IContextualMenuProps>
                     }
                 />
@@ -144,7 +144,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             } else {
                 insertImage(editor, file);
             }
-            this._fileInput.value = "";
+            this._fileInput.value = '';
         }
     };
 
@@ -159,7 +159,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             commandBarButton.checked = commandBarButton.getChecked(formatState);
         }
         if (commandBarButton.getSelected) {
-            commandBarButton.className = css({ "is-selected": commandBarButton.getSelected(formatState) });
+            const isSelected: boolean = commandBarButton.getSelected(formatState);
+            commandBarButton.className = css("rooster-command-bar-button", { 'is-selected': isSelected });
+            commandBarButton["aria-pressed"] = isSelected;
         }
         if (commandBarButton.getDisabled) {
             commandBarButton.disabled = commandBarButton.getDisabled(formatState);
@@ -182,10 +184,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
         if (button.iconProps) {
-            const { className = "" } = button.iconProps;
+            const { className = '' } = button.iconProps;
             button.iconProps = {
                 ...button.iconProps,
-                className: className.split(" ").indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
+                className: className.split(' ').indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
             };
         }
         if (strings && strings[button.key] != null) {

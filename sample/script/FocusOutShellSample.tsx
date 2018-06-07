@@ -22,7 +22,7 @@ import {
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
-    RoosterCommandBarCommands,
+    RoosterShortcutCommands,
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
@@ -103,17 +103,20 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             })
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterCommandBarCommands) => console.log(command));
+    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command));
     const imagePlugin = new PasteImagePlugin(imageManager);
+    const imageResizePlugin = new ImageResize();
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
+        leanRooster.mode = LeanRoosterModes.Edit;
     };
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
+        imageResizePlugin.hideResizeHandle();
     };
     let emojiPlugin: EmojiPlugin = null;
     let cmdButton: IButton;
@@ -131,7 +134,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         key="rooster"
                         viewState={leanRoosterViewState}
                         placeholder={`${name} placeholder`}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize(), new ContentChangedLoggerPlugin()]}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, imageResizePlugin, new TableResize(), new ContentChangedLoggerPlugin()]}
                         undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
@@ -169,7 +172,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                             { key: ButtonKeys.Indent, iconProps: { iconName: 'RoosterSvg-Indent' } },
                             { key: ButtonKeys.Outdent, iconProps: { iconName: 'RoosterSvg-Outdent' } },
                             { key: ButtonKeys.Link, iconProps: { iconName: 'RoosterSvg-Link' } },
-                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' }, exclude: true },
+                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' } },
                             { key: ButtonKeys.ClearFormat, iconProps: { iconName: 'RoosterSvg-ClearFormat' } },
                             { key: ButtonKeys.InsertImage, iconProps: { iconName: 'RoosterSvg-Photo' } },
                             { key: ButtonKeys.Strikethrough, exclude: true },

@@ -79,6 +79,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
                 suppressContentEditableWarning={true}
                 tabIndex={0}
                 dangerouslySetInnerHTML={this._initialContent}
+                role="textbox"
             />
         );
     }

@@ -3,7 +3,6 @@ import { BeforePasteEvent, ExtractContentEvent, PasteOption, PluginEvent, Plugin
 
 import { hasPlaceholder, ImageManagerInteface, PlaceholderDataAttribute } from '../utils/ImageManager';
 
-PlaceholderDataAttribute;
 const PlaceholderRegex = new RegExp(`<img [^>]*${PlaceholderDataAttribute}="\\d+"[^>]*>`, 'gm');
 
 export default class PasteImagePlugin implements EditorPlugin {
