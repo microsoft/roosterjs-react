@@ -105,6 +105,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
     const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterCommandBarCommands) => console.log(command));
     const imagePlugin = new PasteImagePlugin(imageManager);
+    const imageResizePlugin = new ImageResize();
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
@@ -114,6 +115,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
+        imageResizePlugin.hideResizeHandle();
     };
     let emojiPlugin: EmojiPlugin = null;
     let cmdButton: IButton;
@@ -131,7 +133,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         key="rooster"
                         viewState={leanRoosterViewState}
                         placeholder={`${name} placeholder`}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, new ImageResize(), new TableResize(), new ContentChangedLoggerPlugin()]}
+                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, imageResizePlugin, new TableResize(), new ContentChangedLoggerPlugin()]}
                         undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
