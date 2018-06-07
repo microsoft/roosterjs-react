@@ -3,6 +3,18 @@ $button-color: #212121;
 
 :global {
     .rooster-command-bar {
+        .rooster-command-bar-button {
+            margin-right: 2px;
+        }
+
+        .ms-CommandBar-primaryCommands {
+            margin: 0 4px;
+        }
+
+        .ms-CommandBar-sideCommands {
+            padding: 0;
+        }
+
         .is-selected {
             background: #dadada;
         }

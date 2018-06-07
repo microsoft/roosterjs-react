@@ -169,7 +169,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                             { key: ButtonKeys.Indent, iconProps: { iconName: 'RoosterSvg-Indent' } },
                             { key: ButtonKeys.Outdent, iconProps: { iconName: 'RoosterSvg-Outdent' } },
                             { key: ButtonKeys.Link, iconProps: { iconName: 'RoosterSvg-Link' } },
-                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' }, exclude: true },
+                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' } },
                             { key: ButtonKeys.ClearFormat, iconProps: { iconName: 'RoosterSvg-ClearFormat' } },
                             { key: ButtonKeys.InsertImage, iconProps: { iconName: 'RoosterSvg-Photo' } },
                             { key: ButtonKeys.Strikethrough, exclude: true },
