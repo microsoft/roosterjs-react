@@ -5,7 +5,7 @@ import { createLinkWithPrompt, NullFunction, Strings } from 'roosterjs-react-com
 
 import RoosterCommandBar from '../components/RoosterCommandBar';
 import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
-import { getCommandFromEvent, RoosterCommandBarCommands } from './RoosterCommandBarPlugin.Shortcuts';
+import { getCommandFromEvent, RoosterShortcutCommands } from './RoosterCommandBarPlugin.Shortcuts';
 
 export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCommandBarPluginInterface {
     private static readonly EventTypesToRefreshFormatState: { [eventType: number]: boolean } = {
@@ -19,7 +19,7 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     private commandBars: RoosterCommandBar[] = [];
     private strings: Strings;
 
-    constructor(strings?: Strings, private onShortcutTriggered: (command: RoosterCommandBarCommands) => void = NullFunction) {
+    constructor(strings?: Strings, private onShortcutTriggered: (command: RoosterShortcutCommands) => void = NullFunction) {
         this.strings = strings;
     }
 
@@ -57,35 +57,35 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
         }
 
         const command = getCommandFromEvent(event);
-        if (command === RoosterCommandBarCommands.None) {
+        if (command === RoosterShortcutCommands.None) {
             return;
         }
 
         const editor = this.editor;
         let commandExecuted = true;
         switch (command) {
-            case RoosterCommandBarCommands.Bold:
+            case RoosterShortcutCommands.Bold:
                 toggleBold(editor);
                 break;
-            case RoosterCommandBarCommands.Italic:
+            case RoosterShortcutCommands.Italic:
                 toggleItalic(editor);
                 break;
-            case RoosterCommandBarCommands.Underline:
+            case RoosterShortcutCommands.Underline:
                 toggleUnderline(editor);
                 break;
-            case RoosterCommandBarCommands.Undo:
+            case RoosterShortcutCommands.Undo:
                 editor.undo();
                 break;
-            case RoosterCommandBarCommands.Redo:
+            case RoosterShortcutCommands.Redo:
                 editor.redo();
                 break;
-            case RoosterCommandBarCommands.Bullet:
+            case RoosterShortcutCommands.Bullet:
                 toggleBullet(editor);
                 break;
-            case RoosterCommandBarCommands.Numbering:
+            case RoosterShortcutCommands.Numbering:
                 toggleNumbering(editor);
                 break;
-            case RoosterCommandBarCommands.InsertLink:
+            case RoosterShortcutCommands.InsertLink:
                 createLinkWithPrompt(editor, this.strings);
                 break;
             default:

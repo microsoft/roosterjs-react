@@ -22,7 +22,7 @@ import {
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
-    RoosterCommandBarCommands,
+    RoosterShortcutCommands,
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
@@ -103,7 +103,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             })
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterCommandBarCommands) => console.log(command));
+    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command));
     const imagePlugin = new PasteImagePlugin(imageManager);
     const imageResizePlugin = new ImageResize();
 
@@ -111,6 +111,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
+        leanRooster.mode = LeanRoosterModes.Edit;
     };
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
