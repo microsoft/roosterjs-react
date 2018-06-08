@@ -2,7 +2,7 @@ $buttonHeight: 40px;
 $buttonWidth: 40px;
 $pivotItemCount: 7;
 $paneHorizontalPadding: 1px;
-$paneWidth: $buttonWidth * $pivotItemCount;
+$paneWidth: $buttonWidth * $pivotItemCount + (2 * $paneHorizontalPadding);
 $maxHeightForContent: 245px;
 
 .emoji {
