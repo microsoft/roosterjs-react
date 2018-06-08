@@ -1,24 +1,15 @@
 import * as React from 'react';
-import EditorViewState from '../schema/EditorViewState';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';
-import {
-    ContentEdit,
-    HyperLink,
-    Paste,
-    DefaultShortcut,
-} from 'roosterjs-editor-plugins';
 import { convertInlineCss } from 'roosterjs-editor-dom';
+import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
+import { EditorViewState } from 'roosterjs-react';
 
 export interface ReactEditorProps {
     viewState: EditorViewState;
     className?: string;
     plugins?: EditorPlugin[];
-    updateViewState?: (
-        viewState: EditorViewState,
-        content: string,
-        isInitializing: boolean
-    ) => void;
+    updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
     undo?: UndoService;
     isRtl?: boolean;
     hyperlinkToolTipCallback?: (href: string) => string;
@@ -33,14 +24,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
 
     render() {
         let { className, isRtl } = this.props;
-        return (
-            <div
-                dir={isRtl ? 'rtl' : 'ltr'}
-                className={className}
-                onBlur={this.onBlur}
-                ref={this.onContentDivRef}
-            />
-        );
+        return <div dir={isRtl ? 'rtl' : 'ltr'} className={className} onBlur={this.onBlur} ref={this.onContentDivRef} />;
     }
 
     componentDidMount() {
@@ -70,19 +54,8 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
     }
 
     private getEditorOptions(): EditorOptions {
-        let {
-            plugins,
-            viewState,
-            undo,
-            hyperlinkToolTipCallback,
-            defaultFormat,
-        } = this.props;
-        let allPlugins: EditorPlugin[] = [
-            new ContentEdit(),
-            new HyperLink(hyperlinkToolTipCallback),
-            new Paste(true /*useDirectPaste*/),
-            new DefaultShortcut(),
-        ];
+        let { plugins, viewState, undo, hyperlinkToolTipCallback, defaultFormat } = this.props;
+        let allPlugins: EditorPlugin[] = [new ContentEdit(), new HyperLink(hyperlinkToolTipCallback), new Paste(true /*useDirectPaste*/), new DefaultShortcut()];
 
         if (plugins) {
             allPlugins = allPlugins.concat(plugins);
@@ -93,7 +66,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
             plugins: allPlugins,
             defaultFormat: defaultFormat,
             undo: undo,
-            initialContent: initialContent,
+            initialContent: initialContent
         };
 
         return options;
