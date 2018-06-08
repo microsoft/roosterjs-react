@@ -7,7 +7,7 @@ import {
     FontNamePicker,
     FontSizePicker,
 } from 'roosterjs-react-pickers';
-import { confirm } from 'roosterjs-react-common';
+import confirm from './ConfirmDialog';
 import { Alignment, Indentation, Direction } from 'roosterjs-editor-types';
 import {
     clearFormat,
