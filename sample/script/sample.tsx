@@ -1,7 +1,9 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
-import { createEditorViewState, EmojiPlugin, ReactEditor, Ribbon, RibbonPlugin } from 'roosterjs-react';
+import { createEditorViewState, EmojiPlugin } from 'roosterjs-react';
+import { Ribbon, RibbonPlugin } from 'roosterjs-react-ribbon';
 
+import ReactEditor from './ReactEditor';
 import ribbonButtonRenderer from './ribbonButtonRenderer';
 
 const container = document.getElementById('container');

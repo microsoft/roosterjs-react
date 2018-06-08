@@ -3,15 +3,15 @@ import { browserData } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 
 export const enum RoosterShortcutCommands {
-    None = 0,
-    Bold = 1,
-    Italic = 2,
-    Underline = 3,
-    Undo = 4,
-    Redo = 5,
-    Bullet = 6,
-    Numbering = 7,
-    InsertLink = 8
+    None = 'None',
+    Bold = 'Bold',
+    Italic = 'Italic',
+    Underline = 'Underline',
+    Undo = 'Undo',
+    Redo = 'Redo',
+    Bullet = 'Bullet',
+    Numbering = 'Numbering',
+    InsertLink = 'InsertLink'
 }
 
 interface ShortcutCommand {

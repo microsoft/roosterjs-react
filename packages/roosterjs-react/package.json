@@ -5,7 +5,6 @@
     "roosterjs-plugin-image-resize": "",
     "roosterjs-react-editor": "",
     "roosterjs-react-command-bar": "",
-    "roosterjs-react-ribbon": "",
     "roosterjs-react-emoji": ""
   },
   "main": "./lib/index.ts"

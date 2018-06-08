@@ -1,15 +1,11 @@
-import {
-    Strings,
-    registerDefaultString,
-    getString as globalGetString,
-} from '../../strings/strings';
+import { getString as globalGetString, registerDefaultString, Strings } from 'roosterjs-react-common/lib';
 
 const STRING_CATEGORY = 'ROOSTERJS_STRINGS_DIALOG';
 
 export const dialogStrings = {
     // Dialogs:
     dlgOk: 'OK',
-    dlgCancel: 'Cancel',
+    dlgCancel: 'Cancel'
 };
 
 export type DialogStringKey = keyof typeof dialogStrings;
