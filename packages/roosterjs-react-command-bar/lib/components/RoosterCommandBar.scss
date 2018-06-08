@@ -1,22 +1,36 @@
 $color-picker-bg-color: #fff;
 $button-color: #212121;
 
+@mixin customCommandBarStyles() {
+    // After we upgrade to Fabric 6.0 CommandBar, we'll be able to style without targeting ms-* classes
+    .ms-CommandBar-primaryCommands {
+        margin: 0 4px;
+    }
+
+    .ms-CommandBar-sideCommands {
+        padding: 0;
+    }
+}
+
 :global {
     .rooster-command-bar {
         .rooster-command-bar-button {
             margin-right: 2px;
         }
 
-        .ms-CommandBar-primaryCommands {
-            margin: 0 4px;
-        }
-
-        .ms-CommandBar-sideCommands {
-            padding: 0;
-        }
+        @include customCommandBarStyles();
 
         .is-selected {
             background: #dadada;
+        }
+    }
+
+    html {
+        &[dir='ltr'],
+        &[dir='rtl'] {
+            .rooster-command-bar {
+                @include customCommandBarStyles();
+            }
         }
     }
 
@@ -29,7 +43,7 @@ $button-color: #212121;
                 font-style: normal;
 
                 &:before {
-                    content: "🙂";
+                    content: '🙂';
                 }
             }
         }
@@ -94,7 +108,7 @@ $button-color: #212121;
             border: 0;
 
             &:before {
-                content: "";
+                content: '';
                 position: absolute;
                 left: 0;
                 right: 0;
