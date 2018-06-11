@@ -3,7 +3,7 @@ import { PluginEvent, PluginEventType } from "roosterjs-editor-types";
 
 export default class ContentChangedPlugin implements EditorPlugin {
     private changeDisposer: () => void;
-    private textChangeDisposer: () => void;
+    private textInputDisposer: () => void;
     private pasteDisposer: () => void;
 
     protected editor: Editor;
@@ -13,7 +13,7 @@ export default class ContentChangedPlugin implements EditorPlugin {
     public initialize(editor: Editor): void {
         this.editor = editor;
         this.changeDisposer = this.editor.addDomEventHandler("input", this.onChangeEvent);
-        this.textChangeDisposer = this.editor.addDomEventHandler("textchange", this.onChangeEvent); // IE 11
+        this.textInputDisposer = this.editor.addDomEventHandler("textinput", this.onChangeEvent); // IE 11
         this.pasteDisposer = this.editor.addDomEventHandler("paste", this.onChangeEvent);
     }
 
@@ -28,9 +28,9 @@ export default class ContentChangedPlugin implements EditorPlugin {
             this.changeDisposer();
             this.changeDisposer = null;
         }
-        if (this.textChangeDisposer) {
-            this.textChangeDisposer();
-            this.textChangeDisposer = null;
+        if (this.textInputDisposer) {
+            this.textInputDisposer();
+            this.textInputDisposer = null;
         }
         if (this.pasteDisposer) {
             this.pasteDisposer();
