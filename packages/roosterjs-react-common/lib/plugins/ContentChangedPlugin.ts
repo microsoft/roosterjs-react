@@ -13,6 +13,7 @@ export default class ContentChangedPlugin implements EditorPlugin {
     public initialize(editor: Editor): void {
         this.editor = editor;
         this.changeDisposer = this.editor.addDomEventHandler("input", this.onChangeEvent);
+        this.changeDisposer = this.editor.addDomEventHandler("textinput", this.onChangeEvent); // IE 11
         this.textChangeDisposer = this.editor.addDomEventHandler("textchange", this.onChangeEvent); // IE 11
         this.pasteDisposer = this.editor.addDomEventHandler("paste", this.onChangeEvent);
     }
