@@ -52,6 +52,10 @@ $maxHeightForContent: 245px;
     }
 }
 
+.quickPicker {
+    overflow-y: hidden;
+}
+
 .partialList,
 .fullListBody {
     max-height: $maxHeightForContent;
