@@ -1,7 +1,7 @@
 import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from 'roosterjs-editor-api';
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
-import { createLinkWithPrompt, NullFunction, Strings } from 'roosterjs-react-common';
+import { createLinkWithPrompt, NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
 
 import RoosterCommandBar from '../components/RoosterCommandBar';
 import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
@@ -17,11 +17,8 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
 
     private editor: Editor;
     private commandBars: RoosterCommandBar[] = [];
-    private strings: Strings;
 
-    constructor(strings?: Strings, private onShortcutTriggered: (command: RoosterShortcutCommands) => void = NullFunction) {
-        this.strings = strings;
-    }
+    constructor(private strings?: Strings, private onShortcutTriggered: (command: RoosterShortcutCommands) => void = NullFunction, private disableListWorkaround?: boolean) {}
 
     public initialize(editor: Editor): void {
         this.editor = editor;
@@ -80,10 +77,10 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
                 editor.redo();
                 break;
             case RoosterShortcutCommands.Bullet:
-                toggleBullet(editor);
+                (this.disableListWorkaround ? toggleNonCompatBullet : toggleBullet)(editor);
                 break;
             case RoosterShortcutCommands.Numbering:
-                toggleNumbering(editor);
+                (this.disableListWorkaround ? toggleNonCompatNumbering : toggleNumbering)(editor);
                 break;
             case RoosterShortcutCommands.InsertLink:
                 createLinkWithPrompt(editor, this.strings);

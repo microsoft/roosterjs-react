@@ -118,6 +118,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
         leanRooster.mode = LeanRoosterModes.View;
         imageResizePlugin.hideResizeHandle();
     };
+    const onEmojiKeyboardTriggered = () => console.log('Emoji started from keyboard');
     let emojiPlugin: EmojiPlugin = null;
     let cmdButton: IButton;
 
@@ -127,7 +128,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             onBlur={focusOutShellOnBlur}
             onFocus={focusOutShellOnFocus}
             onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
-                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss } as EmojiPluginOptions);
+                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss, onKeyboardTriggered: onEmojiKeyboardTriggered } as EmojiPluginOptions);
 
                 return [
                     <LeanRooster
@@ -139,6 +140,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
                         hyperlinkToolTipCallback={(url: string) => `CTRL+Click to follow link\n${url}`}
+                        defaultFormat={{}}
                     />,
                     <RoosterCommandBar
                         key="cmd"
@@ -199,6 +201,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         ref={commandBarOnRef}
                         onButtonClicked={buttonKey => console.log(buttonKey)}
                         overflowMenuProps={{ className: 'custom-overflow' }}
+                        disableListWorkaround={true}
                     />
                 ];
             }}

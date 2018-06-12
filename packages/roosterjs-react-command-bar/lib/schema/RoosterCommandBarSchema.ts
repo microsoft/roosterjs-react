@@ -19,6 +19,7 @@ export interface RoosterCommandBarProps {
     calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     onButtonClicked?: (buttonKey: string) => void;
     overflowMenuProps?: Partial<IContextualMenuProps>;
+    disableListWorkaround?: boolean;
 }
 
 export interface RoosterCommandBarState {
