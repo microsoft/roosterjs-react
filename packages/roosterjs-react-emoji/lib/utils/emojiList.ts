@@ -50,7 +50,7 @@ export const commonEmojis = [common1, common2, common3, common4, common5, moreEm
 export const enum EmojiFamilyKeys {
     People = 'People',
     Nature = 'Nature',
-    Activies = 'Activies',
+    Activities = 'Activities',
     Food = 'Food',
     Travel = 'Travel',
     Symbols = 'Symbols',
@@ -303,7 +303,7 @@ const EmojiList = {
         createEmoji('1f4a6', 'emjD1f4a6'),
         createEmoji('1f30a', 'emjD1f30a', 'emjK1f30a')
     ],
-    [EmojiFamilyKeys.Activies]: [
+    [EmojiFamilyKeys.Activities]: [
         createEmoji('026bd', 'emjD026bd', 'emjK026bd'),
         createEmoji('1f3c0', 'emjD1f3c0', 'emjK1f3c0'),
         createEmoji('1f3c8', 'emjD1f3c8', 'emjK1f3c8'),
@@ -741,7 +741,7 @@ const EmojiList = {
 export default EmojiList;
 
 export const EmojiFabricIconCharacterMap = {
-    [EmojiFamilyKeys.Activies]: 'Soccer',
+    [EmojiFamilyKeys.Activities]: 'Soccer',
     [EmojiFamilyKeys.Food]: 'EatDrink',
     [EmojiFamilyKeys.Nature]: 'FangBody',
     [EmojiFamilyKeys.Objects]: 'Lightbulb',
