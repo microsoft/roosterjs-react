@@ -5,6 +5,7 @@ import * as ReactDOM from 'react-dom';
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from 'roosterjs-editor-api';
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
+import { NullFunction } from 'roosterjs-react-common';
 
 import EmojiPane, { EmojiPaneProps } from '../components/EmojiPane';
 import Emoji from '../schema/Emoji';
@@ -27,6 +28,7 @@ export interface EmojiPluginOptions {
     calloutClassName?: string;
     onCalloutDismiss?: (ev?: any) => void;
     emojiPaneProps?: EmojiPaneProps;
+    onKeyboardTriggered?: () => void;
 }
 
 export default class EmojiPlugin implements EditorPlugin {
@@ -219,7 +221,9 @@ export default class EmojiPlugin implements EditorPlugin {
         const keyboardEvent = event.rawEvent as KeyboardEvent;
         const wordBeforeCursor = this.getWordBeforeCursor(event);
         if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ':') {
+            const { onKeyboardTriggered = NullFunction } = this.options;
             this.setIsSuggesting(true);
+            onKeyboardTriggered();
         } else if (wordBeforeCursor) {
             const cursorData = cacheGetCursorEventData(event, this.editor);
             const charBeforeCursor = cursorData ? cursorData.getXCharsBeforeCursor(1) : null;

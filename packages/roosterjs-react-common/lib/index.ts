@@ -1,6 +1,7 @@
 export { Strings, registerDefaultString, getString } from './strings/strings';
 export { NullFunction } from './utils/Core';
 export { closest } from './utils/ElementUtil';
+export { setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumbering } from './utils/NonCompatFormatter';
 export { css } from './utils/ReactUtil';
 export { default as createLinkWithPrompt, CreateLinkWithPromptStringKey } from './utils/createLinkWithPrompt';
 export { default as ImageManager, ImageManagerInteface, ImageManagerOptions, UpdatePlaceholdersResult } from './utils/ImageManager';
