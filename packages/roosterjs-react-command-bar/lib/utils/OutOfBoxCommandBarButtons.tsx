@@ -66,6 +66,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                     headerLevel: 1,
                     canCheck: true,
                     getChecked: _getCheckedForHeader,
+                    isContextMenuItem: true,
                     handleChange: _handleChangeForHeader,
                     iconProps: null
                 },
@@ -76,6 +77,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                     headerLevel: 2,
                     canCheck: true,
                     getChecked: _getCheckedForHeader,
+                    isContextMenuItem: true,
                     handleChange: _handleChangeForHeader,
                     iconProps: null
                 },
@@ -86,10 +88,11 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                     headerLevel: 3,
                     canCheck: true,
                     getChecked: _getCheckedForHeader,
+                    isContextMenuItem: true,
                     handleChange: _handleChangeForHeader,
                     iconProps: null
                 }
-            ]
+            ] as RoosterCommandBarButton[]
         }
     },
     {
@@ -97,7 +100,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         name: 'Bold',
         iconProps: _getIconProps('Bold'),
         canCheck: true,
-        getSelected: (formatState: FormatState) => formatState.isBold,
+        getChecked: (formatState: FormatState) => formatState.isBold,
         handleChange: (editor: Editor) => toggleBold(editor)
     },
     {
@@ -105,7 +108,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         name: 'Italic',
         iconProps: _getIconProps('Italic'),
         canCheck: true,
-        getSelected: (formatState: FormatState) => formatState.isItalic,
+        getChecked: (formatState: FormatState) => formatState.isItalic,
         handleChange: (editor: Editor) => toggleItalic(editor)
     },
     {
@@ -113,7 +116,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         name: 'Underline',
         iconProps: _getIconProps('Underline'),
         canCheck: true,
-        getSelected: (formatState: FormatState) => formatState.isUnderline,
+        getChecked: (formatState: FormatState) => formatState.isUnderline,
         handleChange: (editor: Editor) => toggleUnderline(editor)
     },
     {
@@ -121,7 +124,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         name: 'Bulleted list',
         iconProps: _getIconProps('BulletedList'),
         canCheck: true,
-        getSelected: (formatState: FormatState) => formatState.isBullet,
+        getChecked: (formatState: FormatState) => formatState.isBullet,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? toggleNonCompatBullet : toggleBullet)(editor)
     },
     {
@@ -129,7 +132,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         name: 'Numbered list',
         iconProps: _getIconProps('NumberedList'),
         canCheck: true,
-        getSelected: (formatState: FormatState) => formatState.isNumbering,
+        getChecked: (formatState: FormatState) => formatState.isNumbering,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? toggleNonCompatNumbering : toggleNumbering)(editor)
     },
     {
@@ -200,7 +203,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.Strikethrough,
         name: 'Strikethrough',
         iconProps: _getIconProps('Strikethrough'),
-        getSelected: (formatState: FormatState) => formatState.isStrikeThrough,
+        getChecked: (formatState: FormatState) => formatState.isStrikeThrough,
         handleChange: (editor: Editor) => toggleStrikethrough(editor)
     },
     {

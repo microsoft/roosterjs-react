@@ -3,9 +3,9 @@ import './LeanRooster.scss.g';
 import * as React from 'react';
 import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from 'roosterjs-editor-core';
 import { isNodeEmpty } from 'roosterjs-editor-dom';
-import { ContentEdit, HyperLink, Paste, getDefaultContentEditFeatures, ContentEditFeatures } from 'roosterjs-editor-plugins';
+import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
-import { css, NullFunction } from 'roosterjs-react-common';
+import { css, getDataAndAriaProps, NullFunction } from 'roosterjs-react-common';
 
 import EditorViewState from '../schema/EditorViewState';
 
@@ -63,6 +63,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
         return (
             <div
+                {...getDataAndAriaProps(this.props)}
                 className={css('lean-rooster', className, this.mode === LeanRoosterModes.View ? 'view-mode' : 'edit-mode', {
                     readonly,
                     'show-placeholder': this._placeholderVisible
@@ -80,6 +81,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
                 suppressContentEditableWarning={true}
                 tabIndex={0}
                 dangerouslySetInnerHTML={this._initialContent}
+                aria-multiline="true"
                 role="textbox"
             />
         );
