@@ -26,7 +26,8 @@ import {
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
     TableResize,
-    UndoWithImagePlugin
+    UndoWithImagePlugin,
+    DoubleClickImagePlugin
 } from 'roosterjs-react';
 
 function createLinkedSvg(name: string): JSX.Element {
@@ -65,6 +66,9 @@ class ContentChangedLoggerPlugin extends ContentChangedPlugin {
     }
 }
 
+const placeholderImageClassName = 'dblclick-bypass';
+const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
+
 function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
     const leanRoosterContentDivOnRef = (ref: HTMLDivElement) => (leanRoosterContentDiv = ref);
@@ -100,12 +104,13 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                     window.setTimeout(() => resolve(dataURL), timeoutMs);
                 };
                 reader.readAsDataURL(image);
-            })
+            }),
+        placeholderImageClassName
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
     const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command), true);
     const imagePlugin = new PasteImagePlugin(imageManager);
-    const imageResizePlugin = new ImageResize();
+    const imageResizePlugin = new ImageResize(undefined, undefined, undefined, undefined, excludePlaceholderSelector);
 
     const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
@@ -135,7 +140,15 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         key="rooster"
                         viewState={leanRoosterViewState}
                         placeholder={`${name} placeholder`}
-                        plugins={[commandBarPlugin, imagePlugin, emojiPlugin, imageResizePlugin, new TableResize(), new ContentChangedLoggerPlugin()]}
+                        plugins={[
+                            commandBarPlugin,
+                            imagePlugin,
+                            emojiPlugin,
+                            imageResizePlugin,
+                            new TableResize(),
+                            new ContentChangedLoggerPlugin(),
+                            new DoubleClickImagePlugin(excludePlaceholderSelector)
+                        ]}
                         undo={new UndoWithImagePlugin(imageManager)}
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
@@ -182,7 +195,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                             {
                                 key: 'vacation',
                                 name: 'Vacation',
-                                iconProps: { className: 'ms-Icon ms-Icon--Vacation' },
+                                iconProps: { iconName: 'Vacation' },
                                 handleChange: () => {
                                     console.log(leanRooster.getContent());
                                     alert('Hello');
