@@ -103,7 +103,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
             })
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command));
+    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command), true);
     const imagePlugin = new PasteImagePlugin(imageManager);
     const imageResizePlugin = new ImageResize();
 
@@ -141,6 +141,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         contentDivRef={leanRoosterContentDivOnRef}
                         hyperlinkToolTipCallback={(url: string) => `CTRL+Click to follow link\n${url}`}
                         defaultFormat={{}}
+                        data-foo="bar"
                     />,
                     <RoosterCommandBar
                         key="cmd"

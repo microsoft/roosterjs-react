@@ -28,7 +28,7 @@ export interface RoosterCommandBarState {
 
 export interface RoosterCommandBarButton extends ICommandBarItemProps {
     handleChange?: (editor: Editor, props: RoosterCommandBarProps, state: RoosterCommandBarState) => void;
-    getSelected?: (formatState: FormatState) => boolean;
+    isContextMenuItem?: boolean;
     getChecked?: (formatState: FormatState) => boolean;
     order?: number;
     exclude?: boolean;

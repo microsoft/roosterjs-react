@@ -15,7 +15,7 @@ import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys as ButtonKeys,
+    RoosterCommmandBarButtonKeys as ButtonKeys
 } from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
@@ -156,12 +156,13 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         const { formatState } = this.state;
 
         if (commandBarButton.getChecked) {
-            commandBarButton.checked = commandBarButton.getChecked(formatState);
-        }
-        if (commandBarButton.getSelected) {
-            const isSelected: boolean = commandBarButton.getSelected(formatState);
-            commandBarButton.className = css("rooster-command-bar-button", { 'is-selected': isSelected });
-            commandBarButton["aria-pressed"] = isSelected;
+            const checked = commandBarButton.getChecked(formatState);
+            commandBarButton.checked = checked;  // OF 6.0 (is-selected can be removed for 6.0)
+
+            if (!commandBarButton.isContextMenuItem) {
+                commandBarButton.className = css('rooster-command-bar-button', { 'is-selected': checked });
+                commandBarButton["aria-pressed"] = checked; // OF 5.0
+            }
         }
         if (commandBarButton.getDisabled) {
             commandBarButton.disabled = commandBarButton.getDisabled(formatState);
