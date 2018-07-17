@@ -240,8 +240,8 @@ export const OutOfBoxCommandBarButtonMap = OutOfBoxCommandBarButtons.reduce(
     {} as { [key: string]: RoosterCommandBarButton }
 );
 
-function _getIconProps(name: string): IIconProps {
-    return { className: `${RoosterCommandBarIconClassName} ms-Icon ms-Icon--${name}` };
+function _getIconProps(iconName: string): IIconProps {
+    return { className: RoosterCommandBarIconClassName, iconName };
 }
 
 function _getCheckedForHeader(formatState: FormatState): boolean {

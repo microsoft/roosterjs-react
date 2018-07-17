@@ -12,7 +12,7 @@ export interface ImageManagerInteface {
 export interface ImageManagerOptions {
     uploadImage: (file: File) => Promise<string>;
     createImagePlaceholder?: (editor: Editor, image: File) => HTMLImageElement;
-    placeHolderImageClassName?: string;
+    placeholderImageClassName?: string;
 }
 
 const PlaceholderDataName = 'paste-image-placeholder-804b751e';
@@ -32,10 +32,12 @@ export default class ImageManager implements ImageManagerInteface {
 
     private idToUrlImageCache: { [id: string]: string } = {};
     private options: ImageManagerOptions;
+    private placeholderImageClasses: string[];
 
     constructor(options: ImageManagerOptions) {
         this.options = { ...options };
         this.options.createImagePlaceholder = this.options.createImagePlaceholder || this.defaultCreateImagePlaceholder;
+        this.placeholderImageClasses = this.options.placeholderImageClassName ? this.options.placeholderImageClassName.split(' ') : undefined;
     }
 
     public upload(editor: Editor, image: File): HTMLImageElement {
@@ -125,8 +127,11 @@ export default class ImageManager implements ImageManagerInteface {
         if (placeholder.tagName === 'IMG') {
             const img = placeholder as HTMLImageElement;
             img.src = url;
-            img.classList.remove(Styles.roosterjsReactSpinner, this.options.placeHolderImageClassName);
+            img.classList.remove(Styles.roosterjsReactSpinner, ...this.placeholderImageClasses);
             placeholder.removeAttribute(PlaceholderDataAttribute);
+            if (img.classList.length === 0) {
+                placeholder.removeAttribute('class');
+            }
         } else {
             const doc = editor ? editor.getDocument() : document; // editor can be null when called from updatePlaceholders
 
@@ -149,7 +154,7 @@ export default class ImageManager implements ImageManagerInteface {
 
         const result = editor.getDocument().createElement('img') as HTMLImageElement;
         result.src = Base64Svgs.RoosterJsReactSpinner;
-        result.className = css(Styles.roosterjsReactSpinner, this.options.placeHolderImageClassName);
+        result.className = css(Styles.roosterjsReactSpinner, this.options.placeholderImageClassName);
 
         return result;
     };

@@ -5,7 +5,8 @@ export { setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumberin
 export { css, getDataAndAriaProps } from './utils/ReactUtil';
 export { default as createLinkWithPrompt, CreateLinkWithPromptStringKey } from './utils/createLinkWithPrompt';
 export { default as ImageManager, ImageManagerInteface, ImageManagerOptions, UpdatePlaceholdersResult } from './utils/ImageManager';
+export { default as ContentChangedPlugin } from './plugins/ContentChangedPlugin';
+export { default as DoubleClickImagePlugin } from './plugins/DoubleClickImagePlugin';
 export { default as PasteImagePlugin } from './plugins/PasteImagePlugin';
 export { default as UndoWithImagePlugin } from './plugins/UndoWithImagePlugin';
-export { default as ContentChangedPlugin } from './plugins/ContentChangedPlugin';
 export { Base64Svgs } from './resources/Images';
