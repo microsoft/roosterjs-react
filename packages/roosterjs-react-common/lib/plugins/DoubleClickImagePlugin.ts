@@ -46,6 +46,8 @@ export default class DoubleClickImagePlugin implements EditorPlugin {
             // noopener
             openedWindow.opener = null;
             if (isDataUrl) {
+                // for data URL, we need to create an image otherwise we'll get
+                // Window is not allowed to navigate Top-frame navigations to data URLs
                 openedWindow.document.body.innerHTML = `<img src="${src}">`;
             }
         }
