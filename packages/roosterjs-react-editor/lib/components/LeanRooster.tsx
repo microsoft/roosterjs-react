@@ -234,7 +234,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _createEditorOptions(): EditorOptions {
         const { plugins: additionalPlugins = [], undo = new Undo(), hyperlinkToolTipCallback, defaultFormat = {}, contentEditFeatures } = this.props;
         const plugins: EditorPlugin[] = [
-            new ContentEdit({ ...getDefaultContentEditFeatures(), ...contentEditFeatures }),
+            new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, ...contentEditFeatures }),
             new HyperLink(hyperlinkToolTipCallback),
             new Paste(true /*useDirectPaste*/),
             ...additionalPlugins

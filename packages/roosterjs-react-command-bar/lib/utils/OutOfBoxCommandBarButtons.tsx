@@ -33,7 +33,7 @@ export const RoosterCommandBarStringKeys = {
 export const RoosterCommmandBarButtonKeys = {
     Header: 'header',
     Bold: 'bold',
-    Italic: 'itatlic',
+    Italic: 'italic',
     Underline: 'underline',
     BulletedList: 'bulleted-list',
     NumberedList: 'numbered-list',
