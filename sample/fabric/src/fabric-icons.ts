@@ -21,7 +21,7 @@ export function initializeIcons(
       speak: 'none'
     },
     fontFace: {
-      fontFamily: `"FabricMDL2Icons"`,
+      fontFamily: 'FabricMDL2Icons',
       src: `url('${baseUrl}fabric-icons.woff') format('woff')`
     },
     icons: {

@@ -316,7 +316,7 @@ function _getIconOnRenderDelegate(asset: { name: string; className?: string }, s
 
         let cmdButton: IButton = null;
         OnRenderDelegateCache[cacheKey] = (item: RoosterCommandBarButton): JSX.Element => (
-            <TooltipHost content={item.name} key={item.key}>
+            <TooltipHost hostClassName="command-button-tool-tip" content={item.name} key={item.key}>
                 <CommandBarButton
                     componentRef={ref => (cmdButton = ref)}
                     {...item as any}

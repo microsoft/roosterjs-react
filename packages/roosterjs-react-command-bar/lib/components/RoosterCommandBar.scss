@@ -20,26 +20,59 @@ $command-bar-bg-color: white;
             background: $command-bar-bg-color;
         }
 
-        .rooster-command-bar-button {
-            min-width: 32px;
-            line-height: $buttonHeight;
-            height: $buttonHeight;
+        @include customCommandBarStyles();
+    }
+
+    .rooster-command-button-root {
+        &:not(:last-child) {
+            margin-right: 2px;
+        }
+
+        &:not(:hover):not(:active):not(.is-checked) button {
+            background: $command-bar-bg-color;
             border-color: transparent;
+        }
 
-            .stacked-icon-container {
-                display: flex;
-                height: 100%;
-                position: relative;
+        .is-checked button {
+            background: #dadada;
+        }
+    }
 
-                > .stacked-icon {
-                    font-size: 16px;
-                    position: absolute;
-                    left: 0;
-                    top: 0;
+    .rooster-command-bar-button {
+        min-width: 32px;
+        line-height: $buttonHeight;
+        height: $buttonHeight;
+        border-color: transparent;
+    }
 
-                    &:first-child {
-                        position: relative;
-                    }
+    html {
+        &[dir='ltr'],
+        &[dir='rtl'] {
+            .rooster-command-bar {
+                @include customCommandBarStyles();
+            }
+        }
+    }
+
+    .rooster-command-bar,
+    .rooster-command-bar-overflow {
+        .command-button-tool-tip {
+            display: block;
+        }
+
+        .stacked-icon-container {
+            display: flex;
+            height: 100%;
+            position: relative;
+
+            > .stacked-icon {
+                font-size: 16px;
+                position: absolute;
+                left: 0;
+                top: 0;
+
+                &:first-child {
+                    position: relative;
                 }
             }
 
@@ -73,35 +106,6 @@ $command-bar-bg-color: white;
             }
         }
 
-        @include customCommandBarStyles();
-
-        .rooster-command-button-root {
-            &:not(:last-child) {
-                margin-right: 2px;
-            }
-
-            &:not(:hover):not(:active):not(.is-checked) button {
-                background: $command-bar-bg-color;
-                border-color: transparent;
-            }
-
-            .is-checked button {
-                background: #dadada;
-            }
-        }
-    }
-
-    html {
-        &[dir='ltr'],
-        &[dir='rtl'] {
-            .rooster-command-bar {
-                @include customCommandBarStyles();
-            }
-        }
-    }
-
-    .rooster-command-bar,
-    .rooster-command-bar-overflow {
         .rooster-command-bar-icon {
             color: $button-color;
 
@@ -116,6 +120,21 @@ $command-bar-bg-color: white;
 
         button:hover:not([disabled]) .rooster-command-bar-icon {
             color: $button-color;
+        }
+    }
+
+    .rooster-command-bar-overflow {
+        div {
+            min-width: 0;
+        }
+
+        ul {
+            display: flex;
+            overflow: hidden;
+        }
+
+        li {
+            display: inline-block;
         }
     }
 
