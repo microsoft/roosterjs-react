@@ -32,4 +32,5 @@ export interface RoosterCommandBarButton extends ICommandBarItemProps {
     getChecked?: (formatState: FormatState) => boolean;
     order?: number;
     exclude?: boolean;
+    buttonClassName?: string;
 }

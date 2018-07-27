@@ -15,7 +15,8 @@ import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys as ButtonKeys
+    RoosterCommmandBarButtonKeys as ButtonKeys,
+    RoosterCommandBarButtonRootClassName
 } from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
@@ -44,7 +45,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return (
             <div className={css('rooster-command-bar', className)}>
                 <CommandBar
-                    className={css('command-bar', commandBarClassName)}
+                    className={css('rooster-command-bar-base', commandBarClassName)}
                     items={this._buttons}
                     overflowMenuProps={
                         {
@@ -157,10 +158,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
         if (commandBarButton.getChecked) {
             const checked = commandBarButton.getChecked(formatState);
-            commandBarButton.checked = checked;  // OF 6.0 (is-selected can be removed for 6.0)
+            commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                commandBarButton.className = css('rooster-command-bar-button', { 'is-selected': checked });
+                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked });
                 commandBarButton["aria-pressed"] = checked; // OF 5.0
             }
         }
