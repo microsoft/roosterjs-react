@@ -1,5 +1,7 @@
 $color-picker-bg-color: #fff;
 $button-color: #212121;
+$buttonHeight: 40px;
+$command-bar-bg-color: white;
 
 @mixin customCommandBarStyles() {
     // After we upgrade to Fabric 6.0 CommandBar, we'll be able to style without targeting ms-* classes
@@ -14,15 +16,33 @@ $button-color: #212121;
 
 :global {
     .rooster-command-bar {
-        .rooster-command-bar-button {
-            margin-right: 2px;
+        .rooster-command-bar-base {
+            background: $command-bar-bg-color;
         }
 
         @include customCommandBarStyles();
+    }
 
-        .is-selected {
+    .rooster-command-button-root {
+        &:not(:last-child) {
+            margin-right: 2px;
+        }
+
+        &:not(:hover):not(:active):not(.is-checked) button {
+            background: $command-bar-bg-color;
+            border-color: transparent;
+        }
+
+        .is-checked button {
             background: #dadada;
         }
+    }
+
+    .rooster-command-bar-button {
+        min-width: 32px;
+        line-height: $buttonHeight;
+        height: $buttonHeight;
+        border-color: transparent;
     }
 
     html {
@@ -36,6 +56,56 @@ $button-color: #212121;
 
     .rooster-command-bar,
     .rooster-command-bar-overflow {
+        .command-button-tool-tip {
+            display: block;
+        }
+
+        .stacked-icon-container {
+            display: flex;
+            height: 100%;
+            position: relative;
+
+            > .stacked-icon {
+                font-size: 16px;
+                position: absolute;
+                left: 0;
+                top: 0;
+
+                &:first-child {
+                    position: relative;
+                }
+            }
+
+            .highlight-swatch {
+                color: #ff0;
+            }
+
+            .stacked-icon-RemoveLinkX,
+            .color-swatch {
+                color: #e81123;
+            }
+
+            .stacked-icon-ClearFormattingEraser {
+                color: #e68497;
+            }
+
+            .stacked-icon-IncreaseIndentArrow,
+            .stacked-icon-DecreaseIndentArrow,
+            .stacked-icon-BulletedListBullet,
+            .stacked-icon-NumberedListNumber,
+            .stacked-icon-Photo2Fill {
+                color: #0078d4;
+            }
+
+            .high-contrast-icon {
+                display: none;
+
+                @media screen and (-ms-high-contrast: active) {
+                    display: block;
+                }
+            }
+        }
+
         .rooster-command-bar-icon {
             color: $button-color;
 
@@ -50,6 +120,21 @@ $button-color: #212121;
 
         button:hover:not([disabled]) .rooster-command-bar-icon {
             color: $button-color;
+        }
+    }
+
+    .rooster-command-bar-overflow {
+        div {
+            min-width: 0;
+        }
+
+        ul {
+            display: flex;
+            overflow: hidden;
+        }
+
+        li {
+            display: inline-block;
         }
     }
 

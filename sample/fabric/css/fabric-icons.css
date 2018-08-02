@@ -1,0 +1,59 @@
+/*
+  Your use of the content in the files referenced here is subject to the terms of the license at https://aka.ms/fabric-assets-license
+*/
+@font-face {
+  font-family: 'FabricMDL2Icons';
+  src: url('../fonts/fabric-icons.woff') format('woff');
+}
+
+.ms-Icon {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-family: 'FabricMDL2Icons';
+  font-style: normal;
+  font-weight: normal;
+  speak: none;
+}
+
+.ms-Icon--ChevronDown:before { content: "\E70D"; }
+.ms-Icon--More:before { content: "\E712"; }
+.ms-Icon--Link:before { content: "\E71B"; }
+.ms-Icon--CheckMark:before { content: "\E73E"; }
+.ms-Icon--Redo:before { content: "\E7A6"; }
+.ms-Icon--Undo:before { content: "\E7A7"; }
+.ms-Icon--FontColor:before { content: "\E8D3"; }
+.ms-Icon--Italic:before { content: "\E8DB"; }
+.ms-Icon--Underline:before { content: "\E8DC"; }
+.ms-Icon--Bold:before { content: "\E8DD"; }
+.ms-Icon--FontSize:before { content: "\E8E9"; }
+.ms-Icon--BulletedList:before { content: "\E8FD"; }
+.ms-Icon--CheckList:before { content: "\E9D5"; }
+.ms-Icon--NumberedList:before { content: "\EA1C"; }
+.ms-Icon--Photo2:before { content: "\EB9F"; }
+.ms-Icon--Embed:before { content: "\ECCE"; }
+.ms-Icon--RemoveLink:before { content: "\ED90"; }
+.ms-Icon--ClearFormatting:before { content: "\EDDD"; }
+.ms-Icon--Strikethrough:before { content: "\EDE0"; }
+.ms-Icon--Vacation:before { content: "\F49F"; }
+.ms-Icon--FontColorA:before { content: "\F4EC"; }
+.ms-Icon--FontColorSwatch:before { content: "\F4ED"; }
+.ms-Icon--BulletedListText:before { content: "\F792"; }
+.ms-Icon--BulletedListBullet:before { content: "\F793"; }
+.ms-Icon--NumberedListText:before { content: "\F796"; }
+.ms-Icon--NumberedListNumber:before { content: "\F797"; }
+.ms-Icon--RemoveLinkChain:before { content: "\F79A"; }
+.ms-Icon--RemoveLinkX:before { content: "\F79B"; }
+.ms-Icon--FabricTextHighlight:before { content: "\F79C"; }
+.ms-Icon--ClearFormattingA:before { content: "\F79D"; }
+.ms-Icon--ClearFormattingEraser:before { content: "\F79E"; }
+.ms-Icon--Photo2Fill:before { content: "\F79F"; }
+.ms-Icon--IncreaseIndentText:before { content: "\F7A0"; }
+.ms-Icon--IncreaseIndentArrow:before { content: "\F7A1"; }
+.ms-Icon--DecreaseIndentText:before { content: "\F7A2"; }
+.ms-Icon--DecreaseIndentArrow:before { content: "\F7A3"; }
+.ms-Icon--CheckListText:before { content: "\F7A8"; }
+.ms-Icon--CheckListCheck:before { content: "\F7A9"; }
+.ms-Icon--FabricTextHighlightComposite:before { content: "\F7DA"; }
+.ms-Icon--DecreaseIndentLegacy:before { content: "\E290"; }
+.ms-Icon--IncreaseIndentLegacy:before { content: "\E291"; }

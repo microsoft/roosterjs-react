@@ -3,6 +3,7 @@ import './RoosterCommandBar.scss.g';
 import { ICalloutProps } from 'office-ui-fabric-react/lib/Callout';
 import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
 import { IContextualMenuItem, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
+import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
 import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
 import * as React from 'react';
 import { getFormatState, insertImage } from 'roosterjs-editor-api';
@@ -14,8 +15,9 @@ import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
+    RoosterCommandBarButtonRootClassName,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys as ButtonKeys
+    RoosterCommmandBarButtonKeys as ButtonKeys,
 } from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
@@ -44,7 +46,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return (
             <div className={css('rooster-command-bar', className)}>
                 <CommandBar
-                    className={css('command-bar', commandBarClassName)}
+                    className={css('rooster-command-bar-base', commandBarClassName)}
                     items={this._buttons}
                     overflowMenuProps={
                         {
@@ -53,7 +55,8 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                                 className: calloutClassName
                             } as ICalloutProps,
                             onDismiss: calloutOnDismiss,
-                            className: css('rooster-command-bar-overflow', overflowMenuProps && overflowMenuProps.className)
+                            className: css('rooster-command-bar-overflow', overflowMenuProps && overflowMenuProps.className),
+                            focusZoneProps: { direction: FocusZoneDirection.horizontal }
                         } as Partial<IContextualMenuProps>
                     }
                 />
@@ -157,10 +160,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
         if (commandBarButton.getChecked) {
             const checked = commandBarButton.getChecked(formatState);
-            commandBarButton.checked = checked;  // OF 6.0 (is-selected can be removed for 6.0)
+            commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                commandBarButton.className = css('rooster-command-bar-button', { 'is-selected': checked });
+                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked });
                 commandBarButton["aria-pressed"] = checked; // OF 5.0
             }
         }

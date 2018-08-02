@@ -1,11 +1,7 @@
-import { CommandBarButton, IButton } from 'office-ui-fabric-react/lib/Button';
-import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { initializeIcons } from 'office-ui-fabric-react/lib/Icons';
-import { registerIcons } from 'office-ui-fabric-react/lib/Styling';
-import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import { PluginEvent, PluginEventType } from 'roosterjs-editor-types';
+import {initializeIcons, IconNames} from '../fabric/src/index'
 import {
     ContentChangedPlugin,
     createEditorViewState,
@@ -30,29 +26,7 @@ import {
     DoubleClickImagePlugin
 } from 'roosterjs-react';
 
-function createLinkedSvg(name: string): JSX.Element {
-    return (
-        <svg height="40" width="16">
-            <use xlinkHref={`script/sprites/command-bar-sprite.svg#rooster-svg-${name}`} />
-        </svg>
-    );
-}
-
 initializeIcons();
-registerIcons({
-    icons: {
-        'RoosterSvg-Color': createLinkedSvg('color'),
-        'RoosterSvg-Bullets': createLinkedSvg('bullets'),
-        'RoosterSvg-Link': createLinkedSvg('link'),
-        'RoosterSvg-Numbering': createLinkedSvg('numbering'),
-        'RoosterSvg-Unlink': createLinkedSvg('unlink'),
-        'RoosterSvg-Highlight': createLinkedSvg('highlight'),
-        'RoosterSvg-Indent': createLinkedSvg('indent'),
-        'RoosterSvg-Outdent': createLinkedSvg('outdent'),
-        'RoosterSvg-ClearFormat': createLinkedSvg('clear-format'),
-        'RoosterSvg-Photo': createLinkedSvg('photo')
-    }
-});
 
 class ContentChangedLoggerPlugin extends ContentChangedPlugin {
     constructor() {
@@ -125,7 +99,6 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
     };
     const onEmojiKeyboardTriggered = () => console.log('Emoji started from keyboard');
     let emojiPlugin: EmojiPlugin = null;
-    let cmdButton: IButton;
 
     return (
         <FocusOutShell
@@ -160,37 +133,6 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         key="cmd"
                         className="lean-cmdbar"
                         buttonOverrides={[
-                            {
-                                key: ButtonKeys.FontColor,
-                                onRender: (item: IContextualMenuItem) => (
-                                    <TooltipHost content={item.name} key={item.key}>
-                                        <CommandBarButton
-                                            componentRef={ref => (cmdButton = ref)}
-                                            {...item as any}
-                                            ariaLabel={item.name}
-                                            menuProps={
-                                                item.subMenuProps && {
-                                                    ...item.subMenuProps,
-                                                    onDismiss: ev => {
-                                                        item.subMenuProps.onDismiss(ev);
-                                                        cmdButton.dismissMenu();
-                                                    }
-                                                }
-                                            }
-                                            onRenderIcon={() => createLinkedSvg('color')}
-                                        />
-                                    </TooltipHost>
-                                )
-                            },
-                            { key: ButtonKeys.BulletedList, iconProps: { iconName: 'RoosterSvg-Bullets' } },
-                            { key: ButtonKeys.NumberedList, iconProps: { iconName: 'RoosterSvg-Numbering' } },
-                            { key: ButtonKeys.Highlight, iconProps: { iconName: 'RoosterSvg-Highlight' } },
-                            { key: ButtonKeys.Indent, iconProps: { iconName: 'RoosterSvg-Indent' } },
-                            { key: ButtonKeys.Outdent, iconProps: { iconName: 'RoosterSvg-Outdent' } },
-                            { key: ButtonKeys.Link, iconProps: { iconName: 'RoosterSvg-Link' } },
-                            { key: ButtonKeys.Unlink, iconProps: { iconName: 'RoosterSvg-Unlink' } },
-                            { key: ButtonKeys.ClearFormat, iconProps: { iconName: 'RoosterSvg-ClearFormat' } },
-                            { key: ButtonKeys.InsertImage, iconProps: { iconName: 'RoosterSvg-Photo' } },
                             { key: ButtonKeys.Strikethrough, exclude: true },
                             {
                                 key: 'vacation',
