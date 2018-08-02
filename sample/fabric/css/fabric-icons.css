@@ -20,8 +20,11 @@
 .ms-Icon--More:before { content: "\E712"; }
 .ms-Icon--Link:before { content: "\E71B"; }
 .ms-Icon--CheckMark:before { content: "\E73E"; }
+.ms-Icon--Emoji2:before { content: "\E76E"; }
 .ms-Icon--Redo:before { content: "\E7A6"; }
 .ms-Icon--Undo:before { content: "\E7A7"; }
+.ms-Icon--Car:before { content: "\E804"; }
+.ms-Icon--EatDrink:before { content: "\E807"; }
 .ms-Icon--FontColor:before { content: "\E8D3"; }
 .ms-Icon--Italic:before { content: "\E8DB"; }
 .ms-Icon--Underline:before { content: "\E8DC"; }
@@ -30,8 +33,12 @@
 .ms-Icon--BulletedList:before { content: "\E8FD"; }
 .ms-Icon--CheckList:before { content: "\E9D5"; }
 .ms-Icon--NumberedList:before { content: "\EA1C"; }
+.ms-Icon--Lightbulb:before { content: "\EA80"; }
+.ms-Icon--Soccer:before { content: "\EB21"; }
+.ms-Icon--Heart:before { content: "\EB51"; }
 .ms-Icon--Photo2:before { content: "\EB9F"; }
 .ms-Icon--Embed:before { content: "\ECCE"; }
+.ms-Icon--FangBody:before { content: "\ECEB"; }
 .ms-Icon--RemoveLink:before { content: "\ED90"; }
 .ms-Icon--ClearFormatting:before { content: "\EDDD"; }
 .ms-Icon--Strikethrough:before { content: "\EDE0"; }

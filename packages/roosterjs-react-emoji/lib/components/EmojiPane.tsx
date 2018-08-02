@@ -67,8 +67,8 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
             return;
         }
 
-        const currentEmojisLength = emojis ? emojis.length : EmojiList[currentFamily];
-        const prevEmojisLength = prevState.emojis ? prevState.emojis.length : EmojiList[prevState.currentFamily];
+        const currentEmojisLength = emojis ? emojis.length : EmojiList[currentFamily].length;
+        const prevEmojisLength = prevState.emojis ? prevState.emojis.length : EmojiList[prevState.currentFamily].length;
         if (isFullPicker && currentEmojisLength !== prevEmojisLength) {
             onLayoutChange();
             return;
