@@ -22,7 +22,7 @@ import { FormatState, Indentation } from 'roosterjs-editor-types';
 import { createLinkWithPrompt, setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
 
 import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
-import getIconOnRenderDelegate from './getIconOnRenderDelegate';
+import { getIconOnRenderDelegate } from './getIconOnRenderDelegate';
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarButtons.ColorInfo';
 
 export const RoosterCommandBarIconClassName = 'rooster-command-bar-icon';

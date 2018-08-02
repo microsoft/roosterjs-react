@@ -1,5 +1,4 @@
 import { CommandBarButton, IButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
-import { IContextualMenuItem } from 'office-ui-fabric-react/lib/ContextualMenu';
 import { Icon } from 'office-ui-fabric-react/lib/Icon';
 import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
@@ -8,10 +7,10 @@ import { css } from 'roosterjs-react-common';
 
 import { RoosterCommandBarButton } from '../schema/RoosterCommandBarSchema';
 
-type ButtonOnRenderDelegate = (item: IContextualMenuItem) => JSX.Element;
+export type ButtonOnRenderDelegate = (item: RoosterCommandBarButton) => JSX.Element;
 const OnRenderDelegateCache: { [key: string]: ButtonOnRenderDelegate } = {};
 
-export default function getIconOnRenderDelegate(highContrastAssetName: string = null, ...assets: { name: string; className?: string }[]): ButtonOnRenderDelegate {
+export function getIconOnRenderDelegate(highContrastAssetName: string = null, ...assets: { name: string; className?: string }[]): ButtonOnRenderDelegate {
     const cacheKey = assets ? assets.map(a => a.name).join('.') : '';
     if (!OnRenderDelegateCache[cacheKey]) {
         const iconClassName = 'stacked-icon';
