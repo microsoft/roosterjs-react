@@ -4,3 +4,4 @@ export { default as RoosterCommandBarPlugin } from './plugins/RoosterCommandBarP
 export { RoosterShortcutCommands } from './plugins/RoosterCommandBarPlugin.Shortcuts';
 export { default as RoosterCommandBarPluginInterface } from './schema/RoosterCommandBarPluginInterface';
 export { RoosterCommandBarStringKeys, RoosterCommmandBarButtonKeys } from './utils/OutOfBoxCommandBarButtons';
+export { default as getIconOnRenderDelegate } from './utils/getIconOnRenderDelegate';

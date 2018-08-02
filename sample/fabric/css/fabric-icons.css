@@ -54,5 +54,6 @@
 .ms-Icon--DecreaseIndentArrow:before { content: "\F7A3"; }
 .ms-Icon--CheckListText:before { content: "\F7A8"; }
 .ms-Icon--CheckListCheck:before { content: "\F7A9"; }
+.ms-Icon--FabricTextHighlightComposite:before { content: "\F7DA"; }
 .ms-Icon--DecreaseIndentLegacy:before { content: "\E290"; }
 .ms-Icon--IncreaseIndentLegacy:before { content: "\E291"; }

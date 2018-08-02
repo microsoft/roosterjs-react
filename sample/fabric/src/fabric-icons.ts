@@ -63,6 +63,7 @@ export function initializeIcons(
       'DecreaseIndentArrow': '\uF7A3',
       'CheckListText': '\uF7A8',
       'CheckListCheck': '\uF7A9',
+      'FabricTextHighlightComposite': '\uF7DA',
       'DecreaseIndentLegacy': '\uE290',
       'IncreaseIndentLegacy': '\uE291'
     }
