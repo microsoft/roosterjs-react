@@ -1,5 +1,5 @@
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
-import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
+import { Async, KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from 'roosterjs-editor-api';
@@ -39,8 +39,14 @@ export default class EmojiPlugin implements EditorPlugin {
     private eventHandledOnKeyDown: boolean;
     private canUndoEmoji: boolean;
     private timer: number;
+    private callout: Callout;
+    private async: Async;
+    private refreshCalloutDebounced: () => void;
 
-    constructor(private options: EmojiPluginOptions = {}) {}
+    constructor(private options: EmojiPluginOptions = {}) {
+        this.async = new Async();
+        this.refreshCalloutDebounced = this.async.debounce(() => this.refreshCallout(), 100);
+    }
 
     public initialize(editor: Editor): void {
         this.editor = editor;
@@ -55,6 +61,10 @@ export default class EmojiPlugin implements EditorPlugin {
         this.contentDiv.parentElement.removeChild(this.contentDiv);
         this.contentDiv = null;
         this.editor = null;
+        if (this.async) {
+            this.async.dispose();
+            this.async = null;
+        }
     }
 
     public willHandleEventExclusively(event: PluginEvent): boolean {
@@ -302,14 +312,23 @@ export default class EmojiPlugin implements EditorPlugin {
             <Callout
                 className={calloutClassName}
                 target={point}
-                directionalHint={DirectionalHint.bottomLeftEdge}
+                directionalHint={DirectionalHint.bottomAutoEdge}
                 isBeakVisible={false}
                 gapSpace={gap}
                 onDismiss={this.onCalloutDismissInternal}
+                ref={this.calloutRef}
             >
-                <EmojiPane {...emojiPaneProps} ref={ref => (this.pane = ref)} onSelect={this.onSelectFromPane} strings={strings} />
+                <EmojiPane {...emojiPaneProps} ref={ref => (this.pane = ref)} onSelect={this.onSelectFromPane} strings={strings} onLayoutChange={this.refreshCalloutDebounced} />
             </Callout>
         );
+    }
+
+    private calloutRef = (ref: Callout): void => {
+        this.callout = ref;
+    };
+
+    private refreshCallout(): void {
+        this.callout.forceUpdate();
     }
 
     private onCalloutDismissInternal = (ev?: any): void => {

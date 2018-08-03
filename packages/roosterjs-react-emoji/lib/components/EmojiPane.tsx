@@ -27,6 +27,7 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
+    onLayoutChange?: () => void;
 }
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
@@ -55,6 +56,23 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
 
     public render(): JSX.Element {
         return this.state.isFullPicker ? this.renderFullPicker() : this.renderQuickPicker();
+    }
+
+    public componentDidUpdate(_: EmojiPaneProps, prevState: EmojiPaneState) {
+        const { onLayoutChange } = this.props;
+        const { emojis, isFullPicker, currentFamily } = this.state;
+
+        if (isFullPicker !== prevState.isFullPicker) {
+            onLayoutChange();
+            return;
+        }
+
+        const currentEmojisLength = emojis ? emojis.length : EmojiList[currentFamily].length;
+        const prevEmojisLength = prevState.emojis ? prevState.emojis.length : EmojiList[prevState.currentFamily].length;
+        if (isFullPicker && currentEmojisLength !== prevEmojisLength) {
+            onLayoutChange();
+            return;
+        }
     }
 
     public navigate(change: number): void {
