@@ -11,15 +11,21 @@ import {
     setTextColor,
     toggleBold,
     toggleBullet,
+    toggleCodeBlock,
     toggleHeader,
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
-    toggleUnderline
+    toggleUnderline,
 } from 'roosterjs-editor-api';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState, Indentation } from 'roosterjs-editor-types';
-import { createLinkWithPrompt, setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
+import {
+    createLinkWithPrompt,
+    setNonCompatIndentation,
+    toggleNonCompatBullet,
+    toggleNonCompatNumbering,
+} from 'roosterjs-react-common';
 
 import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { getIconOnRenderDelegate } from './getIconOnRenderDelegate';
@@ -48,7 +54,8 @@ export const RoosterCommmandBarButtonKeys = {
     Outdent: 'outdent',
     Strikethrough: 'strikethrough',
     FontColor: 'font-color',
-    Unlink: 'unlink'
+    Unlink: 'unlink',
+    Code: 'code'
 };
 
 export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
@@ -213,6 +220,12 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                 }
             ] as RoosterCommandBarButton[]
         }
+    },
+    {
+        key: RoosterCommmandBarButtonKeys.Code,
+        name: 'Code',
+        iconProps: _getIconProps('Embed'),
+        handleChange: (editor: Editor) => toggleCodeBlock(editor)
     },
     {
         key: RoosterCommmandBarButtonKeys.ClearFormat,
