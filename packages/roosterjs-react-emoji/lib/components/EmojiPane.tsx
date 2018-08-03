@@ -1,6 +1,7 @@
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
 import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
+import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
 import * as React from 'react';
 import { browserData } from 'roosterjs-editor-core';
 import { css } from 'roosterjs-react-common';
@@ -121,7 +122,9 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         return (
             <div className={css(Styles.quickPicker, quickPickerClassName)}>
                 {this.state.emojis.map((emoji, index) => (
+                <TooltipHost content={emoji.key === "more" ? "More" : emoji.key} id={emoji.key} calloutProps={{ gapSpace: 0}}>
                     <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
+                </TooltipHost>
                 ))}
             </div>
         );
