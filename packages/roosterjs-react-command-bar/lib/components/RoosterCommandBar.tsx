@@ -183,7 +183,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
 
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
-        const button = { ...commandBarButton }; // make a copy of the OOB button template since we're changing its properties
+        const className = commandBarButton.className || '';
+        const rootClassName = className.split(' ').indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
+        const button = { ...commandBarButton, className: css(rootClassName, className) }; // make a copy of the OOB button template since we're changing its properties
 
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
