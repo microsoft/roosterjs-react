@@ -5,7 +5,7 @@ $paneHorizontalPadding: 1px;
 $paneWidth: $buttonWidth * $pivotItemCount + (2 * $paneHorizontalPadding);
 $rowsOfIcons: 6; // including family bar if shown
 $bottomPaddingForContent: 5px;
-$maxHeightForContent: $rowsOfIcons + $buttonHeight + $bottomPaddingForContent;
+$maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
 .emoji {
     &.selected {
