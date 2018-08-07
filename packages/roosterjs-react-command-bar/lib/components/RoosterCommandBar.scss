@@ -24,7 +24,7 @@ $command-bar-bg-color: white;
     }
 
     .rooster-command-button-root {
-        &:not(:last-child) {
+        &.first-level:not(:last-child) {
             margin-right: 2px;
         }
 

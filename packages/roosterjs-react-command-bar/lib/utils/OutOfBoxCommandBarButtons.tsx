@@ -16,16 +16,11 @@ import {
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
-    toggleUnderline,
+    toggleUnderline
 } from 'roosterjs-editor-api';
 import { Editor } from 'roosterjs-editor-core';
 import { FormatState, Indentation } from 'roosterjs-editor-types';
-import {
-    createLinkWithPrompt,
-    setNonCompatIndentation,
-    toggleNonCompatBullet,
-    toggleNonCompatNumbering,
-} from 'roosterjs-react-common';
+import { createLinkWithPrompt, setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
 
 import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { getIconOnRenderDelegate } from './getIconOnRenderDelegate';
@@ -256,8 +251,8 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     }
 ];
 OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButton) => {
-    // For regular icons, use the out of box icon name--so don't specify a name
-    button.onRender = button.onRender || getIconOnRenderDelegate();
+    const asset = { name: button.name };
+    button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
     button.className = RoosterCommandBarButtonRootClassName;
 });
 
@@ -304,5 +299,19 @@ function _handleChangeForFontColor(editor: Editor): void {
 
 function _handleChangeForHighlight(editor: Editor): void {
     const { color } = this.data as ColorInfo;
+    const selection = editor.getSelection();
+    let backwards = false;
+    if (!selection.isCollapsed) {
+        const range = editor.getDocument().createRange();
+        range.setStart(selection.anchorNode, selection.anchorOffset);
+        range.setEnd(selection.focusNode, selection.focusOffset);
+        backwards = range.collapsed;
+    }
+
     setBackgroundColor(editor, color);
+    if (backwards) {
+        selection.collapseToStart();
+    } else {
+        selection.collapseToEnd();
+    }
 }
