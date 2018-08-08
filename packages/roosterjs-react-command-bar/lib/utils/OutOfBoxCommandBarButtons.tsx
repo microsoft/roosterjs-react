@@ -11,6 +11,7 @@ import {
     setTextColor,
     toggleBold,
     toggleBullet,
+    toggleCodeBlock,
     toggleHeader,
     toggleItalic,
     toggleNumbering,
@@ -48,7 +49,8 @@ export const RoosterCommmandBarButtonKeys = {
     Outdent: 'outdent',
     Strikethrough: 'strikethrough',
     FontColor: 'font-color',
-    Unlink: 'unlink'
+    Unlink: 'unlink',
+    Code: 'code'
 };
 
 export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
@@ -215,6 +217,12 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         }
     },
     {
+        key: RoosterCommmandBarButtonKeys.Code,
+        name: 'Code',
+        iconProps: _getIconProps('Embed'),
+        handleChange: (editor: Editor) => toggleCodeBlock(editor)
+    },
+    {
         key: RoosterCommmandBarButtonKeys.ClearFormat,
         name: 'Clear format',
         iconProps: _getIconProps('ClearFormatting'),
@@ -243,8 +251,8 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
     }
 ];
 OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButton) => {
-    // For regular icons, use the out of box icon name--so don't specify a name
-    button.onRender = button.onRender || getIconOnRenderDelegate();
+    const asset = { name: button.name };
+    button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
     button.className = RoosterCommandBarButtonRootClassName;
 });
 
@@ -291,5 +299,19 @@ function _handleChangeForFontColor(editor: Editor): void {
 
 function _handleChangeForHighlight(editor: Editor): void {
     const { color } = this.data as ColorInfo;
+    const selection = editor.getSelection();
+    let backwards = false;
+    if (!selection.isCollapsed) {
+        const range = editor.getDocument().createRange();
+        range.setStart(selection.anchorNode, selection.anchorOffset);
+        range.setEnd(selection.focusNode, selection.focusOffset);
+        backwards = range.collapsed;
+    }
+
     setBackgroundColor(editor, color);
+    if (backwards) {
+        selection.collapseToStart();
+    } else {
+        selection.collapseToEnd();
+    }
 }

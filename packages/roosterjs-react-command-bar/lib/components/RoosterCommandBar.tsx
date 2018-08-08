@@ -17,7 +17,7 @@ import {
     OutOfBoxCommandBarButtons,
     RoosterCommandBarButtonRootClassName,
     RoosterCommandBarIconClassName,
-    RoosterCommmandBarButtonKeys as ButtonKeys,
+    RoosterCommmandBarButtonKeys as ButtonKeys
 } from '../utils/OutOfBoxCommandBarButtons';
 
 const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
@@ -93,7 +93,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     private _initButtons(props: RoosterCommandBarProps): void {
-        const { buttonOverrides = [], emojiPlugin } = this.props;
+        const { buttonOverrides = [], emojiPlugin } = props;
 
         const buttonMap = { ...OutOfBoxCommandBarButtonMap };
         const visibleButtonKeys = OutOfBoxCommandBarButtons.map(item => item.key);
@@ -117,7 +117,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             }
         }
 
-        this._buttons = visibleButtonKeys.map(key => this._createButtons(buttonMap[key])).filter(b => !!b && !b.exclude);
+        this._buttons = visibleButtonKeys.map(key => this._createButton(buttonMap[key])).filter(b => !!b && !b.exclude);
         this._buttons.sort((l: RoosterCommandBarButton, r: RoosterCommandBarButton) => {
             if (l.order !== r.order) {
                 const leftOrder = l.order == null ? Number.MAX_VALUE : l.order;
@@ -151,7 +151,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
     };
 
-    private _refreshButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+    private _refreshButtonStatesCore = (commandBarButton: RoosterCommandBarButton, firstLevel: boolean): RoosterCommandBarButton => {
         if (!commandBarButton) {
             return null;
         }
@@ -163,27 +163,37 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked });
-                commandBarButton["aria-pressed"] = checked; // OF 5.0
+                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked, 'first-level': firstLevel });
+                commandBarButton['aria-pressed'] = checked; // OF 5.0
             }
         }
         if (commandBarButton.getDisabled) {
             commandBarButton.disabled = commandBarButton.getDisabled(formatState);
         }
         if (commandBarButton.subMenuProps && commandBarButton.subMenuProps.items) {
-            commandBarButton.subMenuProps.items.forEach(this._refreshButtonStates);
+            commandBarButton.subMenuProps.items.forEach(this._refreshChildButtonStates);
         }
 
         return commandBarButton;
     };
 
-    private _createButtons = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+    private _refreshButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+        return this._refreshButtonStatesCore(commandBarButton, true);
+    };
+
+    private _refreshChildButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+        return this._refreshButtonStatesCore(commandBarButton, false);
+    };
+
+    private _createButton = (commandBarButton: RoosterCommandBarButton, firstLevel: boolean = true): RoosterCommandBarButton => {
         if (!commandBarButton) {
             return null;
         }
 
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
-        const button = { ...commandBarButton }; // make a copy of the OOB button template since we're changing its properties
+        const className = commandBarButton.className || '';
+        const rootClassName = className.split(' ').indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
+        const button = { ...commandBarButton, className: css(rootClassName, { 'first-level': firstLevel }, className) }; // make a copy of the OOB button template since we're changing its properties
 
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
@@ -191,7 +201,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             const { className = '' } = button.iconProps;
             button.iconProps = {
                 ...button.iconProps,
-                className: className.split(' ').indexOf(RoosterCommandBarIconClassName) >= 0 ? className : css(RoosterCommandBarIconClassName, className)
+                className: className.split(' ').indexOf(RoosterCommandBarIconClassName) < 0 ? css(RoosterCommandBarIconClassName, className) : className
             };
         }
         if (strings && strings[button.key] != null) {
@@ -202,15 +212,19 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
         if (button.subMenuProps && button.subMenuProps.items) {
             button.subMenuProps = { ...button.subMenuProps }; // make a copy of the OOB submenu properties since we're changing them
-            button.subMenuProps.items = button.subMenuProps.items.map(this._createButtons);
+            button.subMenuProps.items = button.subMenuProps.items.map(this._createChildButton);
             button.subMenuProps.calloutProps = { className: calloutClassName } as ICalloutProps;
             button.subMenuProps.onDismiss = calloutOnDismiss;
         }
 
         // make sure the initial states are correct
-        this._refreshButtonStates(button);
+        this._refreshButtonStatesCore(button, firstLevel);
 
         return button;
+    };
+
+    private _createChildButton = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+        return this._createButton(commandBarButton, false);
     };
 
     private _onCommandBarButtonClick = (button: RoosterCommandBarButton | IContextualMenuItem) => {

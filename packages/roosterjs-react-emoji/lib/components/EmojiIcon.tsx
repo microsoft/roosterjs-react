@@ -1,9 +1,10 @@
 import Emoji from "../schema/Emoji";
-import { Strings, getDescriptionString } from "../strings/emojiStrings";
 import * as React from "react";
 import * as Styles from "./emoji.scss.g";
 import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
 import { css } from "office-ui-fabric-react/lib/Utilities";
+import { Strings } from 'roosterjs-react-common';
+import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
 // The Component props
 export interface EmojiIconProps {

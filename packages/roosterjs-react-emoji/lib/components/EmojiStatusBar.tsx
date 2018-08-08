@@ -1,8 +1,9 @@
 import Emoji from "../schema/Emoji";
-import { Strings, getDescriptionString } from "../strings/emojiStrings";
 import * as React from "react";
 import * as StatusBarStyles from "./EmojiStatusBar.scss.g";
 import { TooltipHost, TooltipOverflowMode } from "office-ui-fabric-react/lib/Tooltip";
+import { Strings } from 'roosterjs-react-common';
+import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
 // The Component props
 export interface EmojiStatusBarProps {

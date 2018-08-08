@@ -5,11 +5,10 @@ import * as ReactDOM from 'react-dom';
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from 'roosterjs-editor-api';
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
-import { NullFunction } from 'roosterjs-react-common';
+import { NullFunction, Strings } from 'roosterjs-react-common';
 
 import EmojiPane, { EmojiPaneProps } from '../components/EmojiPane';
 import Emoji from '../schema/Emoji';
-import { Strings } from '../strings/emojiStrings';
 import { matchShortcut } from '../utils/searchEmojis';
 
 const EMOJI_SEARCH_DELAY = 300;
@@ -181,6 +180,7 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     private tryShowFullPicker(event: PluginDomEvent, selectedEmoji: Emoji): boolean {
+        // no codePoint means More button
         if (selectedEmoji && !selectedEmoji.codePoint) {
             const wordBeforeCursor = this.getWordBeforeCursor(event);
             this.handleEventOnKeyDown(event);
@@ -365,6 +365,7 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     private onSelectFromPane = (emoji: Emoji, wordBeforeCursor: string): void => {
+        // no codePoint means More button
         if (emoji && !emoji.codePoint) {
             this.pane.showFullPicker(wordBeforeCursor);
         } else {

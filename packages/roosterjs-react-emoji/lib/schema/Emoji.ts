@@ -1,4 +1,4 @@
-import { EmojiDescriptionStringKey, EmojiKeywordStringKey } from '../strings/emojiStrings';
+import { EmojiDescriptionStringKey, EmojiKeywordStringKey } from 'roosterjs-react-emoji-resources';
 
 interface Emoji {
     /**

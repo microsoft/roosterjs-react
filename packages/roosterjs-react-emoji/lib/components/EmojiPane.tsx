@@ -1,23 +1,27 @@
-import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize, IPivotItemProps } from "office-ui-fabric-react/lib/Pivot";
-import { TextField } from "office-ui-fabric-react/lib/TextField";
-import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
-import * as React from "react";
-import { browserData } from "roosterjs-editor-core";
-import { css } from "roosterjs-react-common";
+import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
+import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize, IPivotItemProps } from 'office-ui-fabric-react/lib/Pivot';
+import { TextField } from 'office-ui-fabric-react/lib/TextField';
+import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
+import * as React from 'react';
+import { browserData } from 'roosterjs-editor-core';
+import { css, Strings } from 'roosterjs-react-common';
 
-import Emoji from "../schema/Emoji";
-import { Strings } from "../strings/emojiStrings";
-import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from "../utils/emojiList";
-import { searchEmojis } from "../utils/searchEmojis";
-import * as Styles from "./emoji.scss.g";
-import EmojiIcon from "./EmojiIcon";
-import EmojiStatusBar from "./EmojiStatusBar";
+import Emoji from '../schema/Emoji';
+import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
+import { searchEmojis } from '../utils/searchEmojis';
+import * as Styles from './emoji.scss.g';
+import EmojiIcon from './EmojiIcon';
+import EmojiStatusBar from './EmojiStatusBar';
+
+enum EmojiPaneMode {
+    Quick,
+    Partial,
+    Full
+}
 
 export interface EmojiPaneState {
     index: number;
-    currEmoji: Emoji;
-    isFullPicker: boolean;
+    mode: EmojiPaneMode;
     emojis: Emoji[];
     currentFamily: EmojiFamilyKeys;
     search: string;
@@ -49,32 +53,31 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
 
         this.state = {
             index: 0,
-            currEmoji: null,
-            isFullPicker: false,
+            mode: EmojiPaneMode.Quick,
             emojis: commonEmojis,
             currentFamily: EmojiFamilyKeys.People,
-            search: ":",
-            searchInBox: ""
+            search: ':',
+            searchInBox: ''
         };
     }
 
     public render(): JSX.Element {
-        console.log("render")
-        return this.state.isFullPicker ? this.renderFullPicker() : this.renderQuickPicker();
+        return this.state.mode === EmojiPaneMode.Quick ? this.renderQuickPicker() : this.renderFullPicker();
     }
 
     public componentDidUpdate(_: EmojiPaneProps, prevState: EmojiPaneState) {
+        // call onLayoutChange when the call out parent of the EmojiPane needs to reorient itself on the page
         const { onLayoutChange } = this.props;
-        const { emojis, isFullPicker, currentFamily } = this.state;
+        const { emojis, mode, currentFamily } = this.state;
 
-        if (isFullPicker !== prevState.isFullPicker) {
+        if (mode !== prevState.mode) {
             onLayoutChange();
             return;
         }
 
         const currentEmojisLength = emojis ? emojis.length : EmojiList[currentFamily].length;
         const prevEmojisLength = prevState.emojis ? prevState.emojis.length : EmojiList[prevState.currentFamily].length;
-        if (isFullPicker && currentEmojisLength !== prevEmojisLength) {
+        if (mode !== EmojiPaneMode.Quick && currentEmojisLength !== prevEmojisLength) {
             onLayoutChange();
             return;
         }
@@ -94,32 +97,46 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         return emojis ? emojis[index] : EmojiList[currentFamily][index];
     }
 
-    public showFullPicker(search: string): void {
-        let searchInBox = search == null ? "" : search.substr(1);
+    public showFullPicker(fullSearchText: string): void {
+        const normalizedSearchValue = this.normalizeSearchText(fullSearchText, true);
+        const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
             index: 0,
-            isFullPicker: true,
-            emojis: search ? this.getSearchResult(searchInBox, true) : null,
-            search: search,
-            searchInBox: searchInBox
+            mode: newMode,
+            emojis: this.getSearchResult(normalizedSearchValue, newMode),
+            search: fullSearchText,
+            searchInBox: normalizedSearchValue
         });
     }
 
-    public setSearch(search: string): void {
+    public setSearch(value: string): void {
+        const normalizedSearchValue = this.normalizeSearchText(value, false);
         this.setState({
             index: 0,
-            emojis: this.getSearchResult(search, this.state.isFullPicker),
-            search: search
+            emojis: this.getSearchResult(normalizedSearchValue, this.state.mode),
+            search: value
         });
     }
 
-    private getSearchResult(search: string, isFullPicker: boolean): Emoji[] {
-        if (!search) {
-            return isFullPicker ? EmojiList[this.state.currentFamily] : this.state.emojis;
+    private normalizeSearchText(text: string, colonIncluded: boolean): string {
+        if (text == null) {
+            return '';
         }
 
-        let emojis = searchEmojis(search, this.props.strings);
-        return isFullPicker ? emojis : emojis.slice(0, 5).concat([moreEmoji]);
+        if (colonIncluded) {
+            text = text.substr(1);
+        }
+        return text.trim();
+    }
+
+    private getSearchResult(searchValue: string, mode: EmojiPaneMode): Emoji[] {
+        const isQuickMode = mode === EmojiPaneMode.Quick;
+        if (!searchValue) {
+            return isQuickMode ? this.state.emojis : EmojiList[this.state.currentFamily];
+        }
+
+        const emojiList = searchEmojis(searchValue, this.props.strings);
+        return isQuickMode ?  emojiList.slice(0, 5).concat([moreEmoji]) : emojiList;
     }
 
     private renderQuickPicker(): JSX.Element {
@@ -148,13 +165,8 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
 
         return (
             <div className={fullPickerClassName}>
-                <TextField
-                    ref={this.searchRefCallback}
-                    value={this.state.searchInBox}
-                    onChanged={this.onSearchChange}
-                    inputClassName={Styles.emojiTextInput}
-                />
-                {this.state.isFullPicker ? this.renderFullList() : this.renderPartialList()}
+                <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
+                {this.state.mode === EmojiPaneMode.Full ? this.renderFullList() : this.renderPartialList()}
             </div>
         );
     }
@@ -166,7 +178,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         ((ref: HTMLDivElement): void => {
             if (ref) {
                 const prevValue = ref.style.overflowY;
-                ref.style.overflowY = "hidden";
+                ref.style.overflowY = 'hidden';
                 requestAnimationFrame(() => (ref.style.overflowY = prevValue));
             }
         });
@@ -176,11 +188,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
 
         return (
             <div>
-                <div
-                    className={css(Styles.partialList, partialListClassName)}
-                    data-is-scrollable={true}
-                    ref={this._resizeOnRefForIE}
-                >
+                <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
                     <FocusZone className={Styles.partialListContent}>
                         {this.state.emojis.map((emoji, index) => (
                             <EmojiIcon
@@ -195,10 +203,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar 
-                    emoji={this.getSelectedEmoji()}
-                    strings={strings}
-                />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
             </div>
         );
     }
@@ -248,18 +253,12 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar 
-                    emoji={this.getSelectedEmoji()}
-                    strings={strings}
-                />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
             </div>
         );
     }
 
-    private renderPivotTooltip(
-        link: IPivotItemProps,
-        defaultRenderer: (link: IPivotItemProps) => JSX.Element
-    ): JSX.Element {
+    private renderPivotTooltip(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
         return (
             <TooltipHost content={link.itemKey} id={link.itemKey} calloutProps={{ gapSpace: 0 }}>
                 {defaultRenderer(link)}
@@ -286,10 +285,13 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     };
 
     private onSearchChange = (newValue: string): void => {
+        const normalizedSearchValue = this.normalizeSearchText(newValue, false);
+        const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
             index: 0,
-            emojis: this.getSearchResult(newValue, this.state.isFullPicker),
-            searchInBox: newValue
+            emojis: this.getSearchResult(normalizedSearchValue, this.state.mode),
+            searchInBox: newValue,
+            mode: newMode
         });
     };
 
