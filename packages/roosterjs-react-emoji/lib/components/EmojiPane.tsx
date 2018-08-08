@@ -3,10 +3,9 @@ import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabr
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
 import { browserData } from 'roosterjs-editor-core';
-import { css } from 'roosterjs-react-common';
+import { css, Strings } from 'roosterjs-react-common';
 
 import Emoji from '../schema/Emoji';
-import { Strings } from '../strings/emojiStrings';
 import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
 import { searchEmojis } from '../utils/searchEmojis';
 import * as Styles from './emoji.scss.g';

@@ -1,8 +1,4 @@
-import {
-    Strings,
-    registerDefaultString,
-    getString as globalGetString,
-} from 'roosterjs-react-common';
+import { getString as globalGetString, registerDefaultString, Strings } from 'roosterjs-react-common';
 
 const STRING_CATEGORY_EMOJI_DESCRIPTION = 'ROOSTERJS_STRINGS_EMOJI_DESCRIPTION';
 const STRING_CATEGORY_EMOJI_KEYWORD = 'ROOSTERJS_STRINGS_EMOJI_KEYWORD';
@@ -698,7 +694,7 @@ export const emojiDescriptionStrings = {
     emjD1f5fc: 'Tokyo Tower',
     emjD1f5fd: 'Statue of Liberty',
     emjD1f5fe: 'Silhouette of Japan',
-    emjD1f5ff: 'Moyai',
+    emjD1f5ff: 'Moyai'
 };
 
 export const emojiKeywordStrings = {
@@ -1201,7 +1197,7 @@ export const emojiKeywordStrings = {
     emjK1f4c8: 'chart graph record profits trending up upwards skyrocketed',
     emjK1f4c9: 'chart graph record losses trending down downwards',
     emjK1f4ca: 'chart graph',
-    emjK02764: 'love heart',
+    emjK02764: 'love heart'
 };
 
 export type EmojiDescriptionStringKey = keyof typeof emojiDescriptionStrings;
@@ -1217,5 +1213,3 @@ export function getDescriptionString(name: EmojiDescriptionStringKey, strings?: 
 export function getKeywordString(name: EmojiKeywordStringKey, strings?: Strings): string {
     return globalGetString(STRING_CATEGORY_EMOJI_KEYWORD, name, strings);
 }
-
-export { Strings };

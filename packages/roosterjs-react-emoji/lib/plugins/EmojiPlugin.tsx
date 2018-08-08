@@ -5,11 +5,10 @@ import * as ReactDOM from 'react-dom';
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from 'roosterjs-editor-api';
 import { Editor, EditorPlugin } from 'roosterjs-editor-core';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
-import { NullFunction } from 'roosterjs-react-common';
+import { NullFunction, Strings } from 'roosterjs-react-common';
 
 import EmojiPane, { EmojiPaneProps } from '../components/EmojiPane';
 import Emoji from '../schema/Emoji';
-import { Strings } from '../strings/emojiStrings';
 import { matchShortcut } from '../utils/searchEmojis';
 
 const EMOJI_SEARCH_DELAY = 300;

@@ -1,6 +1,7 @@
 import Emoji from '../schema/Emoji';
 import { forEachEmoji } from './emojiList';
-import { Strings, getKeywordString } from '../strings/emojiStrings';
+import { Strings } from 'roosterjs-react-common';
+import { getKeywordString } from 'roosterjs-react-emoji-resources';
 
 export function searchEmojis(search: string, strings: Strings): Emoji[] {
     let shortcutMatch = matchShortcut(search);

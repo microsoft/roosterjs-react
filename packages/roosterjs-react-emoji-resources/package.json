@@ -1,0 +1,8 @@
+{
+  "name": "roosterjs-react-emoji-resources",
+  "description": "Resources for roosterjs-react Emoji plugin",
+  "dependencies": {
+    "roosterjs-react-common": ""
+  },
+  "main": "./lib/index.ts"
+}

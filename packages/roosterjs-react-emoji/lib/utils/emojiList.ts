@@ -1,5 +1,5 @@
 import Emoji from '../schema/Emoji';
-import { EmojiDescriptionStringKey, EmojiKeywordStringKey } from '../strings/emojiStrings';
+import { EmojiDescriptionStringKey, EmojiKeywordStringKey } from 'roosterjs-react-emoji-resources';
 
 // get emoji code point from an emoji key
 function getEmojiCodePoint(key: string): string {

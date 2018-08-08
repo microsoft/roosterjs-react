@@ -34,6 +34,12 @@
             "roosterjs-react-editor": [
                 "packages/roosterjs-react-editor/lib/index"
             ],
+            "roosterjs-react-emoji-resources/lib/*": [
+                "packages/roosterjs-react-emoji-resources/lib/*"
+            ],
+            "roosterjs-react-emoji-resources": [
+                "packages/roosterjs-react-emoji-resources/lib/index"
+            ],
             "roosterjs-react-emoji/lib/*": [
                 "packages/roosterjs-react-emoji/lib/*"
             ],
