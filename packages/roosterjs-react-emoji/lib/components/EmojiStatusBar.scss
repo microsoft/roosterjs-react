@@ -1,0 +1,32 @@
+.statusBar {
+    background-color: #f4f4f4;
+    border-top: solid 1px #dadada;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.statusBarIcon {
+    padding: 4px;
+    font-size: 175%;
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+}
+
+.statusBarDetailsContainer {
+    padding: 4px;
+    width: 250px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.statusBarTooltip {
+    position: absolute;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
