@@ -1,1 +1,1 @@
-export { emojiKeywordStrings, emojiDescriptionStrings, EmojiDescriptionStringKey, EmojiKeywordStringKey, getKeywordString, getDescriptionString } from './strings/emojiStrings';
+export { EmojiKeywordStrings, EmojiDescriptionStrings, EmojiDescriptionStringKey, EmojiKeywordStringKey } from './strings/EmojiStrings';
