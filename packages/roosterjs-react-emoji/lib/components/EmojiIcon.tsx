@@ -3,7 +3,6 @@ import { CommandButton } from 'office-ui-fabric-react/lib/Button';
 import * as React from 'react';
 import * as Styles from './emoji.scss.g';
 import { Strings } from 'roosterjs-react-common';
-import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
 // The Component props
 export interface EmojiIconProps {
@@ -16,15 +15,15 @@ export interface EmojiIconProps {
 
 export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
     public render() {
-        const { emoji, onClick, isSelected } = this.props;
-        const iconClassNames = `${Styles.emoji} ${isSelected ? Styles.selected : ''}`;
+        const { emoji, onClick, isSelected, strings } = this.props;
+        const iconClassNames = `${Styles.emoji} ${isSelected ? Styles.selected : ""}`;
 
         return (
             <CommandButton
                 className={iconClassNames}
-                title={getDescriptionString(emoji.description, this.props.strings)}
+                title={strings[emoji.description]}
                 onClick={onClick}
-                text={emoji.codePoint || '...'}
+                text={emoji.codePoint || "..."}
                 data-is-focusable={true}
                 styles={{ textContainer: { flexGrow: 1 }, root: { width: 40 } }}
             />

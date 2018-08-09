@@ -6,7 +6,7 @@ import { browserData } from 'roosterjs-editor-core';
 import { css, Strings } from 'roosterjs-react-common';
 
 import Emoji from '../schema/Emoji';
-import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
+import EmojiList, { CommonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, MoreEmoji } from '../utils/emojiList';
 import { searchEmojis } from '../utils/searchEmojis';
 import * as Styles from './emoji.scss.g';
 import EmojiIcon from './EmojiIcon';
@@ -27,6 +27,7 @@ export interface EmojiPaneProps {
     fullListContentClassName?: string;
     partialListClassName?: string;
     onLayoutChange?: () => void;
+    searchDisabled?: boolean;
 }
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
@@ -46,7 +47,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         this.state = {
             index: 0,
             isFullPicker: false,
-            emojis: commonEmojis,
+            emojis: CommonEmojis,
             currentFamily: EmojiFamilyKeys.People,
             search: ':',
             searchInBox: ''
@@ -91,7 +92,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         this.setState({
             index: 0,
             isFullPicker: true,
-            emojis: search ? this.getSearchResult(searchInBox, true) : null,
+            emojis: search ? this.getSearchResult(this.props.searchDisabled ? "" : searchInBox, true) : null,
             search: search,
             searchInBox: searchInBox
         });
@@ -111,7 +112,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         }
 
         let emojis = searchEmojis(search, this.props.strings);
-        return isFullPicker ? emojis : emojis.slice(0, 5).concat([moreEmoji]);
+        return isFullPicker ? emojis : emojis.slice(0, 5).concat([MoreEmoji]);
     }
 
     private renderQuickPicker(): JSX.Element {
@@ -127,11 +128,11 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     private renderFullPicker(): JSX.Element {
-        const { fullPickerClassName } = this.props;
+        const { fullPickerClassName, searchDisabled } = this.props;
 
         return (
             <div className={fullPickerClassName}>
-                <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
+                {!searchDisabled && <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />}
                 {this.state.emojis ? this.renderPartialList() : this.renderFullList()}
             </div>
         );
@@ -162,7 +163,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     private renderFullList(): JSX.Element {
-        const { fullListClassName, fullListContentClassName, strings = {} } = this.props;
+        const { fullListClassName, fullListContentClassName, strings } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
@@ -183,7 +184,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
                     </Pivot>
                     <div className={Styles.fullListContentContainer}>
                         <div>
-                            <FocusZone className={css(Styles.fullListContent, fullListContentClassName)}>
+                            <FocusZone className={css(Styles.fullListContent, fullListContentClassName)} ref={this.focusZoneRefCallback}>
                                 {EmojiList[this.state.currentFamily].map((emoji: Emoji) => (
                                     <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
                                 ))}
@@ -210,6 +211,12 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         if (this.searchBox) {
             this.searchBox.focus();
             this.searchBox.setSelectionStart(this.searchBox.value.length);
+        }
+    };
+
+    private focusZoneRefCallback = (ref: FocusZone): void => {
+        if (this.props.searchDisabled && ref) {
+            ref.focus();
         }
     };
 
