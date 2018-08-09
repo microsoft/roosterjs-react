@@ -2,9 +2,6 @@
     background-color: #f4f4f4;
     border-top: solid 1px #dadada;
     height: 50px;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
 }
 
 .statusBarIcon {
@@ -13,11 +10,19 @@
     display: inline-block;
     font-style: normal;
     font-weight: normal;
+    line-height: 40px;
 }
 
 .statusBarDetailsContainer {
     padding: 4px;
-    width: 250px;
+    position: absolute;
+    display: inline-block;
+    left: 40px;
+    right: 0px;
+    line-height: 40px;
+}
+
+.statusBarDetails {
     font-weight: bold;
     white-space: nowrap;
     overflow: hidden;
@@ -27,6 +32,4 @@
 .statusBarTooltip {
     position: absolute;
     margin: auto;
-    display: flex;
-    align-items: center;
 }
