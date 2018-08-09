@@ -80,3 +80,7 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     width: $paneWidth;
     padding: 0 $paneHorizontalPadding;
 }
+
+.tooltipHost {
+    display: inline-block;
+}

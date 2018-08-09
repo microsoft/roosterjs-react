@@ -6,7 +6,6 @@ import { css } from "office-ui-fabric-react/lib/Utilities";
 import { Strings } from 'roosterjs-react-common';
 import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
-// The Component props
 export interface EmojiIconProps {
     emoji: Emoji;
     strings: Strings;
@@ -35,27 +34,6 @@ export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
             </button>
         );
 
-        return showTooltip ? <TooltipHost content={content}>{button}</TooltipHost> : button;
+        return showTooltip ? <TooltipHost content={content} hostClassName={Styles.tooltipHost}>{button}</TooltipHost> : button;
     }
 }
-
-// export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
-//     public render() {
-//         const { emoji, onClick, isSelected, onMouseOver, onFocus, strings, showTooltip } = this.props;
-//         const content = getDescriptionString(emoji.description, strings);
-
-//         const button = (
-//             <CommandButton
-//                 className={css(Styles.emoji, { [Styles.selected]: isSelected } )}
-//                 onClick={onClick}
-//                 onMouseOver={onMouseOver}
-//                 onFocus={onFocus}
-//                 text={emoji.codePoint || "..."}
-//                 data-is-focusable={true}
-//                 styles={{ textContainer: { flexGrow: 1 }, root: { width: 40 } }}
-//             />
-//         );
-
-//         return showTooltip ? <TooltipHost content={content}>{button}</TooltipHost> : button;
-//     }
-// }
