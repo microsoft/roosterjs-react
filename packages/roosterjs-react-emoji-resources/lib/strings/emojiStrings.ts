@@ -1197,8 +1197,8 @@ export const EmojiKeywordStrings = {
 };
 
 export const EmojiFamilyStrings = {
-    People: "People12",
-    Nature: "Nature12",
+    People: "People",
+    Nature: "Nature",
     Activities: "Activities",
     Food: "Food",
     Travel: "Travel",
