@@ -33,18 +33,16 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     overflow-y: hidden;
 }
 
+// consistency look by always having a scroll
 .partialList,
 .fullListBody {
     max-height: $maxHeightForContent;
     overflow: hidden;
-    overflow-y: auto;
+    overflow-y: scroll;
 }
 
-// consistency look by always having a scroll
-// (currently for Activities pivot where content doesn't overflow)
 .fullListBody {
     height: $maxHeightForContent;
-    overflow-y: scroll;
 }
 
 .fullListContentContainer {
