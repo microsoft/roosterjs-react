@@ -1,12 +1,10 @@
-import * as React from 'react';
-import * as ReactDom from 'react-dom';
-import { PluginEvent, PluginEventType } from 'roosterjs-editor-types';
-import {initializeIcons, IconNames} from '../fabric/src/index'
+import * as React from "react";
+import * as ReactDom from "react-dom";
+import { PluginEvent, PluginEventType } from "roosterjs-editor-types";
 import {
     ContentChangedPlugin,
     createEditorViewState,
-    EditorViewState,
-    EmojiFamilyKeys,
+    DoubleClickImagePlugin,
     EmojiPlugin,
     EmojiPluginOptions,
     FocusEventHandler,
@@ -18,19 +16,21 @@ import {
     LeanRoosterModes,
     PasteImagePlugin,
     RoosterCommandBar,
-    RoosterShortcutCommands,
     RoosterCommandBarPlugin,
     RoosterCommmandBarButtonKeys as ButtonKeys,
+    RoosterShortcutCommands,
     TableResize,
-    UndoWithImagePlugin,
-    DoubleClickImagePlugin
-} from 'roosterjs-react';
+    UndoWithImagePlugin
+} from "roosterjs-react";
+import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
+
+import { initializeIcons } from "../fabric/src";
 
 initializeIcons();
 
 class ContentChangedLoggerPlugin extends ContentChangedPlugin {
     constructor() {
-        super(_ => console.log('Content changed'));
+        super(_ => console.log("Content changed"));
     }
 
     public onPluginEvent(event: PluginEvent): void {
@@ -40,18 +40,15 @@ class ContentChangedLoggerPlugin extends ContentChangedPlugin {
     }
 }
 
-const placeholderImageClassName = 'dblclick-bypass';
+const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 
-function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: EditorViewState) => void): JSX.Element {
+function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
     const leanRoosterContentDivOnRef = (ref: HTMLDivElement) => (leanRoosterContentDiv = ref);
 
     let leanRooster: LeanRooster;
-    const leanRoosterOnRef = (ref: LeanRooster) => {
-        leanRooster = ref;
-        onRef && onRef(ref, leanRoosterViewState);
-    };
+    const leanRoosterOnRef = (ref: LeanRooster) => (leanRooster = ref);
 
     let commandBar: RoosterCommandBar;
     const commandBarOnRef = (ref: RoosterCommandBar) => (commandBar = ref);
@@ -63,7 +60,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                 console.log(`Imitating uploading... (${timeoutMs}ms)`);
 
                 // fake upload failure if type isn't image
-                if (image.type.indexOf('image/') !== 0) {
+                if (image.type.indexOf("image/") !== 0) {
                     window.setTimeout(() => {
                         reject();
                         console.log(`Upload failed`);
@@ -97,7 +94,12 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
         leanRooster.mode = LeanRoosterModes.View;
         imageResizePlugin.hideResizeHandle();
     };
-    const onEmojiKeyboardTriggered = () => console.log('Emoji started from keyboard');
+    const onEmojiKeyboardTriggered = () => {
+        if (loadEmojiStrings) {
+            emojiPlugin.setStrings({ ...EmojiDescriptionStrings, ...EmojiKeywordStrings, ...EmojiFamilyStrings });
+        }
+        console.log("Emoji started from keyboard");
+    };
     let emojiPlugin: EmojiPlugin = null;
 
     return (
@@ -135,14 +137,14 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         buttonOverrides={[
                             { key: ButtonKeys.Strikethrough, exclude: true },
                             {
-                                key: 'vacation',
-                                name: 'Vacation',
-                                iconProps: { iconName: 'Vacation' },
+                                key: "vacation",
+                                name: "Vacation",
+                                iconProps: { iconName: "Vacation" },
                                 handleChange: () => {
                                     console.log(leanRooster.getContent());
-                                    alert('Hello');
+                                    alert("Hello");
                                     setTimeout(() => {
-                                        leanRoosterViewState.content = '';
+                                        leanRoosterViewState.content = "";
                                         leanRooster.reloadContent();
                                     }, 2000);
                                 },
@@ -156,7 +158,7 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
                         imageManager={imageManager}
                         ref={commandBarOnRef}
                         onButtonClicked={buttonKey => console.log(buttonKey)}
-                        overflowMenuProps={{ className: 'custom-overflow' }}
+                        overflowMenuProps={{ className: "custom-overflow" }}
                         disableListWorkaround={true}
                     />
                 ];
@@ -168,10 +170,10 @@ function createEditor(name: string, onRef?: (ref: LeanRooster, viewState: Editor
 const view = (
     <div className="root-container">
         <div className="editor-container">
-            {createEditor('editor #1')}
-            {createEditor('editor #2')}
+            {createEditor("editor #1", true /* loadEmojiStrings */)}
+            {createEditor("editor #2")}
         </div>
     </div>
 );
 
-ReactDom.render(view, document.getElementById('container'), null);
+ReactDom.render(view, document.getElementById("container"), null);

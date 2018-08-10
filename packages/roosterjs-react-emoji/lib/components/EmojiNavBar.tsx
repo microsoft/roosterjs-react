@@ -1,33 +1,41 @@
-import * as React from "react";
-import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import { FocusZone, FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
 import { Icon } from "office-ui-fabric-react/lib/Icon";
+import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import * as React from "react";
+import { css, Strings } from "roosterjs-react-common";
+
 import EmojiList, { EmojiFabricIconCharacterMap } from "../utils/emojiList";
 import * as EmojiNavBarStyles from "./EmojiNavBar.scss.g";
-import { css } from "roosterjs-react-common";
-import { FocusZone, FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
 
 export interface EmojiNavBarProps {
     onClick?: (selected: string) => void;
     currentSelected?: string;
+    getTabId?: (selected: string) => string;
+    strings: Strings;
 }
 
 export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
     public render() {
-        const { currentSelected } = this.props;
+        const { currentSelected, getTabId, strings } = this.props;
 
         return (
             // for each emoji family key, create a button to use as nav bar
-            <div className={EmojiNavBarStyles.navBar}>
+            <div className={EmojiNavBarStyles.navBar} role="tablist">
                 <FocusZone direction={FocusZoneDirection.horizontal}>
                     {Object.keys(EmojiList).map((key, index) => {
-                        const selectedClassName = key === currentSelected ? EmojiNavBarStyles.selected : "";
-
+                        const selected = key === currentSelected;
+                        const friendlyName = strings[key];
                         return (
-                            <TooltipHost hostClassName={EmojiNavBarStyles.navBarTooltip} content={key} key={key}>
+                            <TooltipHost hostClassName={EmojiNavBarStyles.navBarTooltip} content={friendlyName} key={key}>
                                 <button
-                                    className={css(EmojiNavBarStyles.navBarButton, selectedClassName)}
+                                    className={css(EmojiNavBarStyles.navBarButton, { [EmojiNavBarStyles.selected]: selected })}
                                     key={key}
                                     onClick={this.onFamilyClick.bind(this, key)}
+                                    id={getTabId(currentSelected)}
+                                    role="tab"
+                                    aria-selected="false"
+                                    aria-label={friendlyName}
+                                    data-is-focusable="true"
                                 >
                                     <Icon iconName={EmojiFabricIconCharacterMap[key]} />
                                 </button>
