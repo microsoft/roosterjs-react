@@ -29,31 +29,6 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     position: relative;
 }
 
-.pivot {
-    $buttonColor: #f4f4f4;
-    background-color: $buttonColor;
-    height: $buttonHeight;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    border-bottom: solid 1px #dadada;
-    padding: 0 $paneHorizontalPadding;
-
-    button {
-        background: $buttonColor;
-        height: $buttonHeight;
-        width: $buttonWidth;
-
-        // Fabric doesn't have className override for this and we don't want margins
-        margin-right: 0 !important;
-
-        span {
-            flex-grow: 1;
-        }
-    }
-}
-
 .quickPicker {
     overflow-y: hidden;
 }

@@ -1,15 +1,15 @@
 import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
-import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
 import { TextField } from 'office-ui-fabric-react/lib/TextField';
 import * as React from 'react';
 import { browserData } from 'roosterjs-editor-core';
 import { css, Strings } from 'roosterjs-react-common';
 
 import Emoji from '../schema/Emoji';
-import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
+import EmojiList, { commonEmojis, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
 import { searchEmojis } from '../utils/searchEmojis';
 import * as Styles from './emoji.scss.g';
 import EmojiIcon from './EmojiIcon';
+import EmojiNavBar from './EmojiNavBar';
 
 export interface EmojiPaneState {
     index: number;
@@ -167,20 +167,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
                 <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
-                    <Pivot
-                        className={Styles.pivot}
-                        linkFormat={PivotLinkFormat.links}
-                        linkSize={PivotLinkSize.normal}
-                        aria-labelledby={this.getTabId(this.state.currentFamily)}
-                        selectedKey={this.state.currentFamily}
-                        onLinkClick={this.pivotClick}
-                        headersOnly={true}
-                        getTabId={this.getTabId}
-                    >
-                        {Object.keys(EmojiList).map((key, index) => (
-                            <PivotItem key={key} itemIcon={EmojiFabricIconCharacterMap[key]} itemKey={key} headerButtonProps={{ title: strings[key] }} />
-                        ))}
-                    </Pivot>
+                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} />
                     <div className={Styles.fullListContentContainer}>
                         <div>
                             <FocusZone className={css(Styles.fullListContent, fullListContentClassName)}>
@@ -195,8 +182,8 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         );
     }
 
-    private pivotClick = (item: PivotItem): void => {
-        const currentFamily = item.props.itemKey as EmojiFamilyKeys;
+    private pivotClick = (selected: string): void => {
+        const currentFamily = selected as EmojiFamilyKeys;
 
         this.setState({ currentFamily });
     };
