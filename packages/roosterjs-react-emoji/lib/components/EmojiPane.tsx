@@ -188,9 +188,9 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         this.setState({ currentFamily });
     };
 
-    private getTabId = (itemKey: EmojiFamilyKeys): string => {
-        return `family_${itemKey}_${this.baseId}`;
-    };
+    // private getTabId = (itemKey: EmojiFamilyKeys): string => {
+    //     return `family_${itemKey}_${this.baseId}`;
+    // };
 
     private searchRefCallback = (ref: TextField): void => {
         this.searchBox = ref;

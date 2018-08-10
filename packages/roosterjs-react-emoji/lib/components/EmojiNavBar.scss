@@ -14,15 +14,21 @@ $paneHorizontalPadding: 1px;
 }
 
 .navBarButton {
-    background: $buttonColor;
+    background-color: transparent;
     height: $buttonHeight;
     width: $buttonWidth;
     border: none;
     border-bottom: solid 1px #dadada;
     display: inline-block;
+    padding: 0;
+    margin: 0;
 
     // Fabric doesn't have className override for this and we don't want margins
     margin-right: 0 !important;
+}
+
+.navBarButton:focus {
+    outline: 1px solid #767676;
 }
 
 .selected {
