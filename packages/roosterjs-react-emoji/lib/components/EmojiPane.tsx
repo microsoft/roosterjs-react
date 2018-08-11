@@ -136,7 +136,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.quickPicker, quickPickerClassName)}>
+            <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
                 {this.state.emojis.map((emoji, index) => (
                     <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
                 ))}
@@ -148,7 +148,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         const { fullPickerClassName, searchDisabled } = this.props;
 
         return (
-            <div className={fullPickerClassName}>
+            <div className={css("rooster-emoji-pane", fullPickerClassName)}>
                 {!searchDisabled && (
                     <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
                 )}

@@ -28,12 +28,12 @@ export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
                         return (
                             <TooltipHost hostClassName={EmojiNavBarStyles.navBarTooltip} content={friendlyName} key={key}>
                                 <button
-                                    className={css(EmojiNavBarStyles.navBarButton, { [EmojiNavBarStyles.selected]: selected })}
+                                    className={css(EmojiNavBarStyles.navBarButton, "emoji-nav-bar-button", { [EmojiNavBarStyles.selected]: selected })}
                                     key={key}
                                     onClick={this.onFamilyClick.bind(this, key)}
-                                    id={getTabId(currentSelected)}
+                                    id={getTabId(key)}
                                     role="tab"
-                                    aria-selected="false"
+                                    aria-selected={selected}
                                     aria-label={friendlyName}
                                     data-is-focusable="true"
                                 >
