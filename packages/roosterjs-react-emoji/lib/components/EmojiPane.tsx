@@ -1,15 +1,20 @@
-import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
-import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize } from 'office-ui-fabric-react/lib/Pivot';
-import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import * as React from 'react';
-import { browserData } from 'roosterjs-editor-core';
-import { css, Strings } from 'roosterjs-react-common';
+import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
+import { TextField } from "office-ui-fabric-react/lib/TextField";
+import * as React from "react";
+import { browserData } from "roosterjs-editor-core";
+import { css, Strings } from "roosterjs-react-common";
 
-import Emoji from '../schema/Emoji';
-import EmojiList, { CommonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, MoreEmoji } from '../utils/emojiList';
-import { searchEmojis } from '../utils/searchEmojis';
-import * as Styles from './emoji.scss.g';
-import EmojiIcon from './EmojiIcon';
+import Emoji from "../schema/Emoji";
+import EmojiList, { CommonEmojis, EmojiFamilyKeys, MoreEmoji } from "../utils/emojiList";
+import { searchEmojis } from "../utils/searchEmojis";
+import * as Styles from "./emoji.scss.g";
+import EmojiIcon from "./EmojiIcon";
+import EmojiNavBar from "./EmojiNavBar";
+
+// "When a div contains an element that is bigger (either taller or wider) than the parent and has the property
+// overflow-x or overflow-y set to any value, then it can receive the focus."
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
+const TabIndexForFirefoxBug = -1;
 
 export interface EmojiPaneState {
     index: number;
@@ -49,8 +54,8 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
             isFullPicker: false,
             emojis: CommonEmojis,
             currentFamily: EmojiFamilyKeys.People,
-            search: ':',
-            searchInBox: ''
+            search: ":",
+            searchInBox: ""
         };
     }
 
@@ -88,7 +93,7 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     public showFullPicker(search: string): void {
-        let searchInBox = search == null ? '' : search.substr(1);
+        let searchInBox = search == null ? "" : search.substr(1);
         this.setState({
             index: 0,
             isFullPicker: true,
@@ -115,11 +120,23 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         return isFullPicker ? emojis : emojis.slice(0, 5).concat([MoreEmoji]);
     }
 
+    // For IE, fixed width not accounting for scroll bar glitches and content is overlapped with content.
+    // A workaround is to refresh the overflow value.
+    private _resizeOnRefForIE =
+        browserData.isIE &&
+        ((ref: HTMLDivElement): void => {
+            if (ref) {
+                const prevValue = ref.style.overflowY;
+                ref.style.overflowY = "hidden";
+                requestAnimationFrame(() => (ref.style.overflowY = prevValue));
+            }
+        });
+
     private renderQuickPicker(): JSX.Element {
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.quickPicker, quickPickerClassName)}>
+            <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
                 {this.state.emojis.map((emoji, index) => (
                     <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
                 ))}
@@ -131,32 +148,24 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         const { fullPickerClassName, searchDisabled } = this.props;
 
         return (
-            <div className={fullPickerClassName}>
-                {!searchDisabled && <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />}
+            <div className={css("rooster-emoji-pane", fullPickerClassName)}>
+                {!searchDisabled && (
+                    <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
+                )}
                 {this.state.emojis ? this.renderPartialList() : this.renderFullList()}
             </div>
         );
     }
 
-    // For IE, fixed width not accounting for scroll bar glitches and content is overlapped with content.
-    // A workaround is to refresh the overflow value.
-    private _resizeOnRefForIE =
-        browserData.isIE &&
-        ((ref: HTMLDivElement): void => {
-            if (ref) {
-                const prevValue = ref.style.overflowY;
-                ref.style.overflowY = 'hidden';
-                requestAnimationFrame(() => (ref.style.overflowY = prevValue));
-            }
-        });
-
     private renderPartialList(): JSX.Element {
         const { partialListClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
+            <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
                 <FocusZone className={Styles.partialListContent}>
-                    {this.state.emojis.map(emoji => <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />)}
+                    {this.state.emojis.map(emoji => (
+                        <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
+                    ))}
                 </FocusZone>
             </div>
         );
@@ -167,22 +176,9 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
-                    <Pivot
-                        className={Styles.pivot}
-                        linkFormat={PivotLinkFormat.links}
-                        linkSize={PivotLinkSize.normal}
-                        aria-labelledby={this.getTabId(this.state.currentFamily)}
-                        selectedKey={this.state.currentFamily}
-                        onLinkClick={this.pivotClick}
-                        headersOnly={true}
-                        getTabId={this.getTabId}
-                    >
-                        {Object.keys(EmojiList).map((key, index) => (
-                            <PivotItem key={key} itemIcon={EmojiFabricIconCharacterMap[key]} itemKey={key} headerButtonProps={{ title: strings[key] }} />
-                        ))}
-                    </Pivot>
-                    <div className={Styles.fullListContentContainer}>
+                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
+                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} getTabId={this.getTabId} strings={strings} />
+                    <div className={Styles.fullListContentContainer} role="tabpanel" aria-labeledby={this.getTabId(this.state.currentFamily)}>
                         <div>
                             <FocusZone className={css(Styles.fullListContent, fullListContentClassName)} ref={this.focusZoneRefCallback}>
                                 {EmojiList[this.state.currentFamily].map((emoji: Emoji) => (
@@ -196,8 +192,8 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         );
     }
 
-    private pivotClick = (item: PivotItem): void => {
-        const currentFamily = item.props.itemKey as EmojiFamilyKeys;
+    private pivotClick = (selected: string): void => {
+        const currentFamily = selected as EmojiFamilyKeys;
 
         this.setState({ currentFamily });
     };

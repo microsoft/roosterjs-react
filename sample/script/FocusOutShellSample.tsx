@@ -22,7 +22,7 @@ import {
     TableResize,
     UndoWithImagePlugin
 } from "roosterjs-react";
-import { EmojiDescriptionStrings, EmojiKeywordStrings } from "roosterjs-react-emoji-resources";
+import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
 
 import { initializeIcons } from "../fabric/src";
 
@@ -96,7 +96,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
     };
     const onEmojiKeyboardTriggered = () => {
         if (loadEmojiStrings) {
-            emojiPlugin.setStrings({ ...EmojiDescriptionStrings, ...EmojiKeywordStrings });
+            emojiPlugin.setStrings({ ...EmojiDescriptionStrings, ...EmojiKeywordStrings, ...EmojiFamilyStrings });
         }
         console.log("Emoji started from keyboard");
     };

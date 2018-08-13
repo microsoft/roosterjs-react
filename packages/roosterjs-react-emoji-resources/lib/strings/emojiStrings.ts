@@ -1196,5 +1196,15 @@ export const EmojiKeywordStrings = {
     emjK02764: 'love heart'
 };
 
+export const EmojiFamilyStrings = {
+    People: "People",
+    Nature: "Nature",
+    Activities: "Activities",
+    Food: "Food",
+    Travel: "Travel",
+    Symbols: "Symbols",
+    Objects: "Objects"
+};
+
 export type EmojiDescriptionStringKey = keyof typeof EmojiDescriptionStrings;
 export type EmojiKeywordStringKey = keyof typeof EmojiKeywordStrings;
