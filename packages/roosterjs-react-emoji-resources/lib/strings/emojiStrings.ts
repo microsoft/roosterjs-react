@@ -1,9 +1,4 @@
-import { getString as globalGetString, registerDefaultString, Strings } from 'roosterjs-react-common';
-
-const STRING_CATEGORY_EMOJI_DESCRIPTION = 'ROOSTERJS_STRINGS_EMOJI_DESCRIPTION';
-const STRING_CATEGORY_EMOJI_KEYWORD = 'ROOSTERJS_STRINGS_EMOJI_KEYWORD';
-
-export const emojiDescriptionStrings = {
+export const EmojiDescriptionStrings = {
     emjDMore: 'More',
     emjD0270a: 'Raised fist',
     emjD0270b: 'Raised hand',
@@ -697,7 +692,7 @@ export const emojiDescriptionStrings = {
     emjD1f5ff: 'Moyai'
 };
 
-export const emojiKeywordStrings = {
+export const EmojiKeywordStrings = {
     emjK1f607: 'saint angel innocent',
     emjK1f47c: 'cherub angel',
     emjK1f34e: 'apple',
@@ -1200,16 +1195,15 @@ export const emojiKeywordStrings = {
     emjK02764: 'love heart'
 };
 
-export type EmojiDescriptionStringKey = keyof typeof emojiDescriptionStrings;
-export type EmojiKeywordStringKey = keyof typeof emojiKeywordStrings;
+export const EmojiFamilyStrings = {
+    People: "People",
+    Nature: "Nature",
+    Activities: "Activities",
+    Food: "Food",
+    Travel: "Travel",
+    Symbols: "Symbols",
+    Objects: "Objects"
+};
 
-registerDefaultString(STRING_CATEGORY_EMOJI_DESCRIPTION, emojiDescriptionStrings);
-registerDefaultString(STRING_CATEGORY_EMOJI_KEYWORD, emojiKeywordStrings);
-
-export function getDescriptionString(name: EmojiDescriptionStringKey, strings?: Strings): string {
-    return globalGetString(STRING_CATEGORY_EMOJI_DESCRIPTION, name, strings);
-}
-
-export function getKeywordString(name: EmojiKeywordStringKey, strings?: Strings): string {
-    return globalGetString(STRING_CATEGORY_EMOJI_KEYWORD, name, strings);
-}
+export type EmojiDescriptionStringKey = keyof typeof EmojiDescriptionStrings;
+export type EmojiKeywordStringKey = keyof typeof EmojiKeywordStrings;

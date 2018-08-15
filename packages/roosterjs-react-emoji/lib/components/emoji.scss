@@ -7,6 +7,34 @@ $rowsOfIcons: 6; // including family bar if shown
 $bottomPaddingForContent: 5px;
 $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
+:global {
+    .rooster-emoji-pane {
+        button {
+            outline: 0;
+            position: relative;
+        }
+    }
+
+    .is-focusVisible {
+        .rooster-emoji-pane {
+            button:focus::after {
+                content: "";
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                bottom: 0px;
+                right: 0px;
+                z-index: 1;
+                border-width: 1px;
+                border-style: solid;
+                border-color: rgb(255, 255, 255);
+                border-image: initial;
+                outline: rgb(102, 102, 102) solid 1px;
+            }
+        }
+    }
+}
+
 .emoji {
     background: white;
 
@@ -28,51 +56,24 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     position: relative;
 }
 
-.pivot {
-    $buttonColor: #f4f4f4;
-    background-color: $buttonColor;
-    height: $buttonHeight;
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1;
-    border-bottom: solid 1px #dadada;
-    padding: 0 $paneHorizontalPadding;
-
-    button {
-        background: $buttonColor;
-        height: $buttonHeight;
-        width: $buttonWidth;
-
-        // Fabric doesn't have className override for this and we don't want margins
-        margin-right: 0 !important;
-
-        span {
-            flex-grow: 1;
-        }
-    }
-}
-
 .quickPicker {
     overflow-y: hidden;
 }
 
+// consistency look by always having a scroll
 .partialList,
 .fullListBody {
     max-height: $maxHeightForContent;
     overflow: hidden;
-    overflow-y: auto;
-}
-
-// consistency look by always having a scroll
-// (currently for Activities pivot where content doesn't overflow)
-.fullListBody {
-    height: $maxHeightForContent;
     overflow-y: scroll;
 }
 
+.fullListBody {
+    height: $maxHeightForContent;
+}
+
 .fullListContentContainer {
-    margin-top: $buttonHeight;
+    margin-top: $buttonHeight + 1px;
 }
 
 .partialListContent,

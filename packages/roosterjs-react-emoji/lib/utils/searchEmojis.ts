@@ -1,21 +1,20 @@
-import Emoji from '../schema/Emoji';
-import { forEachEmoji } from './emojiList';
-import { Strings } from 'roosterjs-react-common';
-import { getKeywordString } from 'roosterjs-react-emoji-resources';
+import { Strings } from "roosterjs-react-common";
+
+import Emoji from "../schema/Emoji";
+import { forEachEmoji } from "./emojiList";
 
 export function searchEmojis(search: string, strings: Strings): Emoji[] {
-    let shortcutMatch = matchShortcut(search);
+    const shortcutMatch = matchShortcut(search);
     search = search.toLowerCase();
-    let fullMatch: Emoji[] = shortcutMatch ? [shortcutMatch] : [];
-    let partialMatch: Emoji[] = [];
-    let partialSearch = ' ' + (search[0] == ':' ? search.substr(1) : search);
+    const fullMatch: Emoji[] = shortcutMatch ? [shortcutMatch] : [];
+    const partialMatch: Emoji[] = [];
+    const partialSearch = " " + (search[0] == ":" ? search.substr(1) : search);
     forEachEmoji(emoji => {
-        let keywords = emoji.keywords
-            ? ' ' + getKeywordString(emoji.keywords, strings).toLowerCase() + ' '
-            : '';
-        let index = keywords.indexOf(partialSearch);
+        const keywords = strings[emoji.keywords] || "";
+        const searchableKeywords = emoji.keywords ? " " + keywords.toLowerCase() + " " : "";
+        const index = searchableKeywords.indexOf(partialSearch);
         if (index >= 0) {
-            (keywords[index + partialSearch.length] == ' ' ? fullMatch : partialMatch).push(emoji);
+            (searchableKeywords[index + partialSearch.length] == " " ? fullMatch : partialMatch).push(emoji);
         }
         return true;
     });
@@ -25,9 +24,9 @@ export function searchEmojis(search: string, strings: Strings): Emoji[] {
 
 export function matchShortcut(search: string): Emoji {
     let result: Emoji;
-    search = ' ' + search + ' ';
+    search = " " + search + " ";
     forEachEmoji((emoji: Emoji) => {
-        if (emoji.shortcut && (' ' + emoji.shortcut + ' ').indexOf(search) >= 0) {
+        if (emoji.shortcut && (" " + emoji.shortcut + " ").indexOf(search) >= 0) {
             result = emoji;
             return false;
         }

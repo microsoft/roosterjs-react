@@ -3,7 +3,6 @@ import * as React from "react";
 import * as StatusBarStyles from "./EmojiStatusBar.scss.g";
 import { TooltipHost, TooltipOverflowMode } from "office-ui-fabric-react/lib/Tooltip";
 import { Strings } from 'roosterjs-react-common';
-import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
 // The Component props
 export interface EmojiStatusBarProps {
@@ -16,7 +15,7 @@ export default class EmojiStatusBar extends React.Component<EmojiStatusBarProps,
         const { emoji, strings = {} } = this.props;
 
         const icon = emoji ? emoji.codePoint : ""; 
-        const description = emoji ? getDescriptionString(emoji.description, strings) : "";
+        const description = emoji ? strings[emoji.description] : "";
 
         return (
             <div className={StatusBarStyles.statusBar}>

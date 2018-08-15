@@ -4,7 +4,6 @@ import * as Styles from "./emoji.scss.g";
 import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
 import { css } from "office-ui-fabric-react/lib/Utilities";
 import { Strings } from 'roosterjs-react-common';
-import { getDescriptionString } from 'roosterjs-react-emoji-resources';
 
 export interface EmojiIconProps {
     emoji: Emoji;
@@ -20,7 +19,7 @@ export interface EmojiIconProps {
 export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
     public render() {
         const { emoji, onClick, isSelected, onMouseOver, onFocus, strings, showTooltip } = this.props;
-        const content = getDescriptionString(emoji.description, strings);
+        const content = strings[emoji.description];
 
         const button = (
             <button
@@ -29,6 +28,7 @@ export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
                 onMouseOver={onMouseOver}
                 onFocus={onFocus}
                 data-is-focusable={true}
+                aria-label={content}
             >
                 {emoji.codePoint || "..."}
             </button>

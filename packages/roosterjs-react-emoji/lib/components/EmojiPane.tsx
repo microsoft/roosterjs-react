@@ -1,19 +1,23 @@
-import { FocusZone } from 'office-ui-fabric-react/lib/FocusZone';
-import { Pivot, PivotItem, PivotLinkFormat, PivotLinkSize, IPivotItemProps } from 'office-ui-fabric-react/lib/Pivot';
-import { TextField } from 'office-ui-fabric-react/lib/TextField';
-import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
-import * as React from 'react';
-import { browserData } from 'roosterjs-editor-core';
-import { css, Strings } from 'roosterjs-react-common';
+import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
+import { TextField } from "office-ui-fabric-react/lib/TextField";
+import * as React from "react";
+import { KeyCodes } from "office-ui-fabric-react/lib/Utilities";
+import { css, Strings } from "roosterjs-react-common";
 
-import Emoji from '../schema/Emoji';
-import EmojiList, { commonEmojis, EmojiFabricIconCharacterMap, EmojiFamilyKeys, moreEmoji } from '../utils/emojiList';
-import { searchEmojis } from '../utils/searchEmojis';
-import * as Styles from './emoji.scss.g';
-import EmojiIcon from './EmojiIcon';
-import EmojiStatusBar from './EmojiStatusBar';
+import Emoji from "../schema/Emoji";
+import EmojiList, { CommonEmojis, EmojiFamilyKeys, MoreEmoji } from "../utils/emojiList";
+import { searchEmojis } from "../utils/searchEmojis";
+import * as Styles from "./emoji.scss.g";
+import EmojiIcon from "./EmojiIcon";
+import EmojiNavBar from "./EmojiNavBar";
+import EmojiStatusBar from "./EmojiStatusBar";
 
-enum EmojiPaneMode {
+// "When a div contains an element that is bigger (either taller or wider) than the parent and has the property
+// overflow-x or overflow-y set to any value, then it can receive the focus."
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
+const TabIndexForFirefoxBug = -1;
+
+export const enum EmojiPaneMode {
     Quick,
     Partial,
     Full
@@ -35,6 +39,7 @@ export interface EmojiPaneProps {
     fullListContentClassName?: string;
     partialListClassName?: string;
     onLayoutChange?: () => void;
+    searchDisabled?: boolean;
 }
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
@@ -54,10 +59,10 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         this.state = {
             index: 0,
             mode: EmojiPaneMode.Quick,
-            currentEmojiList: commonEmojis,
+            currentEmojiList: CommonEmojis,
             currentFamily: EmojiFamilyKeys.People,
-            search: ':',
-            searchInBox: ''
+            search: ":",
+            searchInBox: ""
         };
     }
 
@@ -76,7 +81,9 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         }
 
         const currentEmojisLength = currentEmojiList ? currentEmojiList.length : EmojiList[currentFamily].length;
-        const prevEmojisLength = prevState.currentEmojiList ? prevState.currentEmojiList.length : EmojiList[prevState.currentFamily].length;
+        const prevEmojisLength = prevState.currentEmojiList
+            ? prevState.currentEmojiList.length
+            : EmojiList[prevState.currentFamily].length;
         if (mode !== EmojiPaneMode.Quick && currentEmojisLength !== prevEmojisLength) {
             onLayoutChange();
             return;
@@ -120,7 +127,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
 
     private _normalizeSearchText(text: string, colonIncluded: boolean): string {
         if (text == null) {
-            return '';
+            return "";
         }
 
         if (colonIncluded) {
@@ -136,14 +143,14 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         }
 
         const emojiList = searchEmojis(searchValue, this.props.strings);
-        return isQuickMode ? emojiList.slice(0, 5).concat([moreEmoji]) : emojiList;
+        return isQuickMode ? emojiList.slice(0, 5).concat([MoreEmoji]) : emojiList;
     }
 
     private _renderQuickPicker(): JSX.Element {
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.quickPicker, quickPickerClassName)}>
+            <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
                 {this.state.currentEmojiList.map((emoji, index) => (
                     <EmojiIcon
                         key={emoji.key}
@@ -161,34 +168,46 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     private _renderFullPicker(): JSX.Element {
-        const { fullPickerClassName } = this.props;
+        const { fullPickerClassName, searchDisabled } = this.props;
 
         return (
-            <div className={fullPickerClassName}>
-                <TextField ref={this._searchRefCallback} value={this.state.searchInBox} onChanged={this._onSearchChange} inputClassName={Styles.emojiTextInput} />
+            <div className={css("rooster-emoji-pane", fullPickerClassName)}>
+                {!searchDisabled && (
+                    <TextField
+                        ref={this._searchRefCallback}
+                        value={this.state.searchInBox}
+                        onChanged={this._onSearchChange}
+                        inputClassName={Styles.emojiTextInput}
+                        onKeyPress={this._onSearchKeyPress}
+                    />
+                )}
                 {this.state.mode === EmojiPaneMode.Full ? this._renderFullList() : this._renderPartialList()}
             </div>
         );
     }
 
-    // For IE, fixed width not accounting for scroll bar glitches and content is overlapped with content.
-    // A workaround is to refresh the overflow value.
-    private _resizeOnRefForIE =
-        browserData.isIE &&
-        ((ref: HTMLDivElement): void => {
-            if (ref) {
-                const prevValue = ref.style.overflowY;
-                ref.style.overflowY = 'hidden';
-                requestAnimationFrame(() => (ref.style.overflowY = prevValue));
-            }
-        });
+    private _onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (!e || e.keyCode !== KeyCodes.enter) {
+            return;
+        }
+
+        const { index, currentEmojiList } = this.state;
+
+        if (index >= 0 && currentEmojiList && currentEmojiList.length > 0) {
+            this._onSelect(e, currentEmojiList[index]);
+        }
+    };
 
     private _renderPartialList(): JSX.Element {
         const { partialListClassName, strings } = this.props;
 
         return (
             <div>
-                <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
+                <div
+                    className={css(Styles.partialList, partialListClassName)}
+                    data-is-scrollable={true}
+                    tabIndex={TabIndexForFirefoxBug}
+                >
                     <FocusZone className={Styles.partialListContent}>
                         {this.state.currentEmojiList.map((emoji, index) => (
                             <EmojiIcon
@@ -209,34 +228,27 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     private _renderFullList(): JSX.Element {
-        const { fullListClassName, fullListContentClassName, strings = {} } = this.props;
+        const { fullListClassName, fullListContentClassName, strings } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE}>
-                    <Pivot
-                        className={Styles.pivot}
-                        linkFormat={PivotLinkFormat.links}
-                        linkSize={PivotLinkSize.normal}
-                        aria-labelledby={this._getTabId(this.state.currentFamily)}
-                        selectedKey={this.state.currentFamily}
-                        onLinkClick={this._pivotClick}
-                        headersOnly={true}
+                <div className={Styles.fullListBody} data-is-scrollable={true} tabIndex={TabIndexForFirefoxBug}>
+                    <EmojiNavBar
+                        onClick={this._pivotClick}
+                        currentSelected={this.state.currentFamily}
                         getTabId={this._getTabId}
+                        strings={strings}
+                    />
+                    <div
+                        className={Styles.fullListContentContainer}
+                        role="tabpanel"
+                        aria-labeledby={this._getTabId(this.state.currentFamily)}
                     >
-                        {Object.keys(EmojiList).map((key, index) => (
-                            <PivotItem
-                                key={key}
-                                itemIcon={EmojiFabricIconCharacterMap[key]}
-                                itemKey={key}
-                                headerButtonProps={{ title: strings[key] }}
-                                onRenderItemLink={this._renderPivotTooltip}
-                            />
-                        ))}
-                    </Pivot>
-                    <div className={Styles.fullListContentContainer}>
                         <div>
-                            <FocusZone className={css(Styles.fullListContent, fullListContentClassName)}>
+                            <FocusZone
+                                className={css(Styles.fullListContent, fullListContentClassName)}
+                                ref={this._focusZoneRefCallback}
+                            >
                                 {this.state.currentEmojiList.map((emoji: Emoji, index) => (
                                     <EmojiIcon
                                         key={emoji.key}
@@ -258,16 +270,8 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         );
     }
 
-    private _renderPivotTooltip(link: IPivotItemProps, defaultRenderer: (link: IPivotItemProps) => JSX.Element): JSX.Element {
-        return (
-            <TooltipHost content={link.itemKey} id={link.itemKey} calloutProps={{ gapSpace: 0 }}>
-                {defaultRenderer(link)}
-            </TooltipHost>
-        );
-    }
-
-    private _pivotClick = (item: PivotItem): void => {
-        const currentFamily = item.props.itemKey as EmojiFamilyKeys;
+    private _pivotClick = (selected: string): void => {
+        const currentFamily = selected as EmojiFamilyKeys;
 
         this.setState({ currentEmojiList: EmojiList[currentFamily], currentFamily });
     };
@@ -284,6 +288,12 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         }
     };
 
+    private _focusZoneRefCallback = (ref: FocusZone): void => {
+        if (this.props.searchDisabled && ref) {
+            ref.focus();
+        }
+    };
+
     private _onSearchChange = (newValue: string): void => {
         const normalizedSearchValue = this._normalizeSearchText(newValue, false);
         const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
@@ -295,7 +305,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         });
     };
 
-    private _onSelect = (e: React.MouseEvent<EventTarget>, emoji: Emoji): void => {
+    private _onSelect = (e: React.MouseEvent<EventTarget> | React.KeyboardEvent<HTMLInputElement>, emoji: Emoji): void => {
         e.stopPropagation();
         e.preventDefault();
         this.props.onSelect && this.props.onSelect(emoji, this.state.search);

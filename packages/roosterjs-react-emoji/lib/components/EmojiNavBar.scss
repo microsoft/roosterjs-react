@@ -1,0 +1,36 @@
+$buttonHeight: 40px;
+$buttonWidth: 40px;
+$paneHorizontalPadding: 1px;
+
+.navBar {
+    background-color: white;
+    height: $buttonHeight;
+    position: absolute;
+    left: 0;
+    z-index: 10;
+    padding: 2px $paneHorizontalPadding;
+}
+
+.navBarButton {
+    background-color: white;
+    height: $buttonHeight;
+    width: $buttonWidth;
+    border: none;
+    border-bottom: solid 1px #dadada;
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+
+
+    &:hover {
+        background: #eaeaea;
+    }
+}
+
+.selected {
+    border-bottom: 2px solid #0078d4;
+}
+
+.navBarTooltip {
+    display: inline-block;
+}
