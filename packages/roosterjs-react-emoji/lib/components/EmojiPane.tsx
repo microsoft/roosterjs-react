@@ -91,8 +91,8 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     public navigate(change: number): void {
-        let newIndex = this.state.index + change;
-        let length = this.state.currentEmojiList.length;
+        const newIndex = this.state.index + change;
+        const length = this.state.currentEmojiList.length;
         if (newIndex >= 0 && newIndex < length) {
             this.setState({ index: newIndex });
         }

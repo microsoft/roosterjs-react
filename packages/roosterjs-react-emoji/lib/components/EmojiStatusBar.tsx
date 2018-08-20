@@ -25,7 +25,7 @@ export default class EmojiStatusBar extends React.Component<EmojiStatusBarProps,
 
                 <div className={StatusBarStyles.statusBarDetailsContainer}>
                     <div className={StatusBarStyles.statusBarDetails} >
-                        <TooltipHost className={StatusBarStyles.statusBarTooltip} content={description} overflowMode={TooltipOverflowMode.Parent}>
+                        <TooltipHost content={description} overflowMode={TooltipOverflowMode.Parent}>
                             {description}
                         </TooltipHost>
                     </div>

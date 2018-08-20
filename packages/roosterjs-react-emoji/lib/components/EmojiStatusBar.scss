@@ -18,7 +18,7 @@
     position: absolute;
     display: inline-block;
     left: 40px;
-    right: 0px;
+    right: 0;
     line-height: 40px;
 }
 
@@ -27,9 +27,4 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-}
-
-.statusBarTooltip {
-    position: absolute;
-    margin: auto;
 }

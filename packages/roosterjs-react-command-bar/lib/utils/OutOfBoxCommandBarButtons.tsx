@@ -11,7 +11,7 @@ import {
     setTextColor,
     toggleBold,
     toggleBullet,
-    // toggleCodeBlock,
+    toggleCodeBlock,
     toggleHeader,
     toggleItalic,
     toggleNumbering,
@@ -220,7 +220,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.Code,
         name: 'Code',
         iconProps: _getIconProps('Embed'),
-        // handleChange: (editor: Editor) => toggleCodeBlock(editor)
+        handleChange: (editor: Editor) => toggleCodeBlock(editor)
     },
     {
         key: RoosterCommmandBarButtonKeys.ClearFormat,
