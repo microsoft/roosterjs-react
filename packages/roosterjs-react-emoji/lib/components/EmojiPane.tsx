@@ -31,6 +31,7 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
+    navbarClassName?: string;
     searchDisabled?: boolean;
 }
 
@@ -172,12 +173,12 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     private renderFullList(): JSX.Element {
-        const { fullListClassName, fullListContentClassName, strings } = this.props;
+        const { fullListClassName, fullListContentClassName, strings, navbarClassName } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
                 <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
-                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} getTabId={this.getTabId} strings={strings} />
+                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} getTabId={this.getTabId} strings={strings} NavbarClassName={navbarClassName} />
                     <div className={Styles.fullListContentContainer} role="tabpanel" aria-labeledby={this.getTabId(this.state.currentFamily)}>
                         <div>
                             <FocusZone className={css(Styles.fullListContent, fullListContentClassName)} ref={this.focusZoneRefCallback}>
