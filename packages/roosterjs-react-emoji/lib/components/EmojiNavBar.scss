@@ -8,7 +8,7 @@ $paneHorizontalPadding: 1px;
     position: absolute;
     left: 0;
     z-index: 10;
-    padding: 2px $paneHorizontalPadding;
+    padding: 2px $paneHorizontalPadding 0;
 }
 
 .navBarButton {
