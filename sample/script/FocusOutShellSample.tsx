@@ -20,7 +20,8 @@ import {
     RoosterCommmandBarButtonKeys as ButtonKeys,
     RoosterShortcutCommands,
     TableResize,
-    UndoWithImagePlugin
+    UndoWithImagePlugin,
+    EmojiPaneProps
 } from "roosterjs-react";
 import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
 
@@ -42,6 +43,9 @@ class ContentChangedLoggerPlugin extends ContentChangedPlugin {
 
 const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
+const emojiPaneProps: EmojiPaneProps = {
+    quickPickerClassName: "foobar"
+};
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
     let leanRoosterContentDiv: HTMLDivElement;
@@ -108,7 +112,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
             onBlur={focusOutShellOnBlur}
             onFocus={focusOutShellOnFocus}
             onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
-                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss, onKeyboardTriggered: onEmojiKeyboardTriggered } as EmojiPluginOptions);
+                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss, onKeyboardTriggered: onEmojiKeyboardTriggered, emojiPaneProps } as EmojiPluginOptions);
 
                 return [
                     <LeanRooster

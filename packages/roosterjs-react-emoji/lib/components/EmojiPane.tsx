@@ -31,13 +31,13 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
-    onLayoutChange?: () => void;
     searchDisabled?: boolean;
 }
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
     onSelect: (emoji: Emoji, wordBeforeCursor: string) => void;
     strings: Strings;
+    onLayoutChange?: () => void;
 }
 
 export default class EmojiPane extends React.Component<InternalEmojiPaneProps, EmojiPaneState> {
