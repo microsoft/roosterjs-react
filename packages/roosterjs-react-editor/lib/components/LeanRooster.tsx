@@ -22,7 +22,7 @@ export interface LeanRoosterProps {
     contentDivRef?: (ref: HTMLDivElement) => void;
     contentEditFeatures?: ContentEditFeatures;
     defaultFormat?: DefaultFormat;
-    disableRestoreSelectionOnFocus?: boolean;
+    enableRestoreSelectionOnFocus?: boolean;
     hyperlinkToolTipCallback?: (href: string) => string;
     isRtl?: boolean;
     onAfterModeChange?: (newMode: LeanRoosterModes) => void;
@@ -232,16 +232,17 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     private _createEditorOptions(): EditorOptions {
-        const { plugins: additionalPlugins = [], undo = new Undo(), hyperlinkToolTipCallback, defaultFormat = {}, contentEditFeatures } = this.props;
+        const { plugins: additionalPlugins = [], undo = new Undo(), hyperlinkToolTipCallback, defaultFormat = {}, contentEditFeatures, enableRestoreSelectionOnFocus } = this.props;
         const plugins: EditorPlugin[] = [
             new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, ...contentEditFeatures }),
             new HyperLink(hyperlinkToolTipCallback),
             new Paste(true /*useDirectPaste*/),
             ...additionalPlugins
         ];
+        const disableRestoreSelectionOnFocus = !enableRestoreSelectionOnFocus;
 
         // Important: don't set the initial content, the content editable already starts with initial HTML content
-        return { plugins, defaultFormat, undo, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */ };
+        return { plugins, defaultFormat, undo, disableRestoreSelectionOnFocus, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */ };
     }
 
     private _updateViewState = (viewState: EditorViewState, content: string, isInitializing: boolean): void => {
