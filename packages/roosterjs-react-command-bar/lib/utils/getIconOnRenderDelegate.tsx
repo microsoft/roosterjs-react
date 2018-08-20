@@ -11,15 +11,25 @@ export type ButtonOnRenderDelegate = (item: RoosterCommandBarButton) => JSX.Elem
 const OnRenderDelegateCache: { [key: string]: ButtonOnRenderDelegate } = {};
 
 export function getIconOnRenderDelegate(highContrastAssetName: string = null, ...assets: { name: string; className?: string }[]): ButtonOnRenderDelegate {
-    const cacheKey = assets ? assets.map(a => a.name).join('.') : '';
+    return getIconOnRenderDelegateWithCustomCacheKey(undefined, highContrastAssetName, ...assets);
+}
+
+export function getIconOnRenderDelegateWithCustomCacheKey(
+    customCacheKey: string,
+    highContrastAssetName: string = null,
+    ...assets: { name: string; className?: string }[]
+): ButtonOnRenderDelegate {
+    const cacheKey = customCacheKey != null ? customCacheKey : assets ? assets.map(a => a.name).join('.') : '';
     if (!OnRenderDelegateCache[cacheKey]) {
         const iconClassName = 'stacked-icon';
         let onRenderIcon: IRenderFunction<IButtonProps> = undefined;
         if (assets && assets.length > 1) {
             onRenderIcon = () => (
                 <div className="stacked-icon-container">
-                    {assets.map((asset, i) => <Icon key={i} iconName={asset.name} className={css(iconClassName, asset.className || `${iconClassName}-${asset.name}`)} />)}
-                    {highContrastAssetName && <Icon iconName={highContrastAssetName} className={css(iconClassName, 'high-contrast-icon')} />}
+                    {assets.map((asset, i) => (
+                        <Icon key={i} iconName={asset.name} className={css(iconClassName, asset.className || `${iconClassName}-${asset.name}`)} />
+                    ))}
+                    {highContrastAssetName && <Icon iconName={highContrastAssetName} className={css(iconClassName, "high-contrast-icon")} />}
                 </div>
             );
         }

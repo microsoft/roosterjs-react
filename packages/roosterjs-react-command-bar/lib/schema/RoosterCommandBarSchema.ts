@@ -34,3 +34,7 @@ export interface RoosterCommandBarButton extends ICommandBarItemProps {
     exclude?: boolean;
     buttonClassName?: string;
 }
+
+export interface RoosterCommandBarButtonInternal extends RoosterCommandBarButton {
+    onRenderParams?: any[];
+}
