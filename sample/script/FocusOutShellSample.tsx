@@ -44,7 +44,9 @@ class ContentChangedLoggerPlugin extends ContentChangedPlugin {
 const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 const emojiPaneProps: EmojiPaneProps = {
-    navbarClassName: "nabvar-class-name"
+    navbarThemeClassName: "nabvar-class-name",
+    navbarButtonThemeClassName: "nabvar-button-class-name",
+    navbarIconThemeClassName: "nabvar-icon-class-name"
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {

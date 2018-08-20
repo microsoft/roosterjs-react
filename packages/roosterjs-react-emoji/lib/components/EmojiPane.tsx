@@ -31,7 +31,9 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
-    navbarClassName?: string;
+    navbarThemeClassName?: string;
+    navbarButtonThemeClassName?: string;
+    navbarIconThemeClassName?: string;
     searchDisabled?: boolean;
 }
 
@@ -139,7 +141,13 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         return (
             <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
                 {this.state.emojis.map((emoji, index) => (
-                    <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
+                    <EmojiIcon
+                        key={emoji.key}
+                        strings={strings}
+                        emoji={emoji}
+                        isSelected={index === this.state.index}
+                        onClick={e => this.onSelect(e, emoji)}
+                    />
                 ))}
             </div>
         );
@@ -151,7 +159,12 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         return (
             <div className={css("rooster-emoji-pane", fullPickerClassName)}>
                 {!searchDisabled && (
-                    <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
+                    <TextField
+                        ref={this.searchRefCallback}
+                        value={this.state.searchInBox}
+                        onChanged={this.onSearchChange}
+                        inputClassName={Styles.emojiTextInput}
+                    />
                 )}
                 {this.state.emojis ? this.renderPartialList() : this.renderFullList()}
             </div>
@@ -162,10 +175,21 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
         const { partialListClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
+            <div
+                className={css(Styles.partialList, partialListClassName)}
+                data-is-scrollable={true}
+                ref={this._resizeOnRefForIE}
+                tabIndex={TabIndexForFirefoxBug}
+            >
                 <FocusZone className={Styles.partialListContent}>
                     {this.state.emojis.map(emoji => (
-                        <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
+                        <EmojiIcon
+                            key={emoji.key}
+                            strings={strings}
+                            emoji={emoji}
+                            isSelected={false}
+                            onClick={e => this.onSelect(e, emoji)}
+                        />
                     ))}
                 </FocusZone>
             </div>
@@ -173,17 +197,50 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     private renderFullList(): JSX.Element {
-        const { fullListClassName, fullListContentClassName, strings, navbarClassName } = this.props;
+        const {
+            fullListClassName,
+            fullListContentClassName,
+            strings,
+            navbarThemeClassName,
+            navbarButtonThemeClassName,
+            navbarIconThemeClassName
+        } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
-                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} getTabId={this.getTabId} strings={strings} NavbarClassName={navbarClassName} />
-                    <div className={Styles.fullListContentContainer} role="tabpanel" aria-labeledby={this.getTabId(this.state.currentFamily)}>
+                <div
+                    className={Styles.fullListBody}
+                    data-is-scrollable={true}
+                    ref={this._resizeOnRefForIE}
+                    tabIndex={TabIndexForFirefoxBug}
+                >
+                    <EmojiNavBar
+                        onClick={this.pivotClick}
+                        currentSelected={this.state.currentFamily}
+                        getTabId={this.getTabId}
+                        strings={strings}
+                        navbarThemeClassName={navbarThemeClassName}
+                        navbarButtonThemeClassName={navbarButtonThemeClassName}
+                        navbarIconThemeClassName={navbarIconThemeClassName}
+                    />
+                    <div
+                        className={Styles.fullListContentContainer}
+                        role="tabpanel"
+                        aria-labeledby={this.getTabId(this.state.currentFamily)}
+                    >
                         <div>
-                            <FocusZone className={css(Styles.fullListContent, fullListContentClassName)} ref={this.focusZoneRefCallback}>
+                            <FocusZone
+                                className={css(Styles.fullListContent, fullListContentClassName)}
+                                ref={this.focusZoneRefCallback}
+                            >
                                 {EmojiList[this.state.currentFamily].map((emoji: Emoji) => (
-                                    <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
+                                    <EmojiIcon
+                                        key={emoji.key}
+                                        strings={strings}
+                                        emoji={emoji}
+                                        isSelected={false}
+                                        onClick={e => this.onSelect(e, emoji)}
+                                    />
                                 ))}
                             </FocusZone>
                         </div>

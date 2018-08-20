@@ -3,7 +3,6 @@ $buttonWidth: 40px;
 $paneHorizontalPadding: 1px;
 
 .navBar {
-    background-color: white;
     height: $buttonHeight;
     position: absolute;
     top: 1px;
@@ -21,7 +20,6 @@ $paneHorizontalPadding: 1px;
     display: inline-block;
     padding: 0;
     margin: 0;
-
 
     &:hover {
         background: #eaeaea;
