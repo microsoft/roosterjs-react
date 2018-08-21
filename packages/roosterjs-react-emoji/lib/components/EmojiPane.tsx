@@ -245,13 +245,13 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                 <div
                     className={Styles.fullListBody}
                     data-is-scrollable={true}
-                    ref={this._resizeOnRefForIE}
+                    // ref={this._resizeOnRefForIE}
                     tabIndex={TabIndexForFirefoxBug}
                 >
                     <EmojiNavBar
-                        onClick={this.pivotClick}
+                        onClick={this._pivotClick}
                         currentSelected={this.state.currentFamily}
-                        getTabId={this.getTabId}
+                        getTabId={this._getTabId}
                         strings={strings}
                         navbarThemeClassName={navbarThemeClassName}
                         navbarButtonThemeClassName={navbarButtonThemeClassName}
@@ -260,7 +260,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     <div
                         className={Styles.fullListContentContainer}
                         role="tabpanel"
-                        aria-labeledby={this.getTabId(this.state.currentFamily)}
+                        aria-labeledby={this._getTabId(this.state.currentFamily)}
                     >
                         <div>
                             <FocusZone
