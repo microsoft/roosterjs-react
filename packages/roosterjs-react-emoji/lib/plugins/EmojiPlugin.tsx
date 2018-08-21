@@ -11,6 +11,8 @@ import EmojiPane, { EmojiPaneProps } from "../components/EmojiPane";
 import Emoji from "../schema/Emoji";
 import { MoreEmoji } from "../utils/emojiList";
 import { matchShortcut } from "../utils/searchEmojis";
+import { EmojiNavBarProps } from "../components/EmojiNavBar";
+import { EmojiStatusBarProps } from "../components/EmojiStatusBar";
 
 const EMOJI_SEARCH_DELAY = 300;
 const INTERNAL_EMOJI_FONT_NAME = "EmojiFont";
@@ -29,6 +31,8 @@ export interface EmojiPluginOptions {
     onCalloutDismiss?: (ev?: any) => void;
     emojiPaneProps?: EmojiPaneProps;
     onKeyboardTriggered?: () => void;
+    navBarProps?: Partial<EmojiNavBarProps>;
+    statusBarProps?: Partial<EmojiStatusBarProps>;
 }
 
 export default class EmojiPlugin implements EditorPlugin {
@@ -291,7 +295,7 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     private _getCallout(): JSX.Element {
-        const { calloutClassName, emojiPaneProps = {} } = this.options;
+        const { calloutClassName, emojiPaneProps = {}, navBarProps, statusBarProps } = this.options;
 
         const cursorRect = this._editor.getCursorRect();
         const point = {
@@ -316,6 +320,8 @@ export default class EmojiPlugin implements EditorPlugin {
                     onSelect={this._onSelectFromPane}
                     strings={this._strings || {}}
                     onLayoutChange={this._refreshCalloutDebounced}
+                    navBarProps={navBarProps}
+                    statusBarProps={statusBarProps} 
                     searchDisabled={!this._strings || emojiPaneProps.searchDisabled}
                 />
             </Callout>

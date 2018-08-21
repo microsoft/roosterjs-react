@@ -26,6 +26,8 @@ import {
 import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
 
 import { initializeIcons } from "../fabric/src";
+import { EmojiNavBarProps } from "roosterjs-react-emoji/lib/components/EmojiNavBar";
+import { EmojiStatusBarProps } from "roosterjs-react-emoji/lib/components/EmojiStatusBar";
 
 initializeIcons();
 
@@ -44,10 +46,14 @@ class ContentChangedLoggerPlugin extends ContentChangedPlugin {
 const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 const emojiPaneProps: EmojiPaneProps = {
-    navbarThemeClassName: "nabvar-class-name",
-    navbarButtonThemeClassName: "nabvar-button-class-name",
-    navbarIconThemeClassName: "nabvar-icon-class-name",
-    statusBarThemeClassName: "status-bar-theme-class-name"
+    navBarProps: {
+        className: "nabvar-class-name",
+        buttonClassName: "nabvar-button-class-name",
+        iconClassName: "navbar-icon-class-name"
+    } as Partial<EmojiNavBarProps>,
+    statusBarProps: {
+        statusBarClassName: "status-bar-theme-class-name"
+    } as Partial<EmojiStatusBarProps>
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {

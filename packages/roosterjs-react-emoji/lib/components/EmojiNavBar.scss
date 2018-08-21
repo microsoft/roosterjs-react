@@ -22,6 +22,7 @@ $paneHorizontalPadding: 1px;
 
     &:hover {
         background: #eaeaea;
+        cursor: default;
 
         @media screen and (-ms-high-contrast: active) {
             background-color: Highlight;

@@ -11,27 +11,28 @@ export interface EmojiNavBarProps {
     onClick?: (selected: string) => void;
     currentSelected?: string;
     getTabId?: (selected: string) => string;
-    navbarThemeClassName?: string;
-    navbarButtonThemeClassName?: string,
-    navbarIconThemeClassName?: string,
+    navBarProps?: Partial<EmojiNavBarProps>;
+    className?: string;
+    buttonClassName?: string;
+    iconClassName?: string;
     strings: Strings;
 }
 
 export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
     public render() {
-        const { currentSelected, getTabId, strings, navbarThemeClassName = "", navbarButtonThemeClassName = "", navbarIconThemeClassName = "" } = this.props;
+        const { currentSelected, getTabId, strings = {}, navBarProps = {} } = this.props;
 
         return (
             // for each emoji family key, create a button to use as nav bar
-            <div className={css(EmojiNavBarStyles.navBar, navbarThemeClassName)} role="tablist">
+            <div className={css(EmojiNavBarStyles.navBar, navBarProps.className)} role="tablist">
                 <FocusZone direction={FocusZoneDirection.horizontal}>
-                    {Object.keys(EmojiList).map((key, index) => {
+                    {Object.keys(EmojiList).map(key => {
                         const selected = key === currentSelected;
                         const friendlyName = strings[key];
                         return (
                             <TooltipHost hostClassName={EmojiNavBarStyles.navBarTooltip} content={friendlyName} key={key}>
                                 <button
-                                    className={css(EmojiNavBarStyles.navBarButton, navbarButtonThemeClassName, "emoji-nav-bar-button", {
+                                    className={css(EmojiNavBarStyles.navBarButton, navBarProps.buttonClassName, "emoji-nav-bar-button", {
                                         [EmojiNavBarStyles.selected]: selected
                                     })}
                                     key={key}
@@ -42,7 +43,7 @@ export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
                                     aria-label={friendlyName}
                                     data-is-focusable="true"
                                 >
-                                    <Icon iconName={EmojiFabricIconCharacterMap[key]} className={navbarIconThemeClassName} />
+                                    <Icon iconName={EmojiFabricIconCharacterMap[key]} className={navBarProps.iconClassName} />
                                 </button>
                             </TooltipHost>
                         );

@@ -8,18 +8,19 @@ import { Strings, css } from "roosterjs-react-common";
 export interface EmojiStatusBarProps {
     emoji: Emoji;
     strings: Strings;
-    statusBarThemeClassName?: string;
+    statusBarProps?: Partial<EmojiStatusBarProps>;
+    statusBarClassName?: string;
 }
 
 export default class EmojiStatusBar extends React.Component<EmojiStatusBarProps, {}> {
     public render() {
-        const { emoji, strings = {}, statusBarThemeClassName = "" } = this.props;
+        const { emoji, strings = {}, statusBarProps = {} } = this.props;
 
         const icon = emoji ? emoji.codePoint : "";
         const description = emoji ? strings[emoji.description] : "";
 
         return (
-            <div className={css(StatusBarStyles.statusBar, statusBarThemeClassName)}>
+            <div className={css(StatusBarStyles.statusBar, statusBarProps.statusBarClassName)}>
                 <i className={StatusBarStyles.statusBarIcon} role="presentation" aria-hidden="true">
                     {icon}
                 </i>

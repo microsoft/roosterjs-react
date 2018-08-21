@@ -9,8 +9,8 @@ import EmojiList, { CommonEmojis, EmojiFamilyKeys, MoreEmoji } from "../utils/em
 import { searchEmojis } from "../utils/searchEmojis";
 import * as Styles from "./emoji.scss.g";
 import EmojiIcon from "./EmojiIcon";
-import EmojiNavBar from "./EmojiNavBar";
-import EmojiStatusBar from "./EmojiStatusBar";
+import EmojiNavBar, { EmojiNavBarProps } from "./EmojiNavBar";
+import EmojiStatusBar, { EmojiStatusBarProps } from "./EmojiStatusBar";
 
 // "When a div contains an element that is bigger (either taller or wider) than the parent and has the property
 // overflow-x or overflow-y set to any value, then it can receive the focus."
@@ -38,10 +38,8 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
-    navbarThemeClassName?: string;
-    navbarButtonThemeClassName?: string;
-    navbarIconThemeClassName?: string;
-    statusBarThemeClassName?: string;
+    navBarProps?: Partial<EmojiNavBarProps>;
+    statusBarProps?: Partial<EmojiStatusBarProps>;
     searchDisabled?: boolean;
 }
 
@@ -203,7 +201,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     };
 
     private _renderPartialList(): JSX.Element {
-        const { partialListClassName, strings, statusBarThemeClassName } = this.props;
+        const { partialListClassName, strings, statusBarProps } = this.props;
 
         return (
             <div>
@@ -226,38 +224,35 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} statusBarThemeClassName={statusBarThemeClassName}/>
+                <EmojiStatusBar
+                    emoji={this.getSelectedEmoji()}
+                    strings={strings}
+                    statusBarProps={
+                        {
+                            ...statusBarProps
+                        } as Partial<EmojiStatusBarProps>
+                    }
+                />
             </div>
         );
     }
 
     private _renderFullList(): JSX.Element {
-        const {
-            fullListClassName,
-            fullListContentClassName,
-            strings,
-            navbarThemeClassName,
-            navbarButtonThemeClassName,
-            navbarIconThemeClassName,
-            statusBarThemeClassName
-        } = this.props;
+        const { fullListClassName, fullListContentClassName, strings, navBarProps, statusBarProps } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div
-                    className={Styles.fullListBody}
-                    data-is-scrollable={true}
-                    // ref={this._resizeOnRefForIE}
-                    tabIndex={TabIndexForFirefoxBug}
-                >
+                <div className={Styles.fullListBody} data-is-scrollable={true} tabIndex={TabIndexForFirefoxBug}>
                     <EmojiNavBar
                         onClick={this._pivotClick}
                         currentSelected={this.state.currentFamily}
                         getTabId={this._getTabId}
                         strings={strings}
-                        navbarThemeClassName={navbarThemeClassName}
-                        navbarButtonThemeClassName={navbarButtonThemeClassName}
-                        navbarIconThemeClassName={navbarIconThemeClassName}
+                        navBarProps={
+                            {
+                                ...navBarProps
+                            } as Partial<EmojiNavBarProps>
+                        }
                     />
                     <div
                         className={Styles.fullListContentContainer}
@@ -285,7 +280,15 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} statusBarThemeClassName={statusBarThemeClassName} />
+                <EmojiStatusBar
+                    emoji={this.getSelectedEmoji()}
+                    strings={strings}
+                    statusBarProps={
+                        {
+                            ...statusBarProps
+                        } as Partial<EmojiStatusBarProps>
+                    }
+                />
             </div>
         );
     }
