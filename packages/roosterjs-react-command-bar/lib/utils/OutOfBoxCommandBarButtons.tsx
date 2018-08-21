@@ -22,7 +22,7 @@ import { Editor } from 'roosterjs-editor-core';
 import { FormatState, Indentation } from 'roosterjs-editor-types';
 import { createLinkWithPrompt, setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
 
-import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { getIconOnRenderDelegate } from './getIconOnRenderDelegate';
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from './OutOfBoxCommandBarButtons.ColorInfo';
 
@@ -53,7 +53,7 @@ export const RoosterCommmandBarButtonKeys = {
     Code: 'code'
 };
 
-export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
+export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
     {
         key: RoosterCommmandBarButtonKeys.Bold,
         name: 'Bold',
@@ -100,7 +100,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.Highlight,
         name: 'Highlight',
         iconProps: _getIconProps('Highlight'),
-        onRender: getIconOnRenderDelegate('FabricTextHighlightComposite', { name: 'FontColorSwatch', className: 'highlight-swatch' }, { name: 'FabricTextHighlight' }),
+        onRenderParams: ['FabricTextHighlightComposite', { name: 'FontColorSwatch', className: 'highlight-swatch' }, { name: 'FabricTextHighlight' }],
         subMenuProps: {
             className: 'rooster-command-bar-color-container',
             key: 'highlight-sub',
@@ -124,7 +124,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.FontColor,
         name: 'Font color',
         iconProps: _getIconProps('FontColor'),
-        onRender: getIconOnRenderDelegate('FontColor', { name: 'FontColorSwatch', className: 'color-swatch' }, { name: 'FontColorA' }),
+        onRenderParams: ['FontColor', { name: 'FontColorSwatch', className: 'color-swatch' }, { name: 'FontColorA' }],
         subMenuProps: {
             className: 'rooster-command-bar-color-container',
             key: 'font-color-sub',
@@ -175,6 +175,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         key: RoosterCommmandBarButtonKeys.Header,
         name: 'Header',
         iconProps: _getIconProps('FontSize'),
+        onRenderParams: [null, { name: 'FontSize' }],
         subMenuProps: {
             key: 'header-sub',
             shouldFocusOnMount: true,
@@ -213,7 +214,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
                     handleChange: _handleChangeForHeader,
                     iconProps: null
                 }
-            ] as RoosterCommandBarButton[]
+            ] as RoosterCommandBarButtonInternal[]
         }
     },
     {
@@ -250,18 +251,20 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButton[] = [
         handleChange: (editor: Editor) => removeLink(editor)
     }
 ];
-OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButton) => {
+OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButtonInternal) => {
     const asset = { name: button.name };
-    button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
+    if (!button.onRenderParams) {
+        button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
+    }
     button.className = RoosterCommandBarButtonRootClassName;
 });
 
 export const OutOfBoxCommandBarButtonMap = OutOfBoxCommandBarButtons.reduce(
-    (result: { [key: string]: RoosterCommandBarButton }, item: RoosterCommandBarButton) => {
+    (result: { [key: string]: RoosterCommandBarButtonInternal }, item: RoosterCommandBarButtonInternal) => {
         result[item.key] = item;
         return result;
     },
-    {} as { [key: string]: RoosterCommandBarButton }
+    {} as { [key: string]: RoosterCommandBarButtonInternal }
 );
 
 function _getIconProps(iconName: string): IIconProps {
