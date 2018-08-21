@@ -228,7 +228,12 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         name: 'Clear format',
         iconProps: _getIconProps('ClearFormatting'),
         onRender: getIconOnRenderDelegate('ClearFormatting', { name: 'ClearFormattingA' }, { name: 'ClearFormattingEraser' }),
-        handleChange: (editor: Editor) => clearFormat(editor)
+        handleChange: (editor: Editor) => {
+            editor.addUndoSnapshot(() => {
+                clearFormat(editor);
+                toggleHeader(editor, 0);
+            });
+        }
     },
     {
         key: RoosterCommmandBarButtonKeys.InsertImage,
