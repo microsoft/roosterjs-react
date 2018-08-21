@@ -1,7 +1,7 @@
 import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
 import { TextField } from "office-ui-fabric-react/lib/TextField";
 import * as React from "react";
-import { browserData } from "roosterjs-editor-core";
+import { KeyCodes } from "office-ui-fabric-react/lib/Utilities";
 import { css, Strings } from "roosterjs-react-common";
 
 import Emoji from "../schema/Emoji";
@@ -10,16 +10,23 @@ import { searchEmojis } from "../utils/searchEmojis";
 import * as Styles from "./emoji.scss.g";
 import EmojiIcon from "./EmojiIcon";
 import EmojiNavBar from "./EmojiNavBar";
+import EmojiStatusBar from "./EmojiStatusBar";
 
 // "When a div contains an element that is bigger (either taller or wider) than the parent and has the property
 // overflow-x or overflow-y set to any value, then it can receive the focus."
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1069739
 const TabIndexForFirefoxBug = -1;
 
+export const enum EmojiPaneMode {
+    Quick,
+    Partial,
+    Full
+}
+
 export interface EmojiPaneState {
     index: number;
-    isFullPicker: boolean;
-    emojis: Emoji[];
+    mode: EmojiPaneMode;
+    currentEmojiList: Emoji[];
     currentFamily: EmojiFamilyKeys;
     search: string;
     searchInBox: string;
@@ -40,19 +47,19 @@ export interface InternalEmojiPaneProps extends EmojiPaneProps {
     strings: Strings;
 }
 
-export default class EmojiPane extends React.Component<InternalEmojiPaneProps, EmojiPaneState> {
+export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProps, EmojiPaneState> {
     private static IdCounter = 0;
 
-    private baseId = EmojiPane.IdCounter++;
-    private searchBox: TextField;
+    private _baseId = EmojiPane.IdCounter++;
+    private _searchBox: TextField;
 
     constructor(props: InternalEmojiPaneProps) {
         super(props);
 
         this.state = {
             index: 0,
-            isFullPicker: false,
-            emojis: CommonEmojis,
+            mode: EmojiPaneMode.Quick,
+            currentEmojiList: CommonEmojis,
             currentFamily: EmojiFamilyKeys.People,
             search: ":",
             searchInBox: ""
@@ -60,171 +67,245 @@ export default class EmojiPane extends React.Component<InternalEmojiPaneProps, E
     }
 
     public render(): JSX.Element {
-        return this.state.isFullPicker ? this.renderFullPicker() : this.renderQuickPicker();
+        return this.state.mode === EmojiPaneMode.Quick ? this._renderQuickPicker() : this._renderFullPicker();
     }
 
     public componentDidUpdate(_: EmojiPaneProps, prevState: EmojiPaneState) {
+        // call onLayoutChange when the call out parent of the EmojiPane needs to reorient itself on the page
         const { onLayoutChange } = this.props;
-        const { emojis, isFullPicker, currentFamily } = this.state;
+        const { currentEmojiList, mode, currentFamily } = this.state;
 
-        if (isFullPicker !== prevState.isFullPicker) {
+        if (mode !== prevState.mode) {
             onLayoutChange();
             return;
         }
 
-        const currentEmojisLength = emojis ? emojis.length : EmojiList[currentFamily].length;
-        const prevEmojisLength = prevState.emojis ? prevState.emojis.length : EmojiList[prevState.currentFamily].length;
-        if (isFullPicker && currentEmojisLength !== prevEmojisLength) {
+        const currentEmojisLength = currentEmojiList ? currentEmojiList.length : EmojiList[currentFamily].length;
+        const prevEmojisLength = prevState.currentEmojiList
+            ? prevState.currentEmojiList.length
+            : EmojiList[prevState.currentFamily].length;
+        if (mode !== EmojiPaneMode.Quick && currentEmojisLength !== prevEmojisLength) {
             onLayoutChange();
             return;
         }
     }
 
     public navigate(change: number): void {
-        let newIndex = this.state.index + change;
-        let length = this.state.emojis.length;
+        const newIndex = this.state.index + change;
+        const length = this.state.currentEmojiList.length;
         if (newIndex >= 0 && newIndex < length) {
             this.setState({ index: newIndex });
         }
     }
 
     public getSelectedEmoji(): Emoji {
-        return this.state.emojis[this.state.index];
+        const { currentEmojiList, index } = this.state;
+
+        return currentEmojiList[index];
     }
 
-    public showFullPicker(search: string): void {
-        let searchInBox = search == null ? "" : search.substr(1);
+    public showFullPicker(fullSearchText: string): void {
+        const normalizedSearchValue = this._normalizeSearchText(fullSearchText, true);
+        const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
             index: 0,
-            isFullPicker: true,
-            emojis: search ? this.getSearchResult(this.props.searchDisabled ? "" : searchInBox, true) : null,
-            search: search,
-            searchInBox: searchInBox
+            mode: newMode,
+            currentEmojiList: this._getSearchResult(normalizedSearchValue, newMode),
+            search: fullSearchText,
+            searchInBox: normalizedSearchValue
         });
     }
 
-    public setSearch(search: string): void {
+    public setSearch(value: string): void {
+        const normalizedSearchValue = this._normalizeSearchText(value, false);
         this.setState({
             index: 0,
-            emojis: this.getSearchResult(search, this.state.isFullPicker),
-            search: search
+            currentEmojiList: this._getSearchResult(normalizedSearchValue, this.state.mode),
+            search: value
         });
     }
 
-    private getSearchResult(search: string, isFullPicker: boolean): Emoji[] {
-        if (!search) {
-            return isFullPicker ? null : this.state.emojis;
+    private _normalizeSearchText(text: string, colonIncluded: boolean): string {
+        if (text == null) {
+            return "";
         }
 
-        let emojis = searchEmojis(search, this.props.strings);
-        return isFullPicker ? emojis : emojis.slice(0, 5).concat([MoreEmoji]);
+        if (colonIncluded) {
+            text = text.substr(1);
+        }
+        return text.trim();
     }
 
-    // For IE, fixed width not accounting for scroll bar glitches and content is overlapped with content.
-    // A workaround is to refresh the overflow value.
-    private _resizeOnRefForIE =
-        browserData.isIE &&
-        ((ref: HTMLDivElement): void => {
-            if (ref) {
-                const prevValue = ref.style.overflowY;
-                ref.style.overflowY = "hidden";
-                requestAnimationFrame(() => (ref.style.overflowY = prevValue));
-            }
-        });
+    private _getSearchResult(searchValue: string, mode: EmojiPaneMode): Emoji[] {
+        const isQuickMode = mode === EmojiPaneMode.Quick;
+        if (!searchValue) {
+            return isQuickMode ? this.state.currentEmojiList : EmojiList[this.state.currentFamily];
+        }
 
-    private renderQuickPicker(): JSX.Element {
+        const emojiList = searchEmojis(searchValue, this.props.strings);
+        return isQuickMode ? emojiList.slice(0, 5).concat([MoreEmoji]) : emojiList;
+    }
+
+    private _renderQuickPicker(): JSX.Element {
         const { quickPickerClassName, strings } = this.props;
 
         return (
             <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
-                {this.state.emojis.map((emoji, index) => (
-                    <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={index === this.state.index} onClick={e => this.onSelect(e, emoji)} />
+                {this.state.currentEmojiList.map((emoji, index) => (
+                    <EmojiIcon
+                        key={emoji.key}
+                        strings={strings}
+                        onMouseOver={() => this.setState({ index })}
+                        onFocus={() => this.setState({ index })}
+                        emoji={emoji}
+                        isSelected={index === this.state.index}
+                        onClick={e => this._onSelect(e, emoji)}
+                        showTooltip={true}
+                    />
                 ))}
             </div>
         );
     }
 
-    private renderFullPicker(): JSX.Element {
+    private _renderFullPicker(): JSX.Element {
         const { fullPickerClassName, searchDisabled } = this.props;
 
         return (
             <div className={css("rooster-emoji-pane", fullPickerClassName)}>
                 {!searchDisabled && (
-                    <TextField ref={this.searchRefCallback} value={this.state.searchInBox} onChanged={this.onSearchChange} inputClassName={Styles.emojiTextInput} />
+                    <TextField
+                        ref={this._searchRefCallback}
+                        value={this.state.searchInBox}
+                        onChanged={this._onSearchChange}
+                        inputClassName={Styles.emojiTextInput}
+                        onKeyPress={this._onSearchKeyPress}
+                    />
                 )}
-                {this.state.emojis ? this.renderPartialList() : this.renderFullList()}
+                {this.state.mode === EmojiPaneMode.Full ? this._renderFullList() : this._renderPartialList()}
             </div>
         );
     }
 
-    private renderPartialList(): JSX.Element {
+    private _onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+        if (!e || e.keyCode !== KeyCodes.enter) {
+            return;
+        }
+
+        const { index, currentEmojiList } = this.state;
+
+        if (index >= 0 && currentEmojiList && currentEmojiList.length > 0) {
+            this._onSelect(e, currentEmojiList[index]);
+        }
+    };
+
+    private _renderPartialList(): JSX.Element {
         const { partialListClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.partialList, partialListClassName)} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
-                <FocusZone className={Styles.partialListContent}>
-                    {this.state.emojis.map(emoji => (
-                        <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
-                    ))}
-                </FocusZone>
+            <div>
+                <div
+                    className={css(Styles.partialList, partialListClassName)}
+                    data-is-scrollable={true}
+                    tabIndex={TabIndexForFirefoxBug}
+                >
+                    <FocusZone className={Styles.partialListContent}>
+                        {this.state.currentEmojiList.map((emoji, index) => (
+                            <EmojiIcon
+                                key={emoji.key}
+                                onMouseOver={() => this.setState({ index })}
+                                onFocus={() => this.setState({ index })}
+                                strings={strings}
+                                emoji={emoji}
+                                isSelected={index === this.state.index}
+                                onClick={e => this._onSelect(e, emoji)}
+                            />
+                        ))}
+                    </FocusZone>
+                </div>
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
             </div>
         );
     }
 
-    private renderFullList(): JSX.Element {
+    private _renderFullList(): JSX.Element {
         const { fullListClassName, fullListContentClassName, strings } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
-                <div className={Styles.fullListBody} data-is-scrollable={true} ref={this._resizeOnRefForIE} tabIndex={TabIndexForFirefoxBug}>
-                    <EmojiNavBar onClick={this.pivotClick} currentSelected={this.state.currentFamily} getTabId={this.getTabId} strings={strings} />
-                    <div className={Styles.fullListContentContainer} role="tabpanel" aria-labeledby={this.getTabId(this.state.currentFamily)}>
+                <div className={Styles.fullListBody} data-is-scrollable={true} tabIndex={TabIndexForFirefoxBug}>
+                    <EmojiNavBar
+                        onClick={this._pivotClick}
+                        currentSelected={this.state.currentFamily}
+                        getTabId={this._getTabId}
+                        strings={strings}
+                    />
+                    <div
+                        className={Styles.fullListContentContainer}
+                        role="tabpanel"
+                        aria-labeledby={this._getTabId(this.state.currentFamily)}
+                    >
                         <div>
-                            <FocusZone className={css(Styles.fullListContent, fullListContentClassName)} ref={this.focusZoneRefCallback}>
-                                {EmojiList[this.state.currentFamily].map((emoji: Emoji) => (
-                                    <EmojiIcon key={emoji.key} strings={strings} emoji={emoji} isSelected={false} onClick={e => this.onSelect(e, emoji)} />
+                            <FocusZone
+                                className={css(Styles.fullListContent, fullListContentClassName)}
+                                ref={this._focusZoneRefCallback}
+                            >
+                                {this.state.currentEmojiList.map((emoji: Emoji, index) => (
+                                    <EmojiIcon
+                                        key={emoji.key}
+                                        onMouseOver={() => this.setState({ index })}
+                                        onFocus={() => this.setState({ index })}
+                                        strings={strings}
+                                        emoji={emoji}
+                                        isSelected={index === this.state.index}
+                                        onClick={e => this._onSelect(e, emoji)}
+                                    />
                                 ))}
                             </FocusZone>
                         </div>
                     </div>
                 </div>
+
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
             </div>
         );
     }
 
-    private pivotClick = (selected: string): void => {
+    private _pivotClick = (selected: string): void => {
         const currentFamily = selected as EmojiFamilyKeys;
 
-        this.setState({ currentFamily });
+        this.setState({ currentEmojiList: EmojiList[currentFamily], currentFamily });
     };
 
-    private getTabId = (itemKey: EmojiFamilyKeys): string => {
-        return `family_${itemKey}_${this.baseId}`;
+    private _getTabId = (itemKey: EmojiFamilyKeys): string => {
+        return `family_${itemKey}_${this._baseId}`;
     };
 
-    private searchRefCallback = (ref: TextField): void => {
-        this.searchBox = ref;
-        if (this.searchBox) {
-            this.searchBox.focus();
-            this.searchBox.setSelectionStart(this.searchBox.value.length);
+    private _searchRefCallback = (ref: TextField): void => {
+        this._searchBox = ref;
+        if (this._searchBox) {
+            this._searchBox.focus();
+            this._searchBox.setSelectionStart(this._searchBox.value.length);
         }
     };
 
-    private focusZoneRefCallback = (ref: FocusZone): void => {
+    private _focusZoneRefCallback = (ref: FocusZone): void => {
         if (this.props.searchDisabled && ref) {
             ref.focus();
         }
     };
 
-    private onSearchChange = (newValue: string): void => {
+    private _onSearchChange = (newValue: string): void => {
+        const normalizedSearchValue = this._normalizeSearchText(newValue, false);
+        const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
             index: 0,
-            emojis: this.getSearchResult(newValue, this.state.isFullPicker),
-            searchInBox: newValue
+            currentEmojiList: this._getSearchResult(normalizedSearchValue, this.state.mode),
+            searchInBox: newValue,
+            mode: newMode
         });
     };
 
-    private onSelect = (e: React.MouseEvent<EventTarget>, emoji: Emoji): void => {
+    private _onSelect = (e: React.MouseEvent<EventTarget> | React.KeyboardEvent<HTMLInputElement>, emoji: Emoji): void => {
         e.stopPropagation();
         e.preventDefault();
         this.props.onSelect && this.props.onSelect(emoji, this.state.search);

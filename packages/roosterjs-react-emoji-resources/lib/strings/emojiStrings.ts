@@ -1,4 +1,3 @@
-
 export const EmojiDescriptionStrings = {
     emjDMore: 'More',
     emjD0270a: 'Raised fist',
