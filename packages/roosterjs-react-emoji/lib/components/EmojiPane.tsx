@@ -41,6 +41,7 @@ export interface EmojiPaneProps {
     navbarThemeClassName?: string;
     navbarButtonThemeClassName?: string;
     navbarIconThemeClassName?: string;
+    statusBarThemeClassName?: string;
     searchDisabled?: boolean;
 }
 
@@ -202,7 +203,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     };
 
     private _renderPartialList(): JSX.Element {
-        const { partialListClassName, strings } = this.props;
+        const { partialListClassName, strings, statusBarThemeClassName } = this.props;
 
         return (
             <div>
@@ -225,7 +226,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} statusBarThemeClassName={statusBarThemeClassName}/>
             </div>
         );
     }
@@ -237,7 +238,8 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
             strings,
             navbarThemeClassName,
             navbarButtonThemeClassName,
-            navbarIconThemeClassName
+            navbarIconThemeClassName,
+            statusBarThemeClassName
         } = this.props;
 
         return (
@@ -283,7 +285,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} statusBarThemeClassName={statusBarThemeClassName} />
             </div>
         );
     }

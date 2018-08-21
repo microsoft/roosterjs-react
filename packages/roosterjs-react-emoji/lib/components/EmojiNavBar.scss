@@ -22,11 +22,28 @@ $paneHorizontalPadding: 1px;
 
     &:hover {
         background: #eaeaea;
+
+        @media screen and (-ms-high-contrast: active) {
+            background-color: Highlight;
+            -ms-high-contrast-adjust: none;
+        }
+
+        .selected {
+            @media screen and (-ms-high-contrast: active) {
+                border: 1px solid Highlight;
+                background: none;
+            }
+        }
     }
 }
 
 .selected {
     border-bottom: 2px solid #0078d4;
+
+    @media screen and (-ms-high-contrast: active) {
+        border-bottom-color: Highlight;
+        border: 1px solid Highlight;
+    }
 }
 
 .navBarTooltip {

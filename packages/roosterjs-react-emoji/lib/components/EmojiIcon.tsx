@@ -23,7 +23,7 @@ export default class EmojiIcon extends React.Component<EmojiIconProps, {}> {
 
         const button = (
             <button
-                className={css(Styles.emoji, { [Styles.selected]: isSelected })}
+                className={css(Styles.emoji, { "rooster-emoji-selected": isSelected })}
                 onClick={onClick}
                 onMouseOver={onMouseOver}
                 onFocus={onFocus}

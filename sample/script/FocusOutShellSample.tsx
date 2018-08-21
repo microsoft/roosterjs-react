@@ -46,7 +46,8 @@ const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 const emojiPaneProps: EmojiPaneProps = {
     navbarThemeClassName: "nabvar-class-name",
     navbarButtonThemeClassName: "nabvar-button-class-name",
-    navbarIconThemeClassName: "nabvar-icon-class-name"
+    navbarIconThemeClassName: "nabvar-icon-class-name",
+    statusBarThemeClassName: "status-bar-theme-class-name"
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
