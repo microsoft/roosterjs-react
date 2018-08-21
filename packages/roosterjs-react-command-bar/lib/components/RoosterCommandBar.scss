@@ -25,7 +25,7 @@ $command-bar-bg-color: white;
 
     .rooster-command-button-root {
         &.first-level:not(:last-child) {
-            margin-right: 2px;
+            padding-right: 2px;
         }
 
         &:not(:hover):not(:active):not(.is-checked) button {

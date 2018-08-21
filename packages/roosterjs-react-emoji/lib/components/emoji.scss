@@ -11,7 +11,6 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     .rooster-emoji-pane {
         button {
             outline: 0;
-            position: relative;
         }
     }
 
@@ -36,17 +35,16 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 }
 
 .emoji {
+    background: white;
+
     &.selected {
-        background-color: #ccc;
+        background-color: #eaeaea;
     }
 
-    div {
-        font-size: 18px;
-    }
-
-    button {
-        width: $buttonWidth;
-    }
+    font-size: 18px;
+    width: $buttonWidth;
+    height: $buttonHeight;
+    border: none;
 }
 
 .emojiTextInput {
@@ -74,11 +72,15 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 }
 
 .fullListContentContainer {
-    margin-top: $buttonHeight + 1px;
+    margin: ($buttonHeight + 3px) 0 1px 0;
 }
 
 .partialListContent,
 .fullListContent {
     width: $paneWidth;
     padding: 0 $paneHorizontalPadding;
+}
+
+.tooltipHost {
+    display: inline-block;
 }

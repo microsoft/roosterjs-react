@@ -11,7 +11,8 @@ import { Editor } from 'roosterjs-editor-core';
 import { ChangeSource, FormatState } from 'roosterjs-editor-types';
 import { createFormatState } from 'roosterjs-react-editor';
 
-import { RoosterCommandBarButton, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { getIconOnRenderDelegateWithCustomCacheKey } from "../utils/getIconOnRenderDelegate";
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
@@ -23,10 +24,13 @@ import {
 const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
 
 export default class RoosterCommandBar extends React.PureComponent<RoosterCommandBarProps, RoosterCommandBarState> {
+    private static IdCounter: number = 0;
+
+    private _id = RoosterCommandBar.IdCounter++;
     private _async: Async;
     private _updateFormatStateDebounced: () => void;
     private _fileInput: HTMLInputElement;
-    private _buttons: RoosterCommandBarButton[];
+    private _buttons: RoosterCommandBarButtonInternal[];
 
     constructor(props: RoosterCommandBarProps) {
         super(props);
@@ -118,7 +122,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
 
         this._buttons = visibleButtonKeys.map(key => this._createButton(buttonMap[key])).filter(b => !!b && !b.exclude);
-        this._buttons.sort((l: RoosterCommandBarButton, r: RoosterCommandBarButton) => {
+        this._buttons.sort((l: RoosterCommandBarButtonInternal, r: RoosterCommandBarButtonInternal) => {
             if (l.order !== r.order) {
                 const leftOrder = l.order == null ? Number.MAX_VALUE : l.order;
                 const rightOrder = r.order == null ? Number.MAX_VALUE : r.order;
@@ -151,7 +155,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
     };
 
-    private _refreshButtonStatesCore = (commandBarButton: RoosterCommandBarButton, firstLevel: boolean): RoosterCommandBarButton => {
+    private _refreshButtonStatesCore = (commandBarButton: RoosterCommandBarButtonInternal, firstLevel: boolean): RoosterCommandBarButtonInternal => {
         if (!commandBarButton) {
             return null;
         }
@@ -177,15 +181,15 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return commandBarButton;
     };
 
-    private _refreshButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+    private _refreshButtonStates = (commandBarButton: RoosterCommandBarButtonInternal): RoosterCommandBarButtonInternal => {
         return this._refreshButtonStatesCore(commandBarButton, true);
     };
 
-    private _refreshChildButtonStates = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+    private _refreshChildButtonStates = (commandBarButton: RoosterCommandBarButtonInternal): RoosterCommandBarButtonInternal => {
         return this._refreshButtonStatesCore(commandBarButton, false);
     };
 
-    private _createButton = (commandBarButton: RoosterCommandBarButton, firstLevel: boolean = true): RoosterCommandBarButton => {
+    private _createButton = (commandBarButton: RoosterCommandBarButtonInternal, firstLevel: boolean = true): RoosterCommandBarButtonInternal => {
         if (!commandBarButton) {
             return null;
         }
@@ -195,6 +199,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         const rootClassName = className.split(' ').indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
         const button = { ...commandBarButton, className: css(rootClassName, { 'first-level': firstLevel }, className) }; // make a copy of the OOB button template since we're changing its properties
 
+        if (!button.onRender && button.onRenderParams) {
+            button.onRender = getIconOnRenderDelegateWithCustomCacheKey(button.key + this._id, ...button.onRenderParams);
+        }
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
         if (button.iconProps) {
@@ -223,16 +230,16 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return button;
     };
 
-    private _createChildButton = (commandBarButton: RoosterCommandBarButton): RoosterCommandBarButton => {
+    private _createChildButton = (commandBarButton: RoosterCommandBarButtonInternal): RoosterCommandBarButtonInternal => {
         return this._createButton(commandBarButton, false);
     };
 
-    private _onCommandBarButtonClick = (button: RoosterCommandBarButton | IContextualMenuItem) => {
+    private _onCommandBarButtonClick = (button: RoosterCommandBarButtonInternal | IContextualMenuItem) => {
         const { roosterCommandBarPlugin, onButtonClicked } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();
         if (editor && button.handleChange) {
-            const outOfBoxItem: RoosterCommandBarButton = button;
+            const outOfBoxItem: RoosterCommandBarButtonInternal = button;
             outOfBoxItem.handleChange(editor, this.props, this.state);
         }
 
