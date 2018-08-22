@@ -28,7 +28,7 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
     .is-focusVisible {
         .rooster-emoji-pane {
-            .rooster-emoji-selected::after,
+            &.quick-picker .rooster-emoji-selected::after,
             button:focus::after {
                 content: "";
                 position: absolute;

@@ -1,6 +1,7 @@
 $buttonHeight: 40px;
 $buttonWidth: 40px;
 $paneHorizontalPadding: 1px;
+$nav-bar-background: white;
 
 .navBar {
     height: $buttonHeight;
@@ -8,10 +9,11 @@ $paneHorizontalPadding: 1px;
     left: 0;
     z-index: 10;
     padding: 2px $paneHorizontalPadding 0;
+    background: $nav-bar-background;
 }
 
 .navBarButton {
-    background-color: white;
+    background: $nav-bar-background ;
     height: $buttonHeight;
     width: $buttonWidth;
     border: none;
@@ -43,7 +45,6 @@ $paneHorizontalPadding: 1px;
 
     @media screen and (-ms-high-contrast: active) {
         border-bottom-color: Highlight;
-        border: 1px solid Highlight;
     }
 }
 

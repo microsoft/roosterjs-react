@@ -152,7 +152,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
+            <div className={css(Styles.quickPicker, "rooster-emoji-pane", "quick-picker", quickPickerClassName)}>
                 {this.state.currentEmojiList.map((emoji, index) => (
                     <EmojiIcon
                         key={emoji.key}
@@ -189,7 +189,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     private _onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (!e || e.keyCode !== KeyCodes.enter) {
+        if (!e || e.which !== KeyCodes.enter) {
             return;
         }
 
@@ -224,15 +224,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar
-                    emoji={this.getSelectedEmoji()}
-                    strings={strings}
-                    statusBarProps={
-                        {
-                            ...statusBarProps
-                        } as Partial<EmojiStatusBarProps>
-                    }
-                />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} {...statusBarProps} />
             </div>
         );
     }
@@ -244,15 +236,11 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
             <div className={css(Styles.fullList, fullListClassName)}>
                 <div className={Styles.fullListBody} data-is-scrollable={true} tabIndex={TabIndexForFirefoxBug}>
                     <EmojiNavBar
+                        strings={strings}
+                        {...navBarProps}
                         onClick={this._pivotClick}
                         currentSelected={this.state.currentFamily}
                         getTabId={this._getTabId}
-                        strings={strings}
-                        navBarProps={
-                            {
-                                ...navBarProps
-                            } as Partial<EmojiNavBarProps>
-                        }
                     />
                     <div
                         className={Styles.fullListContentContainer}
@@ -280,15 +268,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar
-                    emoji={this.getSelectedEmoji()}
-                    strings={strings}
-                    statusBarProps={
-                        {
-                            ...statusBarProps
-                        } as Partial<EmojiStatusBarProps>
-                    }
-                />
+                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} {...statusBarProps} />
             </div>
         );
     }

@@ -26,8 +26,6 @@ import {
 import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
 
 import { initializeIcons } from "../fabric/src";
-import { EmojiNavBarProps } from "roosterjs-react-emoji/lib/components/EmojiNavBar";
-import { EmojiStatusBarProps } from "roosterjs-react-emoji/lib/components/EmojiStatusBar";
 
 initializeIcons();
 
@@ -47,13 +45,11 @@ const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 const emojiPaneProps: EmojiPaneProps = {
     navBarProps: {
-        className: "nabvar-class-name",
+        className: "nabvar-class-name .selected",
         buttonClassName: "nabvar-button-class-name",
         iconClassName: "navbar-icon-class-name"
-    } as Partial<EmojiNavBarProps>,
-    statusBarProps: {
-        statusBarClassName: "status-bar-theme-class-name"
-    } as Partial<EmojiStatusBarProps>
+    },
+    statusBarProps: { className: "status-bar-class-name" }
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
@@ -84,7 +80,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
 
                 const reader = new FileReader();
                 reader.onload = (event: ProgressEvent) => {
-                    const dataURL: string = (event.target as FileReader).result;
+                    const dataURL: string = (event.target as FileReader).result as string;
                     window.setTimeout(() => resolve(dataURL), timeoutMs);
                 };
                 reader.readAsDataURL(image);
@@ -92,11 +88,16 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         placeholderImageClassName
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command), true);
+    const commandBarPlugin = new RoosterCommandBarPlugin(
+        {},
+        (command: RoosterShortcutCommands) => console.log(command),
+        true
+    );
     const imagePlugin = new PasteImagePlugin(imageManager);
     const imageResizePlugin = new ImageResize(undefined, undefined, undefined, undefined, excludePlaceholderSelector);
 
-    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
+    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
+        leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
@@ -121,7 +122,14 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
             onBlur={focusOutShellOnBlur}
             onFocus={focusOutShellOnFocus}
             onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
-                emojiPlugin = emojiPlugin || new EmojiPlugin({ calloutClassName, calloutOnDismiss, onKeyboardTriggered: onEmojiKeyboardTriggered, emojiPaneProps } as EmojiPluginOptions);
+                emojiPlugin =
+                    emojiPlugin ||
+                    new EmojiPlugin({
+                        calloutClassName,
+                        calloutOnDismiss,
+                        onKeyboardTriggered: onEmojiKeyboardTriggered,
+                        emojiPaneProps
+                    } as EmojiPluginOptions);
 
                 return [
                     <LeanRooster
