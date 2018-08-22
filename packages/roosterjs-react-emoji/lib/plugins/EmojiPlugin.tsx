@@ -11,8 +11,6 @@ import EmojiPane, { EmojiPaneProps } from "../components/EmojiPane";
 import Emoji from "../schema/Emoji";
 import { MoreEmoji } from "../utils/emojiList";
 import { matchShortcut } from "../utils/searchEmojis";
-import { EmojiNavBarProps } from "../components/EmojiNavBar";
-import { EmojiStatusBarProps } from "../components/EmojiStatusBar";
 
 const EMOJI_SEARCH_DELAY = 300;
 const INTERNAL_EMOJI_FONT_NAME = "EmojiFont";

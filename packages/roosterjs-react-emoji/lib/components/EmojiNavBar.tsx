@@ -13,13 +13,14 @@ export interface EmojiNavBarProps {
     getTabId?: (selected: string) => string;
     className?: string;
     buttonClassName?: string;
+    selectedButtonClassName?: string;
     iconClassName?: string;
     strings: Strings;
 }
 
 export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
     public render() {
-        const { currentSelected, getTabId, strings = {}, className, buttonClassName, iconClassName } = this.props;
+        const { currentSelected, getTabId, strings = {}, className, buttonClassName, selectedButtonClassName, iconClassName } = this.props;
 
         return (
             // for each emoji family key, create a button to use as nav bar
@@ -32,7 +33,8 @@ export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
                             <TooltipHost hostClassName={EmojiNavBarStyles.navBarTooltip} content={friendlyName} key={key}>
                                 <button
                                     className={css(EmojiNavBarStyles.navBarButton, buttonClassName, "emoji-nav-bar-button", {
-                                        [EmojiNavBarStyles.selected]: selected
+                                        [EmojiNavBarStyles.selected]: selected,
+                                        [selectedButtonClassName]: selected
                                     })}
                                     key={key}
                                     onClick={this.onFamilyClick.bind(this, key)}

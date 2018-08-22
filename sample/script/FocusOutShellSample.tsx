@@ -45,8 +45,9 @@ const placeholderImageClassName = "dblclick-bypass";
 const excludePlaceholderSelector = `:not(.${placeholderImageClassName})`;
 const emojiPaneProps: EmojiPaneProps = {
     navBarProps: {
-        className: "nabvar-class-name .selected",
+        className: "nabvar-class-name",
         buttonClassName: "nabvar-button-class-name",
+        selectedButtonClassName: "selected-button-class-name",
         iconClassName: "navbar-icon-class-name"
     },
     statusBarProps: { className: "status-bar-class-name" }
