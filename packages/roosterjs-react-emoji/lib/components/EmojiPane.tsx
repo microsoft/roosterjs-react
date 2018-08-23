@@ -224,7 +224,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} {...statusBarProps} />
+                <EmojiStatusBar strings={strings} {...statusBarProps} emoji={this.getSelectedEmoji()} />
             </div>
         );
     }
@@ -268,7 +268,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar emoji={this.getSelectedEmoji()}  {...statusBarProps} strings={strings} />
+                <EmojiStatusBar strings={strings} {...statusBarProps} emoji={this.getSelectedEmoji()} />
             </div>
         );
     }
