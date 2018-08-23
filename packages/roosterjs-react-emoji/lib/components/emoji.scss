@@ -9,13 +9,26 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
 :global {
     .rooster-emoji-pane {
+        padding: 1px;
+
         button {
             outline: 0;
+            position: relative;
+        }
+
+        .rooster-emoji-selected {
+            background-color: #eaeaea;
+
+            @media screen and (-ms-high-contrast: active) {
+                background-color: Highlight;
+                -ms-high-contrast-adjust: none;
+            }
         }
     }
 
     .is-focusVisible {
         .rooster-emoji-pane {
+            &.quick-picker .rooster-emoji-selected::after,
             button:focus::after {
                 content: "";
                 position: absolute;
@@ -36,11 +49,6 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
 .emoji {
     background: white;
-
-    &.selected {
-        background-color: #eaeaea;
-    }
-
     font-size: 18px;
     width: $buttonWidth;
     height: $buttonHeight;

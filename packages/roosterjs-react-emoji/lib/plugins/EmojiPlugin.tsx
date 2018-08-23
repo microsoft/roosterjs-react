@@ -14,7 +14,8 @@ import { matchShortcut } from "../utils/searchEmojis";
 
 const EMOJI_SEARCH_DELAY = 300;
 const INTERNAL_EMOJI_FONT_NAME = "EmojiFont";
-const EMOJI_FONT_LIST = "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'Segoe UI Symbol','Android Emoji',EmojiSymbols";
+const EMOJI_FONT_LIST =
+    "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'Segoe UI Symbol','Android Emoji',EmojiSymbols";
 // Regex looks for an emoji right before the : to allow contextual search immediately following an emoji
 // MATCHES: 0: 😃:r
 //          1: 😃
@@ -73,7 +74,12 @@ export default class EmojiPlugin implements EditorPlugin {
     }
 
     public willHandleEventExclusively(event: PluginEvent): boolean {
-        return this._isSuggesting && (event.eventType === PluginEventType.KeyDown || event.eventType === PluginEventType.KeyUp || event.eventType === PluginEventType.MouseUp);
+        return (
+            this._isSuggesting &&
+            (event.eventType === PluginEventType.KeyDown ||
+                event.eventType === PluginEventType.KeyUp ||
+                event.eventType === PluginEventType.MouseUp)
+        );
     }
 
     public onPluginEvent(event: PluginEvent): void {
@@ -197,7 +203,10 @@ export default class EmojiPlugin implements EditorPlugin {
 
         // If this is a character key or backspace
         // Clear the timer as we will either queue a new timer or stop suggesting
-        if ((keyboardEvent.key.length === 1 && keyboardEvent.which !== KeyCodes.space) || keyboardEvent.which === KeyCodes.backspace) {
+        if (
+            (keyboardEvent.key.length === 1 && keyboardEvent.which !== KeyCodes.space) ||
+            keyboardEvent.which === KeyCodes.backspace
+        ) {
             window.clearTimeout(this._timer);
             this._timer = null;
         }
@@ -222,7 +231,10 @@ export default class EmojiPlugin implements EditorPlugin {
 
         const keyboardEvent = event.rawEvent as KeyboardEvent;
         const wordBeforeCursor = this._getWordBeforeCursor(event);
-        if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ":") {
+        if (
+            (keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) &&
+            wordBeforeCursor === ":"
+        ) {
             const { onKeyboardTriggered = NullFunction } = this.options;
             this.setIsSuggesting(true);
             onKeyboardTriggered();
@@ -250,7 +262,10 @@ export default class EmojiPlugin implements EditorPlugin {
 
         const node = this._editor.getDocument().createElement("span");
         node.innerText = emoji.codePoint;
-        if (wordBeforeCursor && replaceTextBeforeCursorWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)) {
+        if (
+            wordBeforeCursor &&
+            replaceTextBeforeCursorWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)
+        ) {
             inserted = true;
             this._canUndoEmoji = true;
 
@@ -316,6 +331,8 @@ export default class EmojiPlugin implements EditorPlugin {
                     onSelect={this._onSelectFromPane}
                     strings={this._strings || {}}
                     onLayoutChange={this._refreshCalloutDebounced}
+                    navBarProps={emojiPaneProps.navBarProps}
+                    statusBarProps={emojiPaneProps.statusBarProps}
                     searchDisabled={!this._strings || emojiPaneProps.searchDisabled}
                 />
             </Callout>

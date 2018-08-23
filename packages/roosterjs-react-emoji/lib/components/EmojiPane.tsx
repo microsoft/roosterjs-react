@@ -9,8 +9,8 @@ import EmojiList, { CommonEmojis, EmojiFamilyKeys, MoreEmoji } from "../utils/em
 import { searchEmojis } from "../utils/searchEmojis";
 import * as Styles from "./emoji.scss.g";
 import EmojiIcon from "./EmojiIcon";
-import EmojiNavBar from "./EmojiNavBar";
-import EmojiStatusBar from "./EmojiStatusBar";
+import EmojiNavBar, { EmojiNavBarProps } from "./EmojiNavBar";
+import EmojiStatusBar, { EmojiStatusBarProps } from "./EmojiStatusBar";
 
 // "When a div contains an element that is bigger (either taller or wider) than the parent and has the property
 // overflow-x or overflow-y set to any value, then it can receive the focus."
@@ -38,13 +38,15 @@ export interface EmojiPaneProps {
     fullListClassName?: string;
     fullListContentClassName?: string;
     partialListClassName?: string;
-    onLayoutChange?: () => void;
+    navBarProps?: Partial<EmojiNavBarProps>;
+    statusBarProps?: Partial<EmojiStatusBarProps>;
     searchDisabled?: boolean;
 }
 
 export interface InternalEmojiPaneProps extends EmojiPaneProps {
     onSelect: (emoji: Emoji, wordBeforeCursor: string) => void;
     strings: Strings;
+    onLayoutChange?: () => void;
 }
 
 export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProps, EmojiPaneState> {
@@ -150,7 +152,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         const { quickPickerClassName, strings } = this.props;
 
         return (
-            <div className={css(Styles.quickPicker, "rooster-emoji-pane", quickPickerClassName)}>
+            <div className={css(Styles.quickPicker, "rooster-emoji-pane", "quick-picker", quickPickerClassName)}>
                 {this.state.currentEmojiList.map((emoji, index) => (
                     <EmojiIcon
                         key={emoji.key}
@@ -187,7 +189,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     private _onSearchKeyPress = (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        if (!e || e.keyCode !== KeyCodes.enter) {
+        if (!e || e.which !== KeyCodes.enter) {
             return;
         }
 
@@ -199,7 +201,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     };
 
     private _renderPartialList(): JSX.Element {
-        const { partialListClassName, strings } = this.props;
+        const { partialListClassName, strings, statusBarProps } = this.props;
 
         return (
             <div>
@@ -222,22 +224,23 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         ))}
                     </FocusZone>
                 </div>
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
+                <EmojiStatusBar strings={strings} {...statusBarProps} emoji={this.getSelectedEmoji()} />
             </div>
         );
     }
 
     private _renderFullList(): JSX.Element {
-        const { fullListClassName, fullListContentClassName, strings } = this.props;
+        const { fullListClassName, fullListContentClassName, strings, navBarProps, statusBarProps } = this.props;
 
         return (
             <div className={css(Styles.fullList, fullListClassName)}>
                 <div className={Styles.fullListBody} data-is-scrollable={true} tabIndex={TabIndexForFirefoxBug}>
                     <EmojiNavBar
+                        strings={strings}
+                        {...navBarProps}
                         onClick={this._pivotClick}
                         currentSelected={this.state.currentFamily}
                         getTabId={this._getTabId}
-                        strings={strings}
                     />
                     <div
                         className={Styles.fullListContentContainer}
@@ -265,7 +268,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                     </div>
                 </div>
 
-                <EmojiStatusBar emoji={this.getSelectedEmoji()} strings={strings} />
+                <EmojiStatusBar strings={strings} {...statusBarProps} emoji={this.getSelectedEmoji()} />
             </div>
         );
     }
