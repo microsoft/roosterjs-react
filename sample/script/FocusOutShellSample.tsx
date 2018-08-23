@@ -52,7 +52,8 @@ const emojiPaneProps: EmojiPaneProps = {
     },
     statusBarProps: { className: "status-bar-class-name" },
     emojiIconProps: { className: "emoji-icon-class-name", selectedClassName: "selected-emoji-icon-class-name"},
-    searchPlaceholder: "Search..."
+    searchPlaceholder: "Search...",
+    searchInputAriaLabel: "Search field"
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {

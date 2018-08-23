@@ -62,6 +62,7 @@ export interface EmojiPaneProps {
     fullListContentClassName?: string;
     partialListClassName?: string;
     tooltipClassName?: string;
+    searchInputAriaLabel?: string;
     searchPlaceholder?: string;
     onLayoutChanged?: () => void;
     onModeChanged?: (newMode: EmojiPaneMode, previousMode: EmojiPaneMode) => void;
@@ -221,7 +222,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     private _renderFullPicker(): JSX.Element {
-        const { fullPickerClassName, searchDisabled, searchPlaceholder } = this.props;
+        const { fullPickerClassName, searchDisabled, searchPlaceholder, searchInputAriaLabel } = this.props;
         const ariaAttributes = {
             [AriaAttributes.ActiveDescendant]: this._getEmojiIconId(this.getSelectedEmoji()),
             [AriaAttributes.HasPopup]: "listbox",
@@ -241,6 +242,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         onKeyDown={this._onSearchKeyDown}
                         onFocus={this._onSearchFocus}
                         placeholder={searchPlaceholder}
+                        ariaLabel={searchInputAriaLabel}
                         {...ariaAttributes}
                     />
                 )}
