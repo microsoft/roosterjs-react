@@ -10,3 +10,5 @@ export { default as DoubleClickImagePlugin } from './plugins/DoubleClickImagePlu
 export { default as PasteImagePlugin } from './plugins/PasteImagePlugin';
 export { default as UndoWithImagePlugin } from './plugins/UndoWithImagePlugin';
 export { Base64Svgs } from './resources/Images';
+export { LeanRoosterPlugin } from './schema/RoosterReactPlugin';
+export { AriaAttributes } from './utils/Accessibility';

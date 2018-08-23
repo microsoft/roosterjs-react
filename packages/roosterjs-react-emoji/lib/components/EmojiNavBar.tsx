@@ -21,12 +21,13 @@ export interface EmojiNavBarProps {
 export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
     public render() {
         const { currentSelected, getTabId, strings = {}, className, buttonClassName, selectedButtonClassName, iconClassName } = this.props;
+        const keys = Object.keys(EmojiList);
 
         return (
             // for each emoji family key, create a button to use as nav bar
             <div className={css(EmojiNavBarStyles.navBar, className)} role="tablist">
                 <FocusZone direction={FocusZoneDirection.horizontal}>
-                    {Object.keys(EmojiList).map(key => {
+                    {keys.map((key, index) => {
                         const selected = key === currentSelected;
                         const friendlyName = strings[key];
                         return (
@@ -43,6 +44,8 @@ export default class EmojiNavBar extends React.Component<EmojiNavBarProps, {}> {
                                     aria-selected={selected}
                                     aria-label={friendlyName}
                                     data-is-focusable="true"
+                                    aria-posinset={index + 1}
+                                    aria-setsize={keys.length}
                                 >
                                     <Icon iconName={EmojiFabricIconCharacterMap[key]} className={iconClassName} />
                                 </button>

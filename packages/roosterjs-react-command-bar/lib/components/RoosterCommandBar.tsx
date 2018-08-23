@@ -13,6 +13,7 @@ import { createFormatState } from 'roosterjs-react-editor';
 
 import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
 import { getIconOnRenderDelegateWithCustomCacheKey } from "../utils/getIconOnRenderDelegate";
+import { AriaAttributes } from "roosterjs-react-common";
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
@@ -168,7 +169,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
             if (!commandBarButton.isContextMenuItem) {
                 commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked, 'first-level': firstLevel });
-                commandBarButton['aria-pressed'] = checked; // OF 5.0
+                commandBarButton[AriaAttributes.Pressed] = checked; // OF 5.0
             }
         }
         if (commandBarButton.getDisabled) {

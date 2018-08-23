@@ -50,7 +50,9 @@ const emojiPaneProps: EmojiPaneProps = {
         selectedButtonClassName: "selected-button-class-name",
         iconClassName: "navbar-icon-class-name"
     },
-    statusBarProps: { className: "status-bar-class-name" }
+    statusBarProps: { className: "status-bar-class-name" },
+    emojiIconProps: { className: "emoji-icon-class-name", selectedClassName: "selected-emoji-icon-class-name"},
+    searchPlaceholder: "Search..."
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
