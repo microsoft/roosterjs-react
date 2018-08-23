@@ -28,6 +28,7 @@ $nav-bar-background: white;
 
         @media screen and (-ms-high-contrast: active) {
             background-color: Highlight;
+            color: HighlightText;
             -ms-high-contrast-adjust: none;
         }
 
