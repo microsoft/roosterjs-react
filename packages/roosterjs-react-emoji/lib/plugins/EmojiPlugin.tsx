@@ -124,7 +124,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         if (this._isSuggesting) {
             ReactDOM.render(this._getCallout(), this._contentDiv);
 
-            // we need to delay so NVDA will announce the first selectoin
+            // we need to delay so NVDA will announce the first selection
             setTimeout(() => {
                 const { _contentEditable } = this;
                 if (_contentEditable) {
