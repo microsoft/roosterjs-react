@@ -160,6 +160,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             return null;
         }
 
+        const { className } = this.props;
         const { formatState } = this.state;
 
         if (commandBarButton.getChecked) {
@@ -167,7 +168,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked, 'first-level': firstLevel });
+                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked, 'first-level': firstLevel }, className);
                 commandBarButton['aria-pressed'] = checked; // OF 5.0
             }
         }
