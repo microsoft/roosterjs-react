@@ -19,7 +19,7 @@ export default class EmojiStatusBar extends React.Component<EmojiStatusBarProps,
         if (!hasResult) {
             const noResultDescription = strings["emjDNoSuggetions"];
             return (
-                <div className={StatusBarStyles.statusBar}>
+                <div className={css(StatusBarStyles.statusBar, className)}>
                     <div style={{ display: "none" }} aria-live="polite">
                         {noResultDescription}
                     </div>

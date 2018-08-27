@@ -1,17 +1,17 @@
-import './RoosterCommandBar.scss.g';
+import "./RoosterCommandBar.scss.g";
 
-import { ICalloutProps } from 'office-ui-fabric-react/lib/Callout';
-import { CommandBar } from 'office-ui-fabric-react/lib/CommandBar';
-import { IContextualMenuItem, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';
-import { FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { Async, css } from 'office-ui-fabric-react/lib/Utilities';
-import * as React from 'react';
-import { getFormatState, insertImage } from 'roosterjs-editor-api';
-import { Editor } from 'roosterjs-editor-core';
-import { ChangeSource, FormatState } from 'roosterjs-editor-types';
-import { createFormatState } from 'roosterjs-react-editor';
+import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
+import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
+import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
+import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
+import { Async, css } from "office-ui-fabric-react/lib/Utilities";
+import * as React from "react";
+import { getFormatState, insertImage } from "roosterjs-editor-api";
+import { Editor } from "roosterjs-editor-core";
+import { ChangeSource, FormatState } from "roosterjs-editor-types";
+import { createFormatState } from "roosterjs-react-editor";
 
-import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from '../schema/RoosterCommandBarSchema';
+import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
 import { getIconOnRenderDelegateWithCustomCacheKey } from "../utils/getIconOnRenderDelegate";
 import { AriaAttributes } from "roosterjs-react-common";
 import {
@@ -20,9 +20,9 @@ import {
     RoosterCommandBarButtonRootClassName,
     RoosterCommandBarIconClassName,
     RoosterCommmandBarButtonKeys as ButtonKeys
-} from '../utils/OutOfBoxCommandBarButtons';
+} from "../utils/OutOfBoxCommandBarButtons";
 
-const DisplayNoneStyle = { display: 'none' } as React.CSSProperties;
+const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
 
 export default class RoosterCommandBar extends React.PureComponent<RoosterCommandBarProps, RoosterCommandBarState> {
     private static IdCounter: number = 0;
@@ -49,9 +49,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
         return (
-            <div className={css('rooster-command-bar', className)}>
+            <div className={css("rooster-command-bar", className)}>
                 <CommandBar
-                    className={css('rooster-command-bar-base', commandBarClassName)}
+                    className={css("rooster-command-bar-base", commandBarClassName)}
                     items={this._buttons}
                     overflowMenuProps={
                         {
@@ -60,7 +60,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                                 className: calloutClassName
                             } as ICalloutProps,
                             onDismiss: calloutOnDismiss,
-                            className: css('rooster-command-bar-overflow', overflowMenuProps && overflowMenuProps.className),
+                            className: css("rooster-command-bar-overflow", overflowMenuProps && overflowMenuProps.className),
                             focusZoneProps: { direction: FocusZoneDirection.horizontal }
                         } as Partial<IContextualMenuProps>
                     }
@@ -152,7 +152,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             } else {
                 insertImage(editor, file);
             }
-            this._fileInput.value = '';
+            this._fileInput.value = "";
         }
     };
 
@@ -168,7 +168,8 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, 'rooster-command-toggle', { 'is-checked': checked, 'first-level': firstLevel });
+                const { className } = this.props;
+                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, "rooster-command-toggle", { "is-checked": checked, "first-level": firstLevel }, className);
                 commandBarButton[AriaAttributes.Pressed] = checked; // OF 5.0
             }
         }
@@ -196,9 +197,9 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         }
 
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
-        const className = commandBarButton.className || '';
-        const rootClassName = className.split(' ').indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
-        const button = { ...commandBarButton, className: css(rootClassName, { 'first-level': firstLevel }, className) }; // make a copy of the OOB button template since we're changing its properties
+        const className = commandBarButton.className || "";
+        const rootClassName = className.split(" ").indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
+        const button = { ...commandBarButton, className: css(rootClassName, { "first-level": firstLevel }, className) }; // make a copy of the OOB button template since we're changing its properties
 
         if (!button.onRender && button.onRenderParams) {
             button.onRender = getIconOnRenderDelegateWithCustomCacheKey(button.key + this._id, ...button.onRenderParams);
@@ -206,10 +207,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;
         if (button.iconProps) {
-            const { className = '' } = button.iconProps;
+            const { className = "" } = button.iconProps;
             button.iconProps = {
                 ...button.iconProps,
-                className: className.split(' ').indexOf(RoosterCommandBarIconClassName) < 0 ? css(RoosterCommandBarIconClassName, className) : className
+                className: className.split(" ").indexOf(RoosterCommandBarIconClassName) < 0 ? css(RoosterCommandBarIconClassName, className) : className
             };
         }
         if (strings && strings[button.key] != null) {
