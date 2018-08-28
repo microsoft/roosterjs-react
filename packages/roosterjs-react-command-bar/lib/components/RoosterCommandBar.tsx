@@ -168,8 +168,6 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             commandBarButton.checked = checked;
 
             if (!commandBarButton.isContextMenuItem) {
-                const { className } = this.props;
-                commandBarButton.className = css(RoosterCommandBarButtonRootClassName, "rooster-command-toggle", { "is-checked": checked, "first-level": firstLevel }, className);
                 commandBarButton[AriaAttributes.Pressed] = checked; // OF 5.0
             }
         }
@@ -199,7 +197,8 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
         const className = commandBarButton.className || "";
         const rootClassName = className.split(" ").indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
-        const button = { ...commandBarButton, className: css(rootClassName, { "first-level": firstLevel }, className) }; // make a copy of the OOB button template since we're changing its properties
+        // make a copy of the OOB button template since we're changing its properties
+        const button = { ...commandBarButton, className: css(rootClassName, { "first-level": firstLevel }, className) };
 
         if (!button.onRender && button.onRenderParams) {
             button.onRender = getIconOnRenderDelegateWithCustomCacheKey(button.key + this._id, ...button.onRenderParams);
