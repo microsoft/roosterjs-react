@@ -140,18 +140,24 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
-    public reloadContent(): void {
+    public reloadContent(triggerContentChangedEvent: boolean = true, resetUndo: boolean = true): void {
         const { viewState } = this.props;
 
         if (this._editor) {
-            this._editor.setContent(viewState.content);
-            this._editorOptions.undo.clear();
-            this._editor.addUndoSnapshot();
+            this._editor.setContent(viewState.content, triggerContentChangedEvent);
+            if (resetUndo && this._editorOptions.undo) {
+                this._editorOptions.undo.clear();
+                this._editor.addUndoSnapshot();
+            }
             this._refreshPlaceholder();
         } else {
             this._setInitialReactContent();
             this.forceUpdate(this._refreshPlaceholder);
         }
+    }
+
+    public triggerContentChangedEvent(source?: string): void {
+        this._editor && this._editor.triggerContentChangedEvent(source);
     }
 
     public selectAll(): void {
