@@ -21,7 +21,8 @@ import {
     RoosterShortcutCommands,
     TableResize,
     UndoWithImagePlugin,
-    EmojiPaneProps
+    EmojiPaneProps,
+    InsertLinkStringKeys
 } from "roosterjs-react";
 import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
 
@@ -92,7 +93,6 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         placeholderImageClassName
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command), true);
     const imagePlugin = new PasteImagePlugin(imageManager);
     const imageResizePlugin = new ImageResize(undefined, undefined, undefined, undefined, excludePlaceholderSelector);
 
@@ -113,6 +113,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         }
         console.log("Emoji started from keyboard");
     };
+    let commandBarPlugin: RoosterCommandBarPlugin = null;
     let emojiPlugin: EmojiPlugin = null;
 
     return (
@@ -129,6 +130,21 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         onKeyboardTriggered: onEmojiKeyboardTriggered,
                         emojiPaneProps
                     } as EmojiPluginOptions);
+                commandBarPlugin =
+                    commandBarPlugin ||
+                    new RoosterCommandBarPlugin({
+                        onShortcutTriggered: (command: RoosterShortcutCommands) => console.log(command),
+                        disableListWorkaround: true,
+                        calloutClassName,
+                        calloutOnDismiss,
+                        strings: {
+                            [InsertLinkStringKeys.InsertButton]: "Insert Link",
+                            [InsertLinkStringKeys.CancelButton]: "X",
+                            [InsertLinkStringKeys.Title]: "Insert link",
+                            [InsertLinkStringKeys.LinkFieldLabel]: "Url"
+                        },
+                        linkDialogClassName: "link-diag"
+                    });
 
                 return [
                     <LeanRooster

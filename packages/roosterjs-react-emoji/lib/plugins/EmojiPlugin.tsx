@@ -27,7 +27,7 @@ const KEYCODE_COLON_FIREFOX = 59;
 export interface EmojiPluginOptions {
     strings?: Strings;
     calloutClassName?: string;
-    onCalloutDismiss?: (ev?: any) => void;
+    calloutOnDismiss?: (ev?: any) => void;
     emojiPaneProps?: EmojiPaneProps;
     onKeyboardTriggered?: () => void;
 }
@@ -352,7 +352,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
                 directionalHint={DirectionalHint.bottomAutoEdge}
                 isBeakVisible={false}
                 gapSpace={gap}
-                onDismiss={this._onCalloutDismissInternal}
+                onDismiss={this._calloutOnDismissInternal}
                 ref={this._calloutRef}
             >
                 <EmojiPane
@@ -389,10 +389,10 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         this._callout.forceUpdate();
     }
 
-    private _onCalloutDismissInternal = (ev?: any): void => {
+    private _calloutOnDismissInternal = (ev?: any): void => {
         this.setIsSuggesting(false);
-        if (this.options.onCalloutDismiss) {
-            this.options.onCalloutDismiss(ev);
+        if (this.options.calloutOnDismiss) {
+            this.options.calloutOnDismiss(ev);
         }
     };
 
