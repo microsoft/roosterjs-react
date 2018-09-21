@@ -122,4 +122,9 @@ export default class UndoWithImagePlugin extends Undo {
 
         return this.undoSnapshots;
     }
+
+    public reset(initialContent: string) : void {
+        this.clear();
+        this.getSnapshotsManager().addSnapshot(initialContent);
+    }
 }

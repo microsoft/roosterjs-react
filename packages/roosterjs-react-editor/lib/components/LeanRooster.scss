@@ -4,6 +4,7 @@
 
         img {
             max-width: 100%;
+            align-self: center; // should be fixed in roosterjs later
         }
 
         &.show-placeholder::before {
