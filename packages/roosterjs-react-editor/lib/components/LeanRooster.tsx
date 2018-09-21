@@ -1,15 +1,15 @@
-import './LeanRooster.scss.g';
+import "./LeanRooster.scss.g";
 
-import * as React from 'react';
-import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from 'roosterjs-editor-core';
-import { isNodeEmpty } from 'roosterjs-editor-dom';
-import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from 'roosterjs-editor-plugins';
-import { DefaultFormat } from 'roosterjs-editor-types';
-import { css, getDataAndAriaProps, NullFunction } from 'roosterjs-react-common';
+import * as React from "react";
+import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from "roosterjs-editor-core";
+import { isNodeEmpty } from "roosterjs-editor-dom";
+import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from "roosterjs-editor-plugins";
+import { DefaultFormat } from "roosterjs-editor-types";
+import { css, getDataAndAriaProps, NullFunction, LeanRoosterPlugin } from "roosterjs-react-common";
 
-import EditorViewState from '../schema/EditorViewState';
+import EditorViewState from "../schema/EditorViewState";
 
-const ContentEditableDivStyle = { userSelect: 'text', msUserSelect: 'text', WebkitUserSelect: 'text' } as React.CSSProperties;
+const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
 
 export const enum LeanRoosterModes {
     View = 0,
@@ -33,7 +33,7 @@ export interface LeanRoosterProps {
     onDragEnter?: (ev: React.DragEvent<HTMLDivElement>) => void;
     onDragLeave?: (ev: React.DragEvent<HTMLDivElement>) => void;
     onDragOver?: (ev: React.DragEvent<HTMLDivElement>) => void;
-    plugins?: EditorPlugin[];
+    plugins?: LeanRoosterPlugin[];
     readonly?: boolean;
     undo?: UndoService;
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
@@ -68,13 +68,13 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         return (
             <div
                 {...getDataAndAriaProps(this.props)}
-                className={css('lean-rooster', className, this.mode === LeanRoosterModes.View ? 'view-mode' : 'edit-mode', {
+                className={css("lean-rooster", className, this.mode === LeanRoosterModes.View ? "view-mode" : "edit-mode", {
                     readonly,
-                    'show-placeholder': this._placeholderVisible
+                    "show-placeholder": this._placeholderVisible
                 })}
                 data-placeholder={this.props.placeholder}
                 contentEditable={!readonly}
-                dir={isRtl ? 'rtl' : 'ltr'}
+                dir={isRtl ? "rtl" : "ltr"}
                 onBlur={this._onBlur}
                 onFocus={this._onFocus}
                 onMouseDown={this._onMouseDown}
@@ -140,18 +140,24 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
-    public reloadContent(): void {
+    public reloadContent(triggerContentChangedEvent: boolean = true, resetUndo: boolean = true): void {
         const { viewState } = this.props;
 
         if (this._editor) {
-            this._editor.setContent(viewState.content);
-            this._editorOptions.undo.clear();
-            this._editor.addUndoSnapshot();
+            this._editor.setContent(viewState.content, triggerContentChangedEvent);
+            if (resetUndo && this._editorOptions.undo) {
+                this._editorOptions.undo.clear();
+                this._editor.addUndoSnapshot();
+            }
             this._refreshPlaceholder();
         } else {
             this._setInitialReactContent();
             this.forceUpdate(this._refreshPlaceholder);
         }
+    }
+
+    public triggerContentChangedEvent(source?: string): void {
+        this._editor && this._editor.triggerContentChangedEvent(source);
     }
 
     public selectAll(): void {
@@ -234,7 +240,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     private _createEditorOptions(): EditorOptions {
         const { plugins: additionalPlugins = [], undo = new Undo(), hyperlinkToolTipCallback, defaultFormat = {}, contentEditFeatures, enableRestoreSelectionOnFocus } = this.props;
         const plugins: EditorPlugin[] = [
-            new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, ...contentEditFeatures }),
+            new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, smartOrderedList: true, ...contentEditFeatures }),
             new HyperLink(hyperlinkToolTipCallback),
             new Paste(true /*useDirectPaste*/),
             ...additionalPlugins
@@ -355,9 +361,9 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     };
 
     private _contentDivOnRef = (ref: HTMLDivElement): void => {
-        const { contentDivRef = NullFunction } = this.props;
+        const { contentDivRef = NullFunction, plugins } = this.props;
 
-        const eventName = 'focus';
+        const eventName = "focus";
         if (this._contentDiv) {
             this._contentDiv.removeEventListener(eventName, this._onFocusNative);
         }
@@ -365,6 +371,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
             ref.addEventListener(eventName, this._onFocusNative);
         }
         this._contentDiv = ref;
+        plugins.forEach(p => p.initializeContentEditable && p.initializeContentEditable(ref));
 
         contentDivRef(ref);
     };

@@ -3,11 +3,11 @@ import { Async, KeyCodes } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from "roosterjs-editor-api";
-import { Editor, EditorPlugin } from "roosterjs-editor-core";
+import { Editor } from "roosterjs-editor-core";
 import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
-import { NullFunction, Strings } from "roosterjs-react-common";
+import { LeanRoosterPlugin, NullFunction, Strings, AriaAttributes } from "roosterjs-react-common";
 
-import EmojiPane, { EmojiPaneProps } from "../components/EmojiPane";
+import EmojiPane, { EmojiPaneProps, EmojiPaneMode } from "../components/EmojiPane";
 import Emoji from "../schema/Emoji";
 import { MoreEmoji } from "../utils/emojiList";
 import { matchShortcut } from "../utils/searchEmojis";
@@ -32,8 +32,9 @@ export interface EmojiPluginOptions {
     onKeyboardTriggered?: () => void;
 }
 
-export default class EmojiPlugin implements EditorPlugin {
+export default class EmojiPlugin implements LeanRoosterPlugin {
     private _editor: Editor;
+    private _contentEditable: HTMLDivElement;
     private _contentDiv: HTMLDivElement;
     private _isSuggesting: boolean;
     private _pane: EmojiPane;
@@ -58,6 +59,10 @@ export default class EmojiPlugin implements EditorPlugin {
         document.body.appendChild(this._contentDiv);
     }
 
+    public initializeContentEditable(contentEditable: HTMLDivElement): void {
+        this._contentEditable = contentEditable;
+    }
+
     public setStrings(strings: Strings): void {
         this._strings = strings;
     }
@@ -67,6 +72,7 @@ export default class EmojiPlugin implements EditorPlugin {
         this._contentDiv.parentElement.removeChild(this._contentDiv);
         this._contentDiv = null;
         this._editor = null;
+        this._contentEditable = null;
         if (this._async) {
             this._async.dispose();
             this._async = null;
@@ -105,11 +111,11 @@ export default class EmojiPlugin implements EditorPlugin {
         } else if (event.eventType === PluginEventType.MouseUp) {
             // If MouseUp, the emoji cannot be undone
             this._canUndoEmoji = false;
-            this.setIsSuggesting(false);
+            this.setIsSuggesting(false, event.rawEvent);
         }
     }
 
-    public setIsSuggesting(isSuggesting: boolean): void {
+    public setIsSuggesting(isSuggesting: boolean, ev?: MouseEvent): void {
         if (this._isSuggesting === isSuggesting) {
             return;
         }
@@ -117,8 +123,23 @@ export default class EmojiPlugin implements EditorPlugin {
         this._isSuggesting = isSuggesting;
         if (this._isSuggesting) {
             ReactDOM.render(this._getCallout(), this._contentDiv);
+
+            // we need to delay so NVDA will announce the first selection
+            setTimeout(() => {
+                const { _contentEditable } = this;
+                if (_contentEditable) {
+                    _contentEditable.setAttribute(AriaAttributes.Expanded, "true");
+                    _contentEditable.setAttribute(AriaAttributes.AutoComplete, "list");
+                    _contentEditable.setAttribute(AriaAttributes.Owns, this._pane.listId);
+                    _contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(0));
+                }
+            }, 0);
+            this._editor.saveSelectionRange();
         } else {
             ReactDOM.unmountComponentAtNode(this._contentDiv);
+
+            this._removeAutoCompleteAriaAttributes();
+            this._editor.restoreSavedRange();
         }
     }
 
@@ -131,6 +152,16 @@ export default class EmojiPlugin implements EditorPlugin {
         this.setIsSuggesting(true);
         editor.insertContent(startingString);
         this._triggerChangeEvent();
+    }
+
+    private _removeAutoCompleteAriaAttributes(): void {
+        const { _contentEditable } = this;
+        if (_contentEditable) {
+            _contentEditable.setAttribute(AriaAttributes.Expanded, "false");
+            _contentEditable.removeAttribute(AriaAttributes.AutoComplete);
+            _contentEditable.removeAttribute(AriaAttributes.Owns);
+            _contentEditable.removeAttribute(AriaAttributes.ActiveDescendant);
+        }
     }
 
     /**
@@ -158,15 +189,14 @@ export default class EmojiPlugin implements EditorPlugin {
                 // If the timer is not null, that means we have a search queued.
                 // Check to see is the word before the cursor matches a shortcut first
                 // Otherwise if the search completed and it is a shortcut, insert the first item
-                if (this._timer) {
-                    emoji = matchShortcut(wordBeforeCursor);
-                } else {
-                    emoji = selectedEmoji;
-                }
+                emoji = this._timer ? matchShortcut(wordBeforeCursor) : selectedEmoji;
                 break;
             case KeyCodes.left:
             case KeyCodes.right:
-                this._pane.navigate(keyboardEvent.which === KeyCodes.left ? -1 : 1);
+                const nextIndex = this._pane.navigate(keyboardEvent.which === KeyCodes.left ? -1 : 1);
+                if (nextIndex >= 0) {
+                    this._contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(nextIndex));
+                }
                 this._handleEventOnKeyDown(event);
                 break;
             case KeyCodes.escape:
@@ -327,17 +357,29 @@ export default class EmojiPlugin implements EditorPlugin {
             >
                 <EmojiPane
                     {...emojiPaneProps}
-                    ref={ref => (this._pane = ref)}
+                    ref={this._paneRef}
                     onSelect={this._onSelectFromPane}
                     strings={this._strings || {}}
-                    onLayoutChange={this._refreshCalloutDebounced}
+                    onLayoutChanged={this._refreshCalloutDebounced}
+                    onModeChanged={this._onModeChanged}
                     navBarProps={emojiPaneProps.navBarProps}
                     statusBarProps={emojiPaneProps.statusBarProps}
                     searchDisabled={!this._strings || emojiPaneProps.searchDisabled}
+                    hideStatusBar={!this._strings}
                 />
             </Callout>
         );
     }
+
+    private _onModeChanged = (newMode: EmojiPaneMode): void => {
+        if (newMode !== EmojiPaneMode.Quick) {
+            this._removeAutoCompleteAriaAttributes(); // remove since we switched to a dialog
+        }
+    };
+
+    private _paneRef = (ref: EmojiPane): void => {
+        this._pane = ref;
+    };
 
     private _calloutRef = (ref: Callout): void => {
         this._callout = ref;

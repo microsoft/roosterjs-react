@@ -28,12 +28,12 @@ $command-bar-bg-color: white;
             padding-right: 2px;
         }
 
-        &:not(:hover):not(:active):not(.is-checked) button {
+        &:not(:hover):not(:active) button:not(.is-checked) {
             background: $command-bar-bg-color;
             border-color: transparent;
         }
 
-        .is-checked button {
+        button.is-checked {
             background: #dadada;
         }
     }

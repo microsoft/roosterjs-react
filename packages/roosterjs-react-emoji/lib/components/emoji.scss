@@ -21,6 +21,7 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
 
             @media screen and (-ms-high-contrast: active) {
                 background-color: Highlight;
+                color: HighlightText;
                 -ms-high-contrast-adjust: none;
             }
         }
@@ -89,6 +90,6 @@ $maxHeightForContent: ($rowsOfIcons * $buttonHeight) + $bottomPaddingForContent;
     padding: 0 $paneHorizontalPadding;
 }
 
-.tooltipHost {
-    display: inline-block;
+.tooltip {
+    padding: 8px;
 }

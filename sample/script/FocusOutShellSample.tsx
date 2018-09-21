@@ -50,7 +50,10 @@ const emojiPaneProps: EmojiPaneProps = {
         selectedButtonClassName: "selected-button-class-name",
         iconClassName: "navbar-icon-class-name"
     },
-    statusBarProps: { className: "status-bar-class-name" }
+    statusBarProps: { className: "status-bar-class-name" },
+    emojiIconProps: { className: "emoji-icon-class-name", selectedClassName: "selected-emoji-icon-class-name" },
+    searchPlaceholder: "Search...",
+    searchInputAriaLabel: "Search field"
 };
 
 function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Element {
@@ -89,16 +92,11 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         placeholderImageClassName
     } as ImageManagerOptions);
     const leanRoosterViewState = createEditorViewState(`Hello LeanRooster! (${name})`);
-    const commandBarPlugin = new RoosterCommandBarPlugin(
-        {},
-        (command: RoosterShortcutCommands) => console.log(command),
-        true
-    );
+    const commandBarPlugin = new RoosterCommandBarPlugin({}, (command: RoosterShortcutCommands) => console.log(command), true);
     const imagePlugin = new PasteImagePlugin(imageManager);
     const imageResizePlugin = new ImageResize(undefined, undefined, undefined, undefined, excludePlaceholderSelector);
 
-    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean =>
-        leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
+    const focusOutShellAllowMouseDown = (element: HTMLElement): boolean => leanRoosterContentDiv && leanRoosterContentDiv.contains(element);
     const focusOutShellOnFocus = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) gained focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
@@ -171,7 +169,9 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                                     }, 2000);
                                 },
                                 order: 0
-                            }
+                            },
+                            { key: ButtonKeys.Bold, className: "my-button-root", buttonClassName: "my-button" },
+                            { key: ButtonKeys.FontColor, className: "my-button-root", buttonClassName: "my-button" }
                         ]}
                         roosterCommandBarPlugin={commandBarPlugin}
                         emojiPlugin={emojiPlugin}

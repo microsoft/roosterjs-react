@@ -1,25 +1,31 @@
+$status-bar-height: 50px;
+
 .statusBar {
     background-color: #f4f4f4;
     border-top: solid 1px #dadada;
-    height: 50px;
+    height: $status-bar-height;
+    overflow: hidden;
+    position: relative;
 }
 
 .statusBarIcon {
     padding: 4px;
-    font-size: 175%;
+    font-size: 25px;
     display: inline-block;
     font-style: normal;
     font-weight: normal;
     line-height: 40px;
 }
 
-.statusBarDetailsContainer {
-    padding: 4px;
+.statusBarDetailsContainer,
+.statusBarNoResultDetailsContainer {
+    padding: 0 4px;
+    line-height: $status-bar-height;
     position: absolute;
     display: inline-block;
     left: 40px;
     right: 0;
-    line-height: 40px;
+    top: 0;
 }
 
 .statusBarDetails {
@@ -27,4 +33,12 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.statusBarNoResultDetailsContainer {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    left: 0;
+    padding: 0 8px;
 }
