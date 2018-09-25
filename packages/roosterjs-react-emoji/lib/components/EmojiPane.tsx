@@ -127,12 +127,13 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     }
 
     public navigate(change: number, direction: EmojiPaneNavigateDirection = EmojiPaneNavigateDirection.Horizontal): number {
-        if (direction === EmojiPaneNavigateDirection.Vertical) {
+        const { index, currentEmojiList } = this.state;
+        if (direction === EmojiPaneNavigateDirection.Vertical && index !== -1) {
             change *= EmojisPerRow;
         }
 
-        const newIndex = this.state.index + change;
-        const length = this.state.currentEmojiList.length;
+        const newIndex = index + change;
+        const length = currentEmojiList.length;
         if (newIndex >= 0 && newIndex < length) {
             this.setState({ index: newIndex });
             return newIndex;
@@ -161,7 +162,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         const normalizedSearchValue = this._normalizeSearchText(fullSearchText, true);
         const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
-            index: 0,
+            index: newMode === EmojiPaneMode.Full ? -1 : 0,
             mode: newMode,
             currentEmojiList: this._getSearchResult(normalizedSearchValue, newMode),
             search: fullSearchText,
@@ -223,17 +224,22 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
 
     private _renderFullPicker(): JSX.Element {
         const { fullPickerClassName, searchDisabled, searchPlaceholder, searchInputAriaLabel } = this.props;
-        const ariaAttributes = {
-            [AriaAttributes.ActiveDescendant]: this._getEmojiIconId(this.getSelectedEmoji()),
-            [AriaAttributes.HasPopup]: "listbox",
+        const emojiId = this._getEmojiIconId(this.getSelectedEmoji());
+        const autoCompleteAttributes = {
+            [AriaAttributes.AutoComplete]: "list",
             [AriaAttributes.Expanded]: "true",
+            [AriaAttributes.HasPopup]: "listbox",
             [AriaAttributes.Owns]: this._listId
         };
+        if (emojiId) {
+            autoCompleteAttributes[AriaAttributes.ActiveDescendant] = emojiId;
+        }
 
         return (
             <div className={css(PaneBaseClassName, fullPickerClassName)}>
                 {!searchDisabled && (
                     <TextField
+                        role="combobox"
                         ref={this._searchRefCallback}
                         value={this.state.searchInBox}
                         onChanged={this._onSearchChange}
@@ -243,7 +249,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                         onFocus={this._onSearchFocus}
                         placeholder={searchPlaceholder}
                         ariaLabel={searchInputAriaLabel}
-                        {...ariaAttributes}
+                        {...autoCompleteAttributes}
                     />
                 )}
                 {this.state.mode === EmojiPaneMode.Full ? this._renderFullList() : this._renderPartialList()}
@@ -397,7 +403,9 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         if (this._input) {
             // make sure to announce the active descending after the focus zone containing the emojis is ready
             this._input.removeAttribute(AriaAttributes.ActiveDescendant);
-            this._input.setAttribute(AriaAttributes.ActiveDescendant, this._getEmojiIconId(this.getSelectedEmoji()));
+            const emojiId = this._getEmojiIconId(this.getSelectedEmoji());
+            // we need to delay so NVDA will announce the first selection
+            emojiId && setTimeout(() => this._input.setAttribute(AriaAttributes.ActiveDescendant, emojiId), 0);
         }
     };
 
@@ -405,7 +413,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         const normalizedSearchValue = this._normalizeSearchText(newValue, false);
         const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
-            index: 0,
+            index: newMode === EmojiPaneMode.Full ? -1 : 0,
             currentEmojiList: this._getSearchResult(normalizedSearchValue, this.state.mode),
             searchInBox: newValue,
             mode: newMode

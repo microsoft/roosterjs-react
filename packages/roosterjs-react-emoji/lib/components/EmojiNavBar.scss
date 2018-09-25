@@ -16,11 +16,15 @@ $nav-bar-background: white;
     background: $nav-bar-background ;
     height: $buttonHeight;
     width: $buttonWidth;
-    border: none;
+    border: 0;
     border-bottom: solid 1px #dadada;
     display: inline-block;
     padding: 0;
     margin: 0;
+    
+    &::-moz-focus-inner {
+        border: 0;
+    }
 
     &:hover {
         background: #eaeaea;

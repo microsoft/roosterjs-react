@@ -1,4 +1,4 @@
-<html>
+<html lang="en-US">
 
 <head>
     <title>Rooster-React FocusOutShell Sample Page</title>
@@ -23,11 +23,15 @@
             overflow: hidden;
         }
 
-        .lean-rooster {
+        .lean-rooster-container {
             height: 100%;
-            outline: none;
             overflow: auto;
+        }
+
+        .lean-rooster {
+            outline: none;
             background-color: white;
+            min-height: 100%;
         }
 
         @media screen and (-ms-high-contrast: active) {
@@ -36,7 +40,7 @@
             }
         }
 
-        .lean-rooster.view-mode+.rooster-command-bar {
+        .lean-rooster-container.view-mode+.rooster-command-bar {
             position: absolute;
             width: 100%;
             z-index: -1;

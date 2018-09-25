@@ -109,7 +109,20 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             }
 
             const currentButton = buttonMap[button.key];
-            buttonMap[button.key] = currentButton ? { ...currentButton, ...button } : button;
+            if (currentButton) {
+                buttonMap[button.key] = { ...currentButton, ...button };
+                const currentSubMenuProps = currentButton.subMenuProps;
+                const subMenuPropsOverride = button.subMenuPropsOverride;
+                if (currentSubMenuProps && subMenuPropsOverride) {
+                    buttonMap[button.key].subMenuProps = {
+                        ...currentSubMenuProps,
+                        ...subMenuPropsOverride,
+                        className: css(currentSubMenuProps.className, subMenuPropsOverride.className)
+                    };
+                }
+            } else {
+                buttonMap[button.key] = button;
+            }
 
             if (visibleButtonKeys.indexOf(button.key) === -1) {
                 visibleButtonKeys.push(button.key);

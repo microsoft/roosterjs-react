@@ -14,8 +14,7 @@ import { matchShortcut } from "../utils/searchEmojis";
 
 const EMOJI_SEARCH_DELAY = 300;
 const INTERNAL_EMOJI_FONT_NAME = "EmojiFont";
-const EMOJI_FONT_LIST =
-    "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'Segoe UI Symbol','Android Emoji',EmojiSymbols";
+const EMOJI_FONT_LIST = "'Apple Color Emoji','Segoe UI Emoji', NotoColorEmoji,'Segoe UI Symbol','Android Emoji',EmojiSymbols";
 // Regex looks for an emoji right before the : to allow contextual search immediately following an emoji
 // MATCHES: 0: 😃:r
 //          1: 😃
@@ -35,6 +34,7 @@ export interface EmojiPluginOptions {
 export default class EmojiPlugin implements LeanRoosterPlugin {
     private _editor: Editor;
     private _contentEditable: HTMLDivElement;
+    private _hasContainer: boolean;
     private _contentDiv: HTMLDivElement;
     private _isSuggesting: boolean;
     private _pane: EmojiPane;
@@ -59,8 +59,9 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         document.body.appendChild(this._contentDiv);
     }
 
-    public initializeContentEditable(contentEditable: HTMLDivElement): void {
+    public initializeContentEditable(contentEditable: HTMLDivElement, hasContainer: boolean): void {
         this._contentEditable = contentEditable;
+        this._hasContainer = hasContainer;
     }
 
     public setStrings(strings: Strings): void {
@@ -69,8 +70,11 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
     public dispose(): void {
         this.setIsSuggesting(false);
-        this._contentDiv.parentElement.removeChild(this._contentDiv);
-        this._contentDiv = null;
+        if (this._contentDiv) {
+            ReactDOM.unmountComponentAtNode(this._contentDiv);
+            this._contentDiv.parentElement.removeChild(this._contentDiv);
+            this._contentDiv = null;
+        }
         this._editor = null;
         this._contentEditable = null;
         if (this._async) {
@@ -80,12 +84,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     public willHandleEventExclusively(event: PluginEvent): boolean {
-        return (
-            this._isSuggesting &&
-            (event.eventType === PluginEventType.KeyDown ||
-                event.eventType === PluginEventType.KeyUp ||
-                event.eventType === PluginEventType.MouseUp)
-        );
+        return this._isSuggesting && (event.eventType === PluginEventType.KeyDown || event.eventType === PluginEventType.KeyUp || event.eventType === PluginEventType.MouseUp);
     }
 
     public onPluginEvent(event: PluginEvent): void {
@@ -126,11 +125,16 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
             // we need to delay so NVDA will announce the first selection
             setTimeout(() => {
-                const { _contentEditable } = this;
+                const { _contentEditable, _hasContainer } = this;
                 if (_contentEditable) {
-                    _contentEditable.setAttribute(AriaAttributes.Expanded, "true");
+                    const parent = _contentEditable.parentElement;
+                    if (_hasContainer && parent) {
+                        parent.setAttribute(AriaAttributes.Expanded, "true");
+                        parent.setAttribute(AriaAttributes.Owns, this._pane.listId);
+                        parent.setAttribute(AriaAttributes.HasPopup, "listbox");
+                    }
                     _contentEditable.setAttribute(AriaAttributes.AutoComplete, "list");
-                    _contentEditable.setAttribute(AriaAttributes.Owns, this._pane.listId);
+                    _contentEditable.setAttribute(AriaAttributes.Controls, this._pane.listId);
                     _contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(0));
                 }
             }, 0);
@@ -155,11 +159,16 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     private _removeAutoCompleteAriaAttributes(): void {
-        const { _contentEditable } = this;
+        const { _contentEditable, _hasContainer } = this;
         if (_contentEditable) {
-            _contentEditable.setAttribute(AriaAttributes.Expanded, "false");
+            const parent = _contentEditable.parentElement;
+            if (_hasContainer && parent) {
+                parent.setAttribute(AriaAttributes.Expanded, "false");
+                parent.removeAttribute(AriaAttributes.Owns);
+                parent.removeAttribute(AriaAttributes.HasPopup);
+            }
             _contentEditable.removeAttribute(AriaAttributes.AutoComplete);
-            _contentEditable.removeAttribute(AriaAttributes.Owns);
+            _contentEditable.removeAttribute(AriaAttributes.Controls);
             _contentEditable.removeAttribute(AriaAttributes.ActiveDescendant);
         }
     }
@@ -233,10 +242,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
         // If this is a character key or backspace
         // Clear the timer as we will either queue a new timer or stop suggesting
-        if (
-            (keyboardEvent.key.length === 1 && keyboardEvent.which !== KeyCodes.space) ||
-            keyboardEvent.which === KeyCodes.backspace
-        ) {
+        if ((keyboardEvent.key.length === 1 && keyboardEvent.which !== KeyCodes.space) || keyboardEvent.which === KeyCodes.backspace) {
             window.clearTimeout(this._timer);
             this._timer = null;
         }
@@ -261,10 +267,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
         const keyboardEvent = event.rawEvent as KeyboardEvent;
         const wordBeforeCursor = this._getWordBeforeCursor(event);
-        if (
-            (keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) &&
-            wordBeforeCursor === ":"
-        ) {
+        if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ":") {
             const { onKeyboardTriggered = NullFunction } = this.options;
             this.setIsSuggesting(true);
             onKeyboardTriggered();
@@ -292,10 +295,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
         const node = this._editor.getDocument().createElement("span");
         node.innerText = emoji.codePoint;
-        if (
-            wordBeforeCursor &&
-            replaceTextBeforeCursorWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)
-        ) {
+        if (wordBeforeCursor && replaceTextBeforeCursorWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)) {
             inserted = true;
             this._canUndoEmoji = true;
 
