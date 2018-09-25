@@ -33,6 +33,7 @@ export interface RoosterCommandBarButton extends ICommandBarItemProps {
     order?: number;
     exclude?: boolean;
     buttonClassName?: string;
+    subMenuPropsOverride?: Partial<IContextualMenuProps>;
 }
 
 export interface RoosterCommandBarButtonInternal extends RoosterCommandBarButton {
