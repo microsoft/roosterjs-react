@@ -1,11 +1,28 @@
-import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from 'roosterjs-editor-api';
-import { Editor, EditorPlugin } from 'roosterjs-editor-core';
-import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
-import { createLinkWithPrompt, NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from 'roosterjs-react-common';
+import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from "roosterjs-editor-api";
+import { Editor, EditorPlugin } from "roosterjs-editor-core";
+import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
+import { NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from "roosterjs-react-common";
 
-import RoosterCommandBar from '../components/RoosterCommandBar';
-import RoosterCommandBarPluginInterface from '../schema/RoosterCommandBarPluginInterface';
-import { getCommandFromEvent, RoosterShortcutCommands } from './RoosterCommandBarPlugin.Shortcuts';
+import { createLinkDialog, LinkDialogProps } from "../components/LinkDialog";
+import RoosterCommandBar from "../components/RoosterCommandBar";
+import RoosterCommandBarPluginInterface from "../schema/RoosterCommandBarPluginInterface";
+import { getCommandFromEvent, RoosterShortcutCommands } from "./RoosterCommandBarPlugin.Shortcuts";
+
+export const InsertLinkStringKeys = {
+    LinkFieldLabel: "linkFieldLabel",
+    Title: "linkPromptTitle",
+    InsertButton: "insertLinkText",
+    CancelButton: "cancelLinkText"
+};
+
+export interface RoosterCommandBarPluginOptions {
+    strings?: Strings;
+    calloutClassName?: string;
+    linkDialogClassName?: string;
+    calloutOnDismiss?: (ev?: any) => void;
+    onShortcutTriggered?: (command: RoosterShortcutCommands) => void;
+    disableListWorkaround?: boolean;
+}
 
 export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCommandBarPluginInterface {
     private static readonly EventTypesToRefreshFormatState: { [eventType: number]: boolean } = {
@@ -17,14 +34,32 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
 
     private editor: Editor;
     private commandBars: RoosterCommandBar[] = [];
+    private insertLinkDialogContainer: HTMLDivElement;
+    private dialogDismiss: () => void;
 
-    constructor(private strings?: Strings, private onShortcutTriggered: (command: RoosterShortcutCommands) => void = NullFunction, private disableListWorkaround?: boolean) {}
+    constructor(private options: RoosterCommandBarPluginOptions = {}) {}
 
     public initialize(editor: Editor): void {
         this.editor = editor;
+
+        if (!editor || this.insertLinkDialogContainer) {
+            return;
+        }
+        const doc = this.editor.getDocument();
+        if (!doc) {
+            return;
+        }
+
+        this.insertLinkDialogContainer = doc.createElement("div");
+        doc.body.appendChild(this.insertLinkDialogContainer);
     }
 
     public dispose(): void {
+        if (this.dialogDismiss) {
+            this.dialogDismiss();
+            this.dialogDismiss = null;
+        }
+
         if (this.editor) {
             this.editor = null;
         }
@@ -58,6 +93,7 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
             return;
         }
 
+        const { disableListWorkaround, onShortcutTriggered = NullFunction } = this.options;
         const editor = this.editor;
         let commandExecuted = true;
         switch (command) {
@@ -77,20 +113,20 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
                 editor.redo();
                 break;
             case RoosterShortcutCommands.Bullet:
-                (this.disableListWorkaround ? toggleNonCompatBullet : toggleBullet)(editor);
+                (disableListWorkaround ? toggleNonCompatBullet : toggleBullet)(editor);
                 break;
             case RoosterShortcutCommands.Numbering:
-                (this.disableListWorkaround ? toggleNonCompatNumbering : toggleNumbering)(editor);
+                (disableListWorkaround ? toggleNonCompatNumbering : toggleNumbering)(editor);
                 break;
             case RoosterShortcutCommands.InsertLink:
-                createLinkWithPrompt(editor, this.strings);
+                this.promptForLink();
                 break;
             default:
                 commandExecuted = false;
         }
 
         if (commandExecuted) {
-            this.onShortcutTriggered(command);
+            onShortcutTriggered(command);
             keyboardEvent.preventDefault();
             keyboardEvent.stopPropagation();
         }
@@ -111,5 +147,10 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
         if (index >= 0) {
             this.commandBars.splice(index, 1);
         }
+    }
+
+    public promptForLink(): void {
+        const { strings = {}, calloutClassName, calloutOnDismiss, linkDialogClassName: className } = this.options;
+        this.dialogDismiss = createLinkDialog(document, { editor: this.editor, strings, calloutClassName, calloutOnDismiss, className } as LinkDialogProps);
     }
 }
