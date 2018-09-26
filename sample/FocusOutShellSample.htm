@@ -23,15 +23,11 @@
             overflow: hidden;
         }
 
-        .lean-rooster-container {
-            height: 100%;
-            overflow: auto;
-        }
-
         .lean-rooster {
+            height: 100%;
             outline: none;
+            overflow: auto;
             background-color: white;
-            min-height: 100%;
         }
 
         @media screen and (-ms-high-contrast: active) {
@@ -40,7 +36,7 @@
             }
         }
 
-        .lean-rooster-container.view-mode+.rooster-command-bar {
+        .lean-rooster.view-mode+.rooster-command-bar {
             position: absolute;
             width: 100%;
             z-index: -1;

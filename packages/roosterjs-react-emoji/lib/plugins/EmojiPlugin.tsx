@@ -5,9 +5,9 @@ import * as ReactDOM from "react-dom";
 import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from "roosterjs-editor-api";
 import { Editor } from "roosterjs-editor-core";
 import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
-import { LeanRoosterPlugin, NullFunction, Strings, AriaAttributes } from "roosterjs-react-common";
+import { AriaAttributes, LeanRoosterPlugin, NullFunction, Strings } from "roosterjs-react-common";
 
-import EmojiPane, { EmojiPaneProps, EmojiPaneMode } from "../components/EmojiPane";
+import EmojiPane, { EmojiPaneMode, EmojiPaneProps } from "../components/EmojiPane";
 import Emoji from "../schema/Emoji";
 import { MoreEmoji } from "../utils/emojiList";
 import { matchShortcut } from "../utils/searchEmojis";
@@ -34,7 +34,6 @@ export interface EmojiPluginOptions {
 export default class EmojiPlugin implements LeanRoosterPlugin {
     private _editor: Editor;
     private _contentEditable: HTMLDivElement;
-    private _hasContainer: boolean;
     private _contentDiv: HTMLDivElement;
     private _isSuggesting: boolean;
     private _pane: EmojiPane;
@@ -59,9 +58,8 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         document.body.appendChild(this._contentDiv);
     }
 
-    public initializeContentEditable(contentEditable: HTMLDivElement, hasContainer: boolean): void {
+    public initializeContentEditable(contentEditable: HTMLDivElement): void {
         this._contentEditable = contentEditable;
-        this._hasContainer = hasContainer;
     }
 
     public setStrings(strings: Strings): void {
@@ -125,16 +123,10 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
             // we need to delay so NVDA will announce the first selection
             setTimeout(() => {
-                const { _contentEditable, _hasContainer } = this;
+                const { _contentEditable } = this;
                 if (_contentEditable) {
-                    const parent = _contentEditable.parentElement;
-                    if (_hasContainer && parent) {
-                        parent.setAttribute(AriaAttributes.Expanded, "true");
-                        parent.setAttribute(AriaAttributes.Owns, this._pane.listId);
-                        parent.setAttribute(AriaAttributes.HasPopup, "listbox");
-                    }
                     _contentEditable.setAttribute(AriaAttributes.AutoComplete, "list");
-                    _contentEditable.setAttribute(AriaAttributes.Controls, this._pane.listId);
+                    _contentEditable.setAttribute(AriaAttributes.Owns, this._pane.listId);
                     _contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(0));
                 }
             }, 0);
@@ -159,16 +151,10 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     private _removeAutoCompleteAriaAttributes(): void {
-        const { _contentEditable, _hasContainer } = this;
+        const { _contentEditable } = this;
         if (_contentEditable) {
-            const parent = _contentEditable.parentElement;
-            if (_hasContainer && parent) {
-                parent.setAttribute(AriaAttributes.Expanded, "false");
-                parent.removeAttribute(AriaAttributes.Owns);
-                parent.removeAttribute(AriaAttributes.HasPopup);
-            }
             _contentEditable.removeAttribute(AriaAttributes.AutoComplete);
-            _contentEditable.removeAttribute(AriaAttributes.Controls);
+            _contentEditable.removeAttribute(AriaAttributes.Owns);
             _contentEditable.removeAttribute(AriaAttributes.ActiveDescendant);
         }
     }

@@ -19,7 +19,6 @@ export const enum LeanRoosterModes {
 export interface LeanRoosterProps {
     activateRoosterOnMount?: boolean;
     className?: string;
-    containerClassName?: string;
     contentDivRef?: (ref: HTMLDivElement) => void;
     contentEditFeatures?: ContentEditFeatures;
     defaultFormat?: DefaultFormat;
@@ -64,37 +63,35 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     public render(): JSX.Element {
-        const { className, isRtl, readonly, onDragEnter, onDragLeave, onDragOver, containerClassName } = this.props;
+        const { className, isRtl, readonly, onDragEnter, onDragLeave, onDragOver } = this.props;
         const modeClassName = this.mode === LeanRoosterModes.View ? "view-mode" : "edit-mode";
 
         return (
-            <div role="application" className={css("lean-rooster-container", containerClassName, modeClassName)}>
-                <div
-                    {...getDataAndAriaProps(this.props)}
-                    className={css("lean-rooster", className, modeClassName, {
-                        readonly,
-                        "show-placeholder": this._placeholderVisible
-                    })}
-                    data-placeholder={this.props.placeholder}
-                    contentEditable={!readonly}
-                    dir={isRtl ? "rtl" : "ltr"}
-                    onBlur={this._onBlur}
-                    onFocus={this._onFocus}
-                    onMouseDown={this._onMouseDown}
-                    onMouseUp={this._onMouseUp}
-                    onDragEnter={onDragEnter}
-                    onDragLeave={onDragLeave}
-                    onDragOver={onDragOver}
-                    onDrop={this._onDrop}
-                    ref={this._contentDivOnRef}
-                    style={ContentEditableDivStyle}
-                    suppressContentEditableWarning={true}
-                    tabIndex={0}
-                    dangerouslySetInnerHTML={this._initialContent}
-                    aria-multiline="true"
-                    role="textbox"
-                />
-            </div>
+            <div
+                {...getDataAndAriaProps(this.props)}
+                className={css("lean-rooster", className, modeClassName, {
+                    readonly,
+                    "show-placeholder": this._placeholderVisible
+                })}
+                data-placeholder={this.props.placeholder}
+                contentEditable={!readonly}
+                dir={isRtl ? "rtl" : "ltr"}
+                onBlur={this._onBlur}
+                onFocus={this._onFocus}
+                onMouseDown={this._onMouseDown}
+                onMouseUp={this._onMouseUp}
+                onDragEnter={onDragEnter}
+                onDragLeave={onDragLeave}
+                onDragOver={onDragOver}
+                onDrop={this._onDrop}
+                ref={this._contentDivOnRef}
+                style={ContentEditableDivStyle}
+                suppressContentEditableWarning={true}
+                tabIndex={0}
+                dangerouslySetInnerHTML={this._initialContent}
+                aria-multiline="true"
+                role="textbox"
+            />
         );
     }
 
@@ -375,7 +372,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
             ref.addEventListener(eventName, this._onFocusNative);
         }
         this._contentDiv = ref;
-        plugins.forEach(p => p.initializeContentEditable && p.initializeContentEditable(ref, true));
+        plugins.forEach(p => p.initializeContentEditable && p.initializeContentEditable(ref));
 
         contentDivRef(ref);
     };
