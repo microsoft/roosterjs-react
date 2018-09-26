@@ -1,11 +1,11 @@
-import { CommandBarButton, IButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
-import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
-import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
-import * as React from 'react';
-import { css } from 'roosterjs-react-common';
+import { CommandBarButton, IButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
+import { Icon } from "office-ui-fabric-react/lib/Icon";
+import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import { IRenderFunction } from "office-ui-fabric-react/lib/Utilities";
+import * as React from "react";
+import { css } from "roosterjs-react-common";
 
-import { RoosterCommandBarButton } from '../schema/RoosterCommandBarSchema';
+import { RoosterCommandBarButton } from "../schema/RoosterCommandBarSchema";
 
 export type ButtonOnRenderDelegate = (item: RoosterCommandBarButton) => JSX.Element;
 const OnRenderDelegateCache: { [key: string]: ButtonOnRenderDelegate } = {};
@@ -19,9 +19,9 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
     highContrastAssetName: string = null,
     ...assets: { name: string; className?: string }[]
 ): ButtonOnRenderDelegate {
-    const cacheKey = customCacheKey != null ? customCacheKey : assets ? assets.map(a => a.name).join('.') : '';
+    const cacheKey = customCacheKey != null ? customCacheKey : assets ? assets.map(a => a.name).join(".") : "";
     if (!OnRenderDelegateCache[cacheKey]) {
-        const iconClassName = 'stacked-icon';
+        const iconClassName = "stacked-icon";
         let onRenderIcon: IRenderFunction<IButtonProps> = undefined;
         if (assets && assets.length > 1) {
             onRenderIcon = () => (
@@ -38,7 +38,7 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
         OnRenderDelegateCache[cacheKey] = (item: RoosterCommandBarButton): JSX.Element => (
             <TooltipHost hostClassName="command-button-tool-tip" content={item.name} key={item.key}>
                 <CommandBarButton
-                    componentRef={ref => (cmdButton = ref)}
+                    componentRef={ref => (cmdButton = ref || cmdButton)}
                     {...item as any}
                     ariaLabel={item.name}
                     menuProps={
@@ -50,7 +50,7 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
                             }
                         }
                     }
-                    className={css('rooster-command-bar-button', item.buttonClassName)}
+                    toggle={item.canCheck}
                     onRenderIcon={onRenderIcon}
                 />
             </TooltipHost>

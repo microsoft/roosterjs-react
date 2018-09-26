@@ -1,8 +1,7 @@
 import "./RoosterCommandBar.scss.g";
 
-import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
-import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
-import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
+import { ICalloutProps, DirectionalHint } from "office-ui-fabric-react/lib/Callout";
+import { CommandBar, ICommandBarItemProps } from "office-ui-fabric-react/lib/CommandBar";
 import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
 import { Async, css } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
@@ -17,10 +16,11 @@ import { AriaAttributes } from "roosterjs-react-common";
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
-    RoosterCommandBarButtonRootClassName,
+    RoosterCommandBarButtonClassName,
     RoosterCommandBarIconClassName,
     RoosterCommmandBarButtonKeys as ButtonKeys
 } from "../utils/OutOfBoxCommandBarButtons";
+import { IButton } from "office-ui-fabric-react/lib/Button";
 
 const DisplayNoneStyle = { display: "none" } as React.CSSProperties;
 
@@ -32,6 +32,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     private _updateFormatStateDebounced: () => void;
     private _fileInput: HTMLInputElement;
     private _buttons: RoosterCommandBarButtonInternal[];
+    private _overflowButton: IButton;
 
     constructor(props: RoosterCommandBarProps) {
         super(props);
@@ -40,11 +41,11 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         this._initButtons(props);
 
         this._async = new Async();
-        this._updateFormatStateDebounced = this._async.debounce(() => this._updateFormatState(), 100);
+        this._updateFormatStateDebounced = this._async.debounce(() => this._updateFormatState(), 250);
     }
 
     public render(): JSX.Element {
-        const { className, calloutClassName, calloutOnDismiss, overflowMenuProps, commandBarClassName } = this.props;
+        const { className, calloutClassName, overflowMenuProps, commandBarClassName } = this.props;
 
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
@@ -53,17 +54,21 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                 <CommandBar
                     className={css("rooster-command-bar-base", commandBarClassName)}
                     items={this._buttons}
-                    overflowMenuProps={
-                        {
+                    overflowButtonProps={{
+                        componentRef: this.onOverflowButtonRef,
+                        menuProps: {
+                            items: [],
                             ...overflowMenuProps,
                             calloutProps: {
-                                className: calloutClassName
+                                className: css("rooster-command-bar-overflow-callout", calloutClassName),
+                                directionalHint: DirectionalHint.topCenter,
+                                directionalHintFixed: true
                             } as ICalloutProps,
-                            onDismiss: calloutOnDismiss,
+                            onDismiss: this._overflowCallOutDismiss,
                             className: css("rooster-command-bar-overflow", overflowMenuProps && overflowMenuProps.className),
                             focusZoneProps: { direction: FocusZoneDirection.horizontal }
-                        } as Partial<IContextualMenuProps>
-                    }
+                        }
+                    }}
                 />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>
@@ -96,6 +101,19 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     public refreshFormatState(): void {
         this._updateFormatStateDebounced();
     }
+
+    private _overflowCallOutDismiss = (ev: any): void => {
+        const { calloutOnDismiss } = this.props;
+
+        if (this._overflowButton) {
+            this._overflowButton.dismissMenu();
+        }
+        calloutOnDismiss && calloutOnDismiss(ev);
+    };
+
+    private onOverflowButtonRef = (ref: IButton): void => {
+        this._overflowButton = ref || this._overflowButton;
+    };
 
     private _initButtons(props: RoosterCommandBarProps): void {
         const { buttonOverrides = [], emojiPlugin } = props;
@@ -209,9 +227,10 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
 
         const { strings, calloutClassName, calloutOnDismiss } = this.props;
         const className = commandBarButton.className || "";
-        const rootClassName = className.split(" ").indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
+        // specify one if it isn't already specified
+        const baseClassName = className.split(" ").indexOf(RoosterCommandBarButtonClassName) < 0 ? RoosterCommandBarButtonClassName : undefined;
         // make a copy of the OOB button template since we're changing its properties
-        const button = { ...commandBarButton, className: css(rootClassName, { "first-level": firstLevel }, className) };
+        const button = { ...commandBarButton, className: css(baseClassName, { "first-level": firstLevel }, className) };
 
         if (!button.onRender && button.onRenderParams) {
             button.onRender = getIconOnRenderDelegateWithCustomCacheKey(button.key + this._id, ...button.onRenderParams);
@@ -248,7 +267,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
         return this._createButton(commandBarButton, false);
     };
 
-    private _onCommandBarButtonClick = (button: RoosterCommandBarButtonInternal | IContextualMenuItem) => {
+    private _onCommandBarButtonClick = (button: RoosterCommandBarButtonInternal | ICommandBarItemProps) => {
         const { roosterCommandBarPlugin, onButtonClicked } = this.props;
 
         const editor: Editor = roosterCommandBarPlugin.getEditor();

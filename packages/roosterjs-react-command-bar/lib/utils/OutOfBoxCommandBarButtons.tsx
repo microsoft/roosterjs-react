@@ -31,7 +31,7 @@ import { getIconOnRenderDelegate } from "./getIconOnRenderDelegate";
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from "./OutOfBoxCommandBarButtons.ColorInfo";
 
 export const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
-export const RoosterCommandBarButtonRootClassName = "rooster-command-button-root";
+export const RoosterCommandBarButtonClassName = "rooster-command-bar-button";
 
 export const RoosterCommandBarStringKeys = {
     LinkPrompt: "linkPrompt"
@@ -107,7 +107,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         onRenderParams: ["FabricTextHighlightComposite", { name: "FontColorSwatch", className: "highlight-swatch" }, { name: "FabricTextHighlight" }],
         subMenuProps: {
             className: "rooster-command-bar-color-container",
-            key: "highlight-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
@@ -131,7 +130,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         onRenderParams: ["FontColor", { name: "FontColorSwatch", className: "color-swatch" }, { name: "FontColorA" }],
         subMenuProps: {
             className: "rooster-command-bar-color-container",
-            key: "font-color-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
@@ -181,7 +179,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         iconProps: _getIconProps("FontSize"),
         onRenderParams: [null, { name: "FontSize" }],
         subMenuProps: {
-            key: "header-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             items: [
@@ -265,7 +262,6 @@ OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButtonInternal) => {
     if (!button.onRenderParams) {
         button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
     }
-    button.className = RoosterCommandBarButtonRootClassName;
 });
 
 export const OutOfBoxCommandBarButtonMap = OutOfBoxCommandBarButtons.reduce(

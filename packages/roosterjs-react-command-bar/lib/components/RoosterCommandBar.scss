@@ -3,59 +3,37 @@ $button-color: #212121;
 $buttonHeight: 40px;
 $command-bar-bg-color: white;
 
-@mixin customCommandBarStyles() {
-    // After we upgrade to Fabric 6.0 CommandBar, we'll be able to style without targeting ms-* classes
-    .ms-CommandBar-primaryCommands {
-        margin: 0 4px;
-    }
-
-    .ms-CommandBar-sideCommands {
-        padding: 0;
-    }
-}
-
 :global {
     .rooster-command-bar {
         .rooster-command-bar-base {
             background: $command-bar-bg-color;
-        }
 
-        @include customCommandBarStyles();
-    }
+            margin: 0 4px;
+            padding: 0;
 
-    .rooster-command-button-root {
-        &.first-level:not(:last-child) {
-            padding-right: 2px;
-        }
-
-        &:not(:hover):not(:active) button:not(.is-checked) {
-            background: $command-bar-bg-color;
-            border-color: transparent;
-        }
-
-        button.is-checked {
-            background: #dadada;
-
-            @media screen and (-ms-high-contrast: active) {
-                background-color: Highlight;
-                color: HighlightText;
-                -ms-high-contrast-adjust: none;
+            .ms-OverflowSet-item:not(:last-child) .rooster-command-bar-button.first-level {
+                margin-right: 2px;
             }
         }
     }
 
     .rooster-command-bar-button {
-        min-width: 32px;
-        line-height: $buttonHeight;
-        height: $buttonHeight;
-        border-color: transparent;
-    }
+        &.first-level {
+            min-width: 32px;
+            line-height: $buttonHeight;
+            height: $buttonHeight;
+        }
 
-    html {
-        &[dir='ltr'],
-        &[dir='rtl'] {
-            .rooster-command-bar {
-                @include customCommandBarStyles();
+        &:not(:hover):not(:active):not(.is-checked) {
+            background: $command-bar-bg-color;
+            border-color: transparent;
+        }
+
+        &.is-checked {
+            @media screen and (-ms-high-contrast: active) {
+                background-color: Highlight;
+                color: HighlightText;
+                -ms-high-contrast-adjust: none;
             }
         }
     }
@@ -119,7 +97,7 @@ $command-bar-bg-color: white;
                 font-style: normal;
 
                 &:before {
-                    content: '🙂';
+                    content: "🙂";
                 }
             }
         }
@@ -129,8 +107,8 @@ $command-bar-bg-color: white;
         }
     }
 
-    .rooster-command-bar-overflow {
-        div {
+    .rooster-command-bar-overflow-callout .rooster-command-bar-overflow {
+        &, div {
             min-width: 0;
         }
 
@@ -199,7 +177,7 @@ $command-bar-bg-color: white;
             border: 0;
 
             &:before {
-                content: '';
+                content: "";
                 position: absolute;
                 left: 0;
                 right: 0;

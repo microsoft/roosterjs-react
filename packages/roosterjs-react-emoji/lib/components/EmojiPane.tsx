@@ -1,6 +1,6 @@
 import { Callout, DirectionalHint, ICalloutProps } from "office-ui-fabric-react/lib/Callout";
 import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { TextField } from "office-ui-fabric-react/lib/TextField";
+import { TextField, ITextField } from "office-ui-fabric-react/lib/TextField";
 import { KeyCodes } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
 import { AriaAttributes, css, NullFunction, Strings } from "roosterjs-react-common";
@@ -83,7 +83,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     private static IdCounter = 0;
 
     private _baseId = EmojiPane.IdCounter++;
-    private _searchBox: TextField;
+    private _searchBox: ITextField;
     private _listId = `EmojiPane${this._baseId}`;
     private _emojiBody: HTMLElement;
     private _input: HTMLInputElement;
@@ -240,7 +240,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                 {!searchDisabled && (
                     <TextField
                         role="combobox"
-                        ref={this._searchRefCallback}
+                        componentRef={this._searchRefCallback}
                         value={this.state.searchInBox}
                         onChanged={this._onSearchChange}
                         inputClassName={Styles.emojiTextInput}
@@ -387,7 +387,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         return `family_${itemKey}_${this._baseId}`;
     };
 
-    private _searchRefCallback = (ref: TextField): void => {
+    private _searchRefCallback = (ref: ITextField): void => {
         this._searchBox = ref;
         if (this._searchBox) {
             this._searchBox.focus();
