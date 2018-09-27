@@ -44,7 +44,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
     }
 
     public render(): JSX.Element {
-        const { className, calloutClassName, calloutOnDismiss, overflowMenuProps, commandBarClassName } = this.props;
+        const { className, calloutClassName, calloutOnDismiss, overflowMenuProps, commandBarClassName, ellipsisAriaLabel } = this.props;
 
         // with the newest changes on the editor, refresh the buttons (e.g. bold button being selected if text selected is bold and header being checked if used)
         this._buttons.forEach(this._refreshButtonStates);
@@ -64,6 +64,7 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                             focusZoneProps: { direction: FocusZoneDirection.horizontal }
                         } as Partial<IContextualMenuProps>
                     }
+                    elipisisAriaLabel={ellipsisAriaLabel}
                 />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>

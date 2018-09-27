@@ -20,6 +20,7 @@ export interface RoosterCommandBarProps {
     onButtonClicked?: (buttonKey: string) => void;
     overflowMenuProps?: Partial<IContextualMenuProps>;
     disableListWorkaround?: boolean;
+    ellipsisAriaLabel?: string;
 }
 
 export interface RoosterCommandBarState {

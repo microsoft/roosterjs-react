@@ -139,7 +139,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         calloutOnDismiss,
                         strings: {
                             [InsertLinkStringKeys.InsertButton]: "Insert Link",
-                            [InsertLinkStringKeys.CancelButton]: "X",
+                            [InsertLinkStringKeys.CancelButton]: "Close",
                             [InsertLinkStringKeys.Title]: "Insert link",
                             [InsertLinkStringKeys.LinkFieldLabel]: "Url"
                         },
