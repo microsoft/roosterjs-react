@@ -1,7 +1,7 @@
 import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from "roosterjs-editor-api";
 import { Editor, EditorPlugin } from "roosterjs-editor-core";
 import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
-import { css, NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from "roosterjs-react-common";
+import { NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from "roosterjs-react-common";
 
 import { createLinkDialog, LinkDialogProps } from "../components/LinkDialog";
 import RoosterCommandBar from "../components/RoosterCommandBar";
