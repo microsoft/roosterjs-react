@@ -1,4 +1,6 @@
-import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/components/Button";
+import * as Styles from "./LinkDialog.scss.g";
+
+import { DefaultButton, PrimaryButton } from "office-ui-fabric-react/lib/Button";
 import { Dialog, DialogFooter, DialogType } from "office-ui-fabric-react/lib/Dialog";
 import { ITextField, TextField } from "office-ui-fabric-react/lib/TextField";
 import { css, KeyCodes } from "office-ui-fabric-react/lib/Utilities";
@@ -16,9 +18,8 @@ export const InsertLinkStringKeys = {
 };
 
 export interface LinkDialogProps {
-    calloutClassName?: string;
-    calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     className?: string;
+    onDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     editor: Editor;
     strings?: Strings;
 }
@@ -37,7 +38,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
     }
 
     public render(): JSX.Element {
-        const { strings = {}, calloutClassName, className } = this.props;
+        const { strings = {}, className } = this.props;
 
         return (
             <Dialog
@@ -45,7 +46,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
                 dialogContentProps={{ type: DialogType.normal, title: strings[InsertLinkStringKeys.Title] }}
                 hidden={false}
                 modalProps={{ isBlocking: true }}
-                className={css(calloutClassName, className)}
+                className={css(Styles.modal, className)}
             >
                 <TextField
                     label={strings[InsertLinkStringKeys.LinkFieldLabel] || "Link"}
@@ -90,18 +91,24 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
     };
 
     private dismissDialog = (ev?: React.MouseEvent<HTMLButtonElement>): void => {
-        const { editor, calloutOnDismiss = NullFunction } = this.props;
-        calloutOnDismiss(ev as any);
+        const { editor, onDismiss = NullFunction } = this.props;
+        onDismiss(ev as any);
         editor && !editor.isDisposed() && editor.restoreSavedRange();
     };
 }
 
 export function createLinkDialog(doc: Document, props: LinkDialogProps): () => void {
+    const { editor, onDismiss } = props;
+
     let container = doc.createElement("div");
     doc.body.appendChild(container);
     const dispose = (): void => {
         if (container) {
             ReactDOM.unmountComponentAtNode(container);
+            // hack to clear placeholder and also to get cursor visible again in Firefox
+            container.setAttribute("tabindex", "0");
+            container.focus();
+            editor && !editor.isDisposed() && editor.focus();
             container.parentElement.removeChild(container);
             container = null;
         }
@@ -110,9 +117,9 @@ export function createLinkDialog(doc: Document, props: LinkDialogProps): () => v
     ReactDOM.render(
         <LinkDialog
             {...props}
-            calloutOnDismiss={(ev: React.FocusEvent<HTMLElement>): void => {
+            onDismiss={(ev: React.FocusEvent<HTMLElement>): void => {
                 dispose();
-                props.calloutOnDismiss && props.calloutOnDismiss(ev);
+                onDismiss && onDismiss(ev);
             }}
         />,
         container
