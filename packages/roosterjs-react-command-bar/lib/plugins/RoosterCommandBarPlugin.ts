@@ -150,7 +150,7 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     }
 
     public promptForLink(): void {
-        const { strings = {}, calloutOnDismiss: onDismiss, calloutClassName, linkDialogClassName } = this.options;
-        this.dialogDismiss = createLinkDialog(document, { editor: this.editor, strings, onDismiss, className: css(calloutClassName, linkDialogClassName) } as LinkDialogProps);
+        const { strings = {}, calloutOnDismiss: onDismiss, calloutClassName, linkDialogClassName: className } = this.options;
+        this.dialogDismiss = createLinkDialog(document, { editor: this.editor, strings, onDismiss, className } as LinkDialogProps, calloutClassName);
     }
 }
