@@ -121,6 +121,7 @@ export function createLinkDialog(doc: Document, props: LinkDialogProps, calloutC
         }
     };
 
+    editor && !editor.isDisposed() && editor.saveSelectionRange();
     ReactDOM.render(
         <LinkDialog
             {...props}
