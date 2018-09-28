@@ -7,6 +7,7 @@ export { default as ImageManager, ImageManagerInteface, ImageManagerOptions, Upd
 export { default as ContentChangedPlugin } from './plugins/ContentChangedPlugin';
 export { default as DoubleClickImagePlugin } from './plugins/DoubleClickImagePlugin';
 export { default as PasteImagePlugin } from './plugins/PasteImagePlugin';
+export { default as IgnorePasteImagePlugin } from './plugins/IgnorePasteImagePlugin';
 export { default as UndoWithImagePlugin } from './plugins/UndoWithImagePlugin';
 export { Base64Svgs } from './resources/Images';
 export { LeanRoosterPlugin } from './schema/RoosterReactPlugin';

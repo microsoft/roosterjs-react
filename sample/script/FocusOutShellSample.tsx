@@ -5,6 +5,7 @@ import {
     ContentChangedPlugin,
     createEditorViewState,
     DoubleClickImagePlugin,
+    EmojiPaneProps,
     EmojiPlugin,
     EmojiPluginOptions,
     FocusEventHandler,
@@ -12,6 +13,7 @@ import {
     ImageManager,
     ImageManagerOptions,
     ImageResize,
+    InsertLinkStringKeys,
     LeanRooster,
     LeanRoosterModes,
     PasteImagePlugin,
@@ -21,10 +23,8 @@ import {
     RoosterShortcutCommands,
     TableResize,
     UndoWithImagePlugin,
-    EmojiPaneProps,
-    InsertLinkStringKeys
 } from "roosterjs-react";
-import { EmojiDescriptionStrings, EmojiKeywordStrings, EmojiFamilyStrings } from "roosterjs-react-emoji-resources";
+import { EmojiDescriptionStrings, EmojiFamilyStrings, EmojiKeywordStrings } from "roosterjs-react-emoji-resources";
 
 import { initializeIcons } from "../fabric/src";
 
