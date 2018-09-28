@@ -3,12 +3,12 @@ import { BeforePasteEvent, PasteOption, PluginEvent, PluginEventType } from "roo
 
 export default class IgnorePasteImagePlugin implements EditorPlugin {
     private editor: Editor;
-    private static _Instance = new IgnorePasteImagePlugin();
+    private static InternalInstance = new IgnorePasteImagePlugin();
 
     private constructor() {}
 
     public static get Instance(): IgnorePasteImagePlugin {
-        return IgnorePasteImagePlugin._Instance;
+        return IgnorePasteImagePlugin.InternalInstance;
     }
 
     public initialize(editor: Editor): void {
