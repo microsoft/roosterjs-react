@@ -174,7 +174,6 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         let emoji: Emoji;
         switch (keyboardEvent.which) {
             case KeyCodes.enter:
-            case KeyCodes.space:
                 // check if selection is on the "..." and show full picker if so, otherwise try to apply emoji
                 if (this._tryShowFullPicker(event, selectedEmoji, wordBeforeCursor)) {
                     break;
