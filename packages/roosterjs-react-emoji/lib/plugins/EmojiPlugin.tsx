@@ -67,7 +67,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     public dispose(): void {
-        this.setIsSuggesting(false);
+        this._setIsSuggesting(false);
         if (this._contentDiv) {
             ReactDOM.unmountComponentAtNode(this._contentDiv);
             this._contentDiv.parentElement.removeChild(this._contentDiv);
@@ -108,11 +108,22 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         } else if (event.eventType === PluginEventType.MouseUp) {
             // If MouseUp, the emoji cannot be undone
             this._canUndoEmoji = false;
-            this.setIsSuggesting(false, event.rawEvent);
+            this._setIsSuggesting(false);
         }
     }
 
-    public setIsSuggesting(isSuggesting: boolean, ev?: MouseEvent): void {
+    public startEmoji(startingString: string = ":"): void {
+        const { _editor: editor } = this;
+        if (!editor) {
+            return;
+        }
+
+        this._setIsSuggesting(true);
+        editor.insertContent(startingString);
+        this._triggerChangeEvent();
+    }
+
+    private _setIsSuggesting(isSuggesting: boolean, restoreSavedRange: boolean = true): void {
         if (this._isSuggesting === isSuggesting) {
             return;
         }
@@ -135,19 +146,8 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
             ReactDOM.unmountComponentAtNode(this._contentDiv);
 
             this._removeAutoCompleteAriaAttributes();
-            this._editor.restoreSavedRange();
+            restoreSavedRange && this._editor.restoreSavedRange();
         }
-    }
-
-    public startEmoji(startingString: string = ":"): void {
-        const { _editor: editor } = this;
-        if (!editor) {
-            return;
-        }
-
-        this.setIsSuggesting(true);
-        editor.insertContent(startingString);
-        this._triggerChangeEvent();
     }
 
     private _removeAutoCompleteAriaAttributes(): void {
@@ -173,6 +173,9 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
         let emoji: Emoji;
         switch (keyboardEvent.which) {
+            case KeyCodes.space:
+                this._setIsSuggesting(false, false);
+                break;
             case KeyCodes.enter:
                 // check if selection is on the "..." and show full picker if so, otherwise try to apply emoji
                 if (this._tryShowFullPicker(event, selectedEmoji, wordBeforeCursor)) {
@@ -194,7 +197,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
                 this._handleEventOnKeyDown(event);
                 break;
             case KeyCodes.escape:
-                this.setIsSuggesting(false);
+                this._setIsSuggesting(false);
                 this._handleEventOnKeyDown(event);
         }
 
@@ -241,7 +244,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
                 }
             }, EMOJI_SEARCH_DELAY);
         } else {
-            this.setIsSuggesting(false);
+            this._setIsSuggesting(false);
         }
     }
 
@@ -254,7 +257,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         const wordBeforeCursor = this._getWordBeforeCursor(event);
         if ((keyboardEvent.which === KEYCODE_COLON || keyboardEvent.which === KEYCODE_COLON_FIREFOX) && wordBeforeCursor === ":") {
             const { onKeyboardTriggered = NullFunction } = this.options;
-            this.setIsSuggesting(true);
+            this._setIsSuggesting(true);
             onKeyboardTriggered();
         } else if (wordBeforeCursor) {
             const cursorData = cacheGetCursorEventData(event, this._editor);
@@ -301,7 +304,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         inserted && this._triggerChangeEvent();
 
         this._tryPatchEmojiFont();
-        this.setIsSuggesting(false);
+        this._setIsSuggesting(false);
 
         return inserted;
     }
@@ -375,7 +378,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     private _calloutOnDismissInternal = (ev?: any): void => {
-        this.setIsSuggesting(false);
+        this._setIsSuggesting(false);
         if (this.options.calloutOnDismiss) {
             this.options.calloutOnDismiss(ev);
         }
