@@ -22,6 +22,7 @@ export interface LinkDialogProps {
     onDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     editor: Editor;
     strings?: Strings;
+    selectionRange?: Range;
 }
 
 export interface LinkDialogState {
@@ -30,6 +31,7 @@ export interface LinkDialogState {
 
 class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
     private linkField: ITextField;
+    private linkInserted: boolean;
 
     constructor(props: LinkDialogProps) {
         super(props);
@@ -84,20 +86,22 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
     };
 
     private insertLink = (): void => {
-        const { editor } = this.props;
+        const { editor, selectionRange } = this.props;
 
         if (!this.linkField || !editor || editor.isDisposed()) {
             return;
         }
 
+        editor && !editor.isDisposed() && editor.updateSelection(selectionRange);
+        this.linkInserted = true; // don't need to restore the selection after dismiss if we're changing selection into a link
         createLink(editor, this.linkField.value);
         this.dismissDialog();
     };
 
     private dismissDialog = (ev?: React.MouseEvent<HTMLButtonElement>): void => {
-        const { editor, onDismiss = NullFunction } = this.props;
+        const { editor, onDismiss = NullFunction, selectionRange } = this.props;
         onDismiss(ev as any);
-        editor && !editor.isDisposed() && editor.restoreSavedRange();
+        !this.linkInserted && editor && !editor.isDisposed() && editor.updateSelection(selectionRange);
     };
 }
 
@@ -121,10 +125,14 @@ export function createLinkDialog(doc: Document, props: LinkDialogProps, calloutC
         }
     };
 
-    editor && !editor.isDisposed() && editor.saveSelectionRange();
+    // for the case that selection isn't tracked, we need to save the selection before bringing up the dialog
+    // and from there, we need to restore it before converting the selected text into a link or restore
+    // the selection if the dialog was cancelled
+    const selectionRange = editor && !editor.isDisposed() ? editor.getSelectionRange() : null;
     ReactDOM.render(
         <LinkDialog
             {...props}
+            selectionRange={selectionRange}
             onDismiss={(ev: React.FocusEvent<HTMLElement>): void => {
                 dispose();
                 onDismiss && onDismiss(ev);
