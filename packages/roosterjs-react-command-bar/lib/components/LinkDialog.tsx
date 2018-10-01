@@ -63,6 +63,10 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
         );
     }
 
+    public componentDidMount(): void {
+        this.linkField && this.linkField.focus();
+    }
+
     private onLinkFieldRef = (ref: ITextField): void => {
         this.linkField = ref;
     };
@@ -105,7 +109,7 @@ export function createLinkDialog(doc: Document, props: LinkDialogProps, calloutC
     const dispose = (): void => {
         if (container) {
             ReactDOM.unmountComponentAtNode(container);
-            
+
             // hack to clear placeholder and also for Firefox, to get cursor visible again
             container.setAttribute("tabindex", "0");
             calloutClassName && container.setAttribute("class", calloutClassName);
@@ -117,6 +121,7 @@ export function createLinkDialog(doc: Document, props: LinkDialogProps, calloutC
         }
     };
 
+    editor && !editor.isDisposed() && editor.saveSelectionRange();
     ReactDOM.render(
         <LinkDialog
             {...props}

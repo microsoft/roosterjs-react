@@ -27,21 +27,6 @@ $command-bar-bg-color: white;
         &.first-level:not(:last-child) {
             padding-right: 2px;
         }
-
-        &:not(:hover):not(:active) button:not(.is-checked) {
-            background: $command-bar-bg-color;
-            border-color: transparent;
-        }
-
-        button.is-checked {
-            background: #dadada;
-
-            @media screen and (-ms-high-contrast: active) {
-                background-color: Highlight;
-                color: HighlightText;
-                -ms-high-contrast-adjust: none;
-            }
-        }
     }
 
     .rooster-command-bar-button {
@@ -52,8 +37,8 @@ $command-bar-bg-color: white;
     }
 
     html {
-        &[dir='ltr'],
-        &[dir='rtl'] {
+        &[dir="ltr"],
+        &[dir="rtl"] {
             .rooster-command-bar {
                 @include customCommandBarStyles();
             }
@@ -115,17 +100,63 @@ $command-bar-bg-color: white;
         .rooster-command-bar-icon {
             color: $button-color;
 
+            @media screen and (-ms-high-contrast: active) {
+                color: ButtonText;
+            }
+
             &.rooster-emoji {
                 font-style: normal;
 
                 &:before {
-                    content: '🙂';
+                    content: "🙂";
                 }
             }
         }
 
-        button:hover:not([disabled]) .rooster-command-bar-icon {
-            color: $button-color;
+        // don't override the hover, active, and focus state
+        button:not(:hover):not(:active):not(:focus):not(.is-checked) {
+            background: $command-bar-bg-color;
+            border-color: transparent;
+        }
+
+        button:hover:not([disabled]) {
+            @media screen and (-ms-high-contrast: active) {
+                &::after {
+                    content: "";
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    bottom: 0;
+                    right: 0;
+                    border: 1px solid WindowText;
+                }
+            }
+
+            .rooster-command-bar-icon {
+                color: $button-color;
+
+                @media screen and (-ms-high-contrast: active) {
+                    color: ButtonText;
+                }
+            }
+        }
+
+        button.is-checked {
+            background: #dadada;
+
+            @media screen and (-ms-high-contrast: active) {
+                &,
+                &:hover,
+                &:active {
+                    background-color: Highlight;
+                    -ms-high-contrast-adjust: none;
+
+                    &,
+                    .rooster-command-bar-icon {
+                        color: HighlightText;
+                    }
+                }
+            }
         }
     }
 
@@ -199,7 +230,7 @@ $command-bar-bg-color: white;
             border: 0;
 
             &:before {
-                content: '';
+                content: "";
                 position: absolute;
                 left: 0;
                 right: 0;

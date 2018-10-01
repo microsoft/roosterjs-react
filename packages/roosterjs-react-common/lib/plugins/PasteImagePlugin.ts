@@ -1,14 +1,14 @@
-import { Editor, EditorPlugin } from 'roosterjs-editor-core';
-import { BeforePasteEvent, ExtractContentEvent, PasteOption, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
+import { Editor, EditorPlugin } from "roosterjs-editor-core";
+import { BeforePasteEvent, ExtractContentEvent, PasteOption, PluginEvent, PluginEventType } from "roosterjs-editor-types";
 
-import { hasPlaceholder, ImageManagerInteface, PlaceholderDataAttribute } from '../utils/ImageManager';
+import { hasPlaceholder, ImageManagerInteface, PlaceholderDataAttribute } from "../utils/ImageManager";
 
-const PlaceholderRegex = new RegExp(`<img [^>]*${PlaceholderDataAttribute}="\\d+"[^>]*>`, 'gm');
+const PlaceholderRegex = new RegExp(`<img [^>]*${PlaceholderDataAttribute}="\\d+"[^>]*>`, "gm");
 
 export default class PasteImagePlugin implements EditorPlugin {
     private editor: Editor;
 
-    constructor(private imageManager: ImageManagerInteface) {}
+    constructor(private imageManager: ImageManagerInteface, private preventImagePaste: boolean = false) {}
 
     public initialize(editor: Editor): void {
         this.editor = editor;
@@ -26,7 +26,7 @@ export default class PasteImagePlugin implements EditorPlugin {
             const content = extractContentEvent.content;
             const runRemove = hasPlaceholder(content);
             if (runRemove) {
-                extractContentEvent.content = content.replace(PlaceholderRegex, '');
+                extractContentEvent.content = content.replace(PlaceholderRegex, "");
             }
 
             return;
@@ -41,12 +41,18 @@ export default class PasteImagePlugin implements EditorPlugin {
         }
 
         // handle only before paste and image paste
-        const image = beforePasteEvent.clipboardData.image;
         const editor = this.getEditor();
         if (!editor) {
             return;
         }
 
+        // prevent pasting of image by telling the handler to interpret the paste as text
+        if (this.preventImagePaste) {
+            beforePasteEvent.pasteOption = PasteOption.PasteText;
+            return;
+        }
+
+        const image = beforePasteEvent.clipboardData.image;
         const placeholder: HTMLElement = this.imageManager.upload(editor, image);
         if (placeholder === null) {
             return;
@@ -56,6 +62,10 @@ export default class PasteImagePlugin implements EditorPlugin {
         beforePasteEvent.fragment.appendChild(placeholder);
         beforePasteEvent.clipboardData.html = placeholder.outerHTML;
         beforePasteEvent.pasteOption = PasteOption.PasteHtml;
+    }
+
+    public setPreventImagePaste(enabled: boolean = true): void {
+        this.preventImagePaste = enabled;
     }
 
     public getEditor(): Editor {
