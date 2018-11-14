@@ -1,7 +1,7 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
-import * as React from 'react';
-import { browserData } from 'roosterjs-editor-core';
-import { closest, css, NullFunction } from 'roosterjs-react-common';
+import * as React from "react";
+import { browserData } from "roosterjs-editor-core";
+import { closest, css, NullFunction } from "roosterjs-react-common";
 
 export type FocusEventHandler = (ev: React.FocusEvent<HTMLElement>) => void;
 
@@ -10,7 +10,7 @@ export interface FocusOutShellProps {
     className?: string;
     onBlur?: FocusEventHandler;
     onFocus?: FocusEventHandler;
-    onRenderContent: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
+    children: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
 }
 
 export interface FocusOutShellState {
@@ -18,7 +18,7 @@ export interface FocusOutShellState {
 }
 
 export default class FocusOutShell extends React.PureComponent<FocusOutShellProps, FocusOutShellState> {
-    private static readonly BaseClassName = 'focus-out-shell';
+    private static readonly BaseClassName = "focus-out-shell";
     private static readonly CalloutClassName = `${FocusOutShell.BaseClassName}-callout`;
     private static NextId = 0;
 
@@ -32,15 +32,16 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     }
 
     public render(): JSX.Element {
-        const { className, onRenderContent } = this.props;
+        const { className, children } = this.props;
         return (
             <div
-                className={css(FocusOutShell.BaseClassName, className, { 'is-focused': this.state.isFocused })}
+                className={css(FocusOutShell.BaseClassName, className, { "is-focused": this.state.isFocused })}
                 ref={this._containerDivOnRef}
                 onBlur={this._onBlur}
                 onFocus={this._onFocus}
-                onMouseDown={this._onMouseDown}>
-                {onRenderContent(this._calloutClassName, this._calloutOnDismiss)}
+                onMouseDown={this._onMouseDown}
+            >
+                {children(this._calloutClassName, this._calloutOnDismiss)}
             </div>
         );
     }
@@ -98,10 +99,13 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
     private _onFocus = (ev: React.FocusEvent<HTMLElement>): void => {
         if (!this.state.isFocused) {
             const { onFocus = NullFunction } = this.props;
-
-            this.setState({ isFocused: true });
             onFocus(ev);
         }
+    };
+
+    // React onFocus isn't reliable, hook into native version instead
+    private _onFocusNative = (ev: FocusEvent): void => {
+        this.setState({ isFocused: true });
     };
 
     private _onMouseDown = (ev: React.MouseEvent<HTMLElement>): void => {
@@ -117,5 +121,12 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
 
     private _containerDivOnRef = (ref: HTMLDivElement): void => {
         this._containerDiv = ref;
+        const eventName = "focusin";
+        if (this._containerDiv) {
+            this._containerDiv.removeEventListener(eventName, this._onFocusNative);
+        }
+        if (ref) {
+            ref.addEventListener(eventName, this._onFocusNative);
+        }
     };
 }
