@@ -88,7 +88,7 @@ const macCommands: ShortcutCommand[] = [
         which: KeyCodes.k,
         command: RoosterShortcutCommands.InsertLink
     },
-    // Insert link for Mac: Command (meta) + space
+    // Clear format for Mac: Command (meta) + space
     {
         metaKey: true,
         ctrlKey: false,
@@ -163,7 +163,7 @@ const winCommands: ShortcutCommand[] = [
         which: KeyCodes.k,
         command: RoosterShortcutCommands.InsertLink
     },
-    // Insert link for Windows: Ctrl + space
+    // Clear format for Windows: Ctrl + space
     {
         metaKey: false,
         ctrlKey: true,
