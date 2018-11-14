@@ -142,7 +142,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         return -1;
     }
 
-    public getSelecteElementId(index: number): string {
+    public getEmojiElementIdByIndex(index: number): string {
         const { currentEmojiList } = this.state;
         const emoji = currentEmojiList[index];
         if (emoji) {

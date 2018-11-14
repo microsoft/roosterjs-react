@@ -4,7 +4,6 @@ import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
 import { IIconProps } from "office-ui-fabric-react/lib/Icon";
 import * as React from "react";
 import {
-    clearFormat,
     removeLink,
     setBackgroundColor,
     setIndentation,
@@ -232,12 +231,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         name: "Clear format",
         iconProps: _getIconProps("ClearFormatting"),
         onRender: getIconOnRenderDelegate("ClearFormatting", { name: "ClearFormattingA" }, { name: "ClearFormattingEraser" }),
-        handleChange: (editor: Editor) => {
-            editor.addUndoSnapshot(() => {
-                clearFormat(editor);
-                toggleHeader(editor, 0);
-            });
-        }
+        handleChange: (editor: Editor, props: RoosterCommandBarProps) => props.roosterCommandBarPlugin.clearFormat()
     },
     {
         key: RoosterCommmandBarButtonKeys.InsertImage,
