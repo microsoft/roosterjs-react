@@ -1,4 +1,4 @@
-import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline } from "roosterjs-editor-api";
+import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline, clearFormat, toggleHeader } from "roosterjs-editor-api";
 import { Editor, EditorPlugin } from "roosterjs-editor-core";
 import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
 import { NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from "roosterjs-react-common";
@@ -121,6 +121,9 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
             case RoosterShortcutCommands.InsertLink:
                 this.promptForLink();
                 break;
+            case RoosterShortcutCommands.ClearFormat:
+                this.clearFormat();
+                break;
             default:
                 commandExecuted = false;
         }
@@ -152,5 +155,14 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     public promptForLink(): void {
         const { strings = {}, calloutOnDismiss: onDismiss, calloutClassName, linkDialogClassName: className } = this.options;
         this.dialogDismiss = createLinkDialog(document, { editor: this.editor, strings, onDismiss, className } as LinkDialogProps, calloutClassName);
+    }
+
+    public clearFormat(): void {
+        const editor = this.editor;
+
+        this.editor.addUndoSnapshot(() => {
+            clearFormat(editor);
+            toggleHeader(editor, 0);
+        });
     }
 }

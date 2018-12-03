@@ -6,4 +6,5 @@ export default interface RoosterCommandBarPluginInterface {
     registerRoosterCommandBar: (commandBar: RoosterCommandBar) => void;
     unregisterRoosterCommandBar: (commandBar: RoosterCommandBar) => void;
     promptForLink: () => void;
+    clearFormat: () => void;
 }

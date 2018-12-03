@@ -11,7 +11,8 @@ export const enum RoosterShortcutCommands {
     Redo = 'Redo',
     Bullet = 'Bullet',
     Numbering = 'Numbering',
-    InsertLink = 'InsertLink'
+    InsertLink = 'InsertLink',
+    ClearFormat = 'ClearFormat'
 }
 
 interface ShortcutCommand {
@@ -86,6 +87,14 @@ const macCommands: ShortcutCommand[] = [
         shiftKey: false,
         which: KeyCodes.k,
         command: RoosterShortcutCommands.InsertLink
+    },
+    // Clear format for Mac: Command (meta) + space
+    {
+        metaKey: true,
+        ctrlKey: false,
+        shiftKey: false,
+        which: KeyCodes.space,
+        command: RoosterShortcutCommands.ClearFormat
     }
 ];
 
@@ -153,6 +162,14 @@ const winCommands: ShortcutCommand[] = [
         shiftKey: false,
         which: KeyCodes.k,
         command: RoosterShortcutCommands.InsertLink
+    },
+    // Clear format for Windows: Ctrl + space
+    {
+        metaKey: false,
+        ctrlKey: true,
+        shiftKey: false,
+        which: KeyCodes.space,
+        command: RoosterShortcutCommands.ClearFormat
     }
 ];
 

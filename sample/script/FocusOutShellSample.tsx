@@ -22,7 +22,7 @@ import {
     RoosterCommmandBarButtonKeys as ButtonKeys,
     RoosterShortcutCommands,
     TableResize,
-    UndoWithImagePlugin,
+    UndoWithImagePlugin
 } from "roosterjs-react";
 import { EmojiDescriptionStrings, EmojiFamilyStrings, EmojiKeywordStrings } from "roosterjs-react-emoji-resources";
 
@@ -117,11 +117,8 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
     let emojiPlugin: EmojiPlugin = null;
 
     return (
-        <FocusOutShell
-            allowMouseDown={focusOutShellAllowMouseDown}
-            onBlur={focusOutShellOnBlur}
-            onFocus={focusOutShellOnFocus}
-            onRenderContent={(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
+        <FocusOutShell allowMouseDown={focusOutShellAllowMouseDown} onBlur={focusOutShellOnBlur} onFocus={focusOutShellOnFocus}>
+            {(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
                 emojiPlugin =
                     emojiPlugin ||
                     new EmojiPlugin({
@@ -201,7 +198,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                     />
                 ];
             }}
-        />
+        </FocusOutShell>
     );
 }
 

@@ -138,7 +138,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
                 if (_contentEditable) {
                     _contentEditable.setAttribute(AriaAttributes.AutoComplete, "list");
                     _contentEditable.setAttribute(AriaAttributes.Owns, this._pane.listId);
-                    _contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(0));
+                    _contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getEmojiElementIdByIndex(0));
                 }
             }, 0);
             this._editor.saveSelectionRange();
@@ -174,7 +174,12 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         let emoji: Emoji;
         switch (keyboardEvent.which) {
             case KeyCodes.space:
-                this._setIsSuggesting(false, false);
+                // We only want to insert on space if the word before the cursor is a shortcut
+                emoji = wordBeforeCursor ? matchShortcut(wordBeforeCursor) : null;
+                if (!emoji) {
+                    this._setIsSuggesting(false, false);
+                }
+
                 break;
             case KeyCodes.enter:
                 // check if selection is on the "..." and show full picker if so, otherwise try to apply emoji
@@ -192,7 +197,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
             case KeyCodes.right:
                 const nextIndex = this._pane.navigate(keyboardEvent.which === KeyCodes.left ? -1 : 1);
                 if (nextIndex >= 0) {
-                    this._contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getSelecteElementId(nextIndex));
+                    this._contentEditable.setAttribute(AriaAttributes.ActiveDescendant, this._pane.getEmojiElementIdByIndex(nextIndex));
                 }
                 this._handleEventOnKeyDown(event);
                 break;
