@@ -34,7 +34,6 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
 
     private editor: Editor;
     private commandBars: RoosterCommandBar[] = [];
-    private insertLinkDialogContainer: HTMLDivElement;
     private dialogDismiss: () => void;
 
     constructor(private options: RoosterCommandBarPluginOptions = {}) {}
@@ -42,16 +41,13 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
     public initialize(editor: Editor): void {
         this.editor = editor;
 
-        if (!editor || this.insertLinkDialogContainer) {
+        if (!editor) {
             return;
         }
         const doc = this.editor.getDocument();
         if (!doc) {
             return;
         }
-
-        this.insertLinkDialogContainer = doc.createElement("div");
-        doc.body.appendChild(this.insertLinkDialogContainer);
     }
 
     public dispose(): void {

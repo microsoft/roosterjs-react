@@ -1,9 +1,9 @@
 import EditorViewState from '../schema/EditorViewState';
-import { sanitizeHtml } from 'roosterjs-editor-dom';
+import { HtmlSanitizer, SanitizeHtmlOptions } from 'roosterjs-html-sanitizer';
 
-export default function createEditorViewState(initialContent?: string): EditorViewState {
+export default function createEditorViewState(initialContent?: string, options?: SanitizeHtmlOptions): EditorViewState {
     return {
-        content: sanitizeHtml(initialContent) || '',
+        content: HtmlSanitizer.sanitizeHtml(initialContent, options) || '',
         isDirty: false
     };
 }

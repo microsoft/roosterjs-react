@@ -102,7 +102,14 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
         leanRooster.mode = LeanRoosterModes.Edit;
     };
+
+    let suppressBlur = false;
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
+        if (suppressBlur) {
+            suppressBlur = false;
+            return;
+        }
+
         console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
         imageResizePlugin.hideResizeHandle();
@@ -192,7 +199,14 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         calloutOnDismiss={calloutOnDismiss}
                         imageManager={imageManager}
                         ref={commandBarOnRef}
-                        onButtonClicked={buttonKey => console.log(buttonKey)}
+                        onButtonClicked={buttonKey => {
+                            if (buttonKey === ButtonKeys.InsertImage) {
+                                suppressBlur = true;
+                            }
+
+                            console.log(buttonKey)
+
+                        }}
                         overflowMenuProps={{ className: "custom-overflow" }}
                         disableListWorkaround={true}
                     />
