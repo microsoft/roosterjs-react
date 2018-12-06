@@ -1,7 +1,7 @@
 import "./LeanRooster.scss.g";
 
 import * as React from "react";
-import { Editor, EditorOptions, EditorPlugin, Undo, UndoService } from "roosterjs-editor-core";
+import { Editor, EditorOptions, EditorPlugin, Undo, UndoService, CoreApiMap } from "roosterjs-editor-core";
 import { isNodeEmpty } from "roosterjs-editor-dom";
 import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from "roosterjs-editor-plugins";
 import { DefaultFormat } from "roosterjs-editor-types";
@@ -41,6 +41,7 @@ export interface LeanRoosterProps {
     contentEditFeatures?: ContentEditFeatures;
     defaultFormat?: DefaultFormat;
     enableRestoreSelectionOnFocus?: boolean;
+    coreApiOverride?: Partial<CoreApiMap>;
     plugins?: LeanRoosterPlugin[];
     undo?: UndoService;
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
@@ -281,7 +282,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     private _createEditorOptions(): EditorOptions {
-        const { plugins: additionalPlugins = [], undo = new Undo(), defaultFormat = {}, contentEditFeatures, enableRestoreSelectionOnFocus } = this.props;
+        const { plugins: additionalPlugins = [], undo = new Undo(), defaultFormat = {}, contentEditFeatures, enableRestoreSelectionOnFocus, coreApiOverride } = this.props;
         const plugins: EditorPlugin[] = [
             new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, smartOrderedList: true, ...contentEditFeatures }),
             new HyperLink(this._hyperlinkToolTipCallback),
@@ -291,7 +292,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         const disableRestoreSelectionOnFocus = !enableRestoreSelectionOnFocus;
 
         // Important: don't set the initial content, the content editable already starts with initial HTML content
-        return { plugins, defaultFormat, undo, disableRestoreSelectionOnFocus, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */ };
+        return { plugins, defaultFormat, undo, disableRestoreSelectionOnFocus, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */, coreApiOverride };
     }
 
     private _hyperlinkToolTipCallback = (href: string): string => {
