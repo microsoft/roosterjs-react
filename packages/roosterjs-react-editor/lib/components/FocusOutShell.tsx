@@ -11,6 +11,7 @@ export interface FocusOutShellProps {
     onBlur?: FocusEventHandler;
     onFocus?: FocusEventHandler;
     children: (calloutClassName: string, calloutOnDismiss: FocusEventHandler) => React.ReactNode;
+    shouldCallBlur?: (nextTarget: HTMLElement, shouldCallBlurDefault: (nextTarget: HTMLElement) => boolean) => boolean;
 }
 
 export interface FocusOutShellState {
@@ -79,7 +80,12 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
     };
 
-    private _shouldCallBlur(nextTarget?: HTMLElement): boolean {
+    private _shouldCallBlur(nextTarget: HTMLElement): boolean {
+        const { shouldCallBlur = this._shouldCallBlurDefault } = this.props;
+        return shouldCallBlur(nextTarget, this._shouldCallBlurDefault);
+    }
+
+    private _shouldCallBlurDefault = (nextTarget: HTMLElement): boolean => {
         // don't call blur if the next target is an element on this container
         if (nextTarget && this._containerDiv.contains(nextTarget)) {
             return false;
@@ -94,7 +100,7 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
 
         return true;
-    }
+    };
 
     private _onFocus = (ev: React.FocusEvent<HTMLElement>): void => {
         if (!this.state.isFocused) {
