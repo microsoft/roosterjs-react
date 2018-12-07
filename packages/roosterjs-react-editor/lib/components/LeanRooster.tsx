@@ -8,6 +8,7 @@ import { DefaultFormat } from "roosterjs-editor-types";
 import { css, getDataAndAriaProps, LeanRoosterPlugin, NullFunction } from "roosterjs-react-common";
 
 import EditorViewState from "../schema/EditorViewState";
+import { AttributeCallbackMap } from "roosterjs-html-sanitizer";
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
 const ReadOnlyClassName = "readonly";
@@ -39,11 +40,12 @@ export interface LeanRoosterProps {
     // initial editor options
     activateRoosterOnMount?: boolean;
     contentEditFeatures?: ContentEditFeatures;
+    coreApiOverride?: Partial<CoreApiMap>;
     defaultFormat?: DefaultFormat;
     enableRestoreSelectionOnFocus?: boolean;
-    coreApiOverride?: Partial<CoreApiMap>;
     plugins?: LeanRoosterPlugin[];
     undo?: UndoService;
+    sanitizeAttributeCallbacks?: AttributeCallbackMap;
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
     viewState: EditorViewState;
 }
@@ -119,7 +121,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
 
         const { className, readonly, isRtl, placeholder } = nextProps;
-        
+
         if (className !== this.props.className) {
             div.setAttribute("class", this._getClassName(nextProps));
         }
@@ -282,11 +284,19 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     private _createEditorOptions(): EditorOptions {
-        const { plugins: additionalPlugins = [], undo = new Undo(), defaultFormat = {}, contentEditFeatures, enableRestoreSelectionOnFocus, coreApiOverride } = this.props;
+        const {
+            plugins: additionalPlugins = [],
+            undo = new Undo(),
+            defaultFormat = {},
+            contentEditFeatures,
+            enableRestoreSelectionOnFocus,
+            coreApiOverride,
+            sanitizeAttributeCallbacks
+        } = this.props;
         const plugins: EditorPlugin[] = [
             new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, smartOrderedList: true, ...contentEditFeatures }),
             new HyperLink(this._hyperlinkToolTipCallback),
-            new Paste(true /*useDirectPaste*/),
+            new Paste(null, { "istemptitle": v => v, ...sanitizeAttributeCallbacks }),
             ...additionalPlugins
         ];
         const disableRestoreSelectionOnFocus = !enableRestoreSelectionOnFocus;
