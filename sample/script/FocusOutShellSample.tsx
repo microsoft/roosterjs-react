@@ -102,10 +102,20 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
         commandBarPlugin.registerRoosterCommandBar(commandBar); // re-register command b/c we're changing mode on blur
         leanRooster.mode = LeanRoosterModes.Edit;
     };
+
+    let suppressBlur = false;
     const focusOutShellOnBlur = (ev: React.FocusEvent<HTMLElement>) => {
         console.log(`FocusOutShell (${name}) lost focus (hasPlaceholder: ${leanRooster.hasPlaceholder()})`);
         leanRooster.mode = LeanRoosterModes.View;
         imageResizePlugin.hideResizeHandle();
+    };
+    const shouldCallBlur = (nextTarget: HTMLElement, shouldCallBlurDefault: (nextTarget: HTMLElement) => boolean): boolean => {
+        if (suppressBlur) {
+            suppressBlur = false;
+            return false;
+        }
+
+        return shouldCallBlurDefault(nextTarget);
     };
     const onEmojiKeyboardTriggered = () => {
         if (loadEmojiStrings) {
@@ -117,7 +127,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
     let emojiPlugin: EmojiPlugin = null;
 
     return (
-        <FocusOutShell allowMouseDown={focusOutShellAllowMouseDown} onBlur={focusOutShellOnBlur} onFocus={focusOutShellOnFocus}>
+        <FocusOutShell allowMouseDown={focusOutShellAllowMouseDown} onBlur={focusOutShellOnBlur} onFocus={focusOutShellOnFocus} shouldCallBlur={shouldCallBlur}>
             {(calloutClassName: string, calloutOnDismiss: FocusEventHandler) => {
                 emojiPlugin =
                     emojiPlugin ||
@@ -192,7 +202,13 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         calloutOnDismiss={calloutOnDismiss}
                         imageManager={imageManager}
                         ref={commandBarOnRef}
-                        onButtonClicked={buttonKey => console.log(buttonKey)}
+                        onButtonClicked={buttonKey => {
+                            if (buttonKey === ButtonKeys.InsertImage) {
+                                suppressBlur = true;
+                            }
+
+                            console.log(buttonKey);
+                        }}
                         overflowMenuProps={{ className: "custom-overflow" }}
                         disableListWorkaround={true}
                     />

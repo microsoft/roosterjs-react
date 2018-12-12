@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';
-import { convertInlineCss } from 'roosterjs-editor-dom';
+import { HtmlSanitizer } from 'roosterjs-html-sanitizer';
 import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
 import { EditorViewState } from 'roosterjs-react';
@@ -61,7 +61,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
             allPlugins = allPlugins.concat(plugins);
         }
 
-        let initialContent = convertInlineCss(viewState.content);
+        let initialContent = HtmlSanitizer.convertInlineCss(viewState.content);
         let options: EditorOptions = {
             plugins: allPlugins,
             defaultFormat: defaultFormat,
