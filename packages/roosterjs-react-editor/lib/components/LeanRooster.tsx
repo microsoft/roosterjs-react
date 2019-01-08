@@ -201,7 +201,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         if (this._editor && !this._editor.isDisposed()) {
             const range = this._editor.getDocument().createRange();
             range.selectNodeContents(contentDiv);
-            this._editor.updateSelection(range);
+            this._editor.select(range);
         } else {
             const range = contentDiv.ownerDocument.createRange();
             range.selectNodeContents(contentDiv);

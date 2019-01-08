@@ -1,6 +1,6 @@
 // Note: keep the dependencies for this generic component at a minimal (e.g. don't import OfficeFabric)
 import * as React from "react";
-import { browserData } from "roosterjs-editor-core";
+import { Browser } from "roosterjs-editor-dom";
 import { closest, css, NullFunction } from "roosterjs-react-common";
 
 export type FocusEventHandler = (ev: React.FocusEvent<HTMLElement>) => void;
@@ -92,7 +92,7 @@ export default class FocusOutShell extends React.PureComponent<FocusOutShellProp
         }
 
         // similarly, don't call blur if the next target is the callout or its children
-        if (nextTarget == null && browserData.isIE) {
+        if (nextTarget == null && Browser.isIE) {
             nextTarget = document.activeElement as HTMLElement;
         }
         if (nextTarget && closest(nextTarget, `.${this._calloutClassName}`)) {

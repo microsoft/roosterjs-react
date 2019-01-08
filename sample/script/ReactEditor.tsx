@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Editor, EditorOptions, EditorPlugin, UndoService } from 'roosterjs-editor-core';
 import { HtmlSanitizer } from 'roosterjs-html-sanitizer';
-import { ContentEdit, DefaultShortcut, HyperLink, Paste } from 'roosterjs-editor-plugins';
+import { ContentEdit, HyperLink, Paste } from 'roosterjs-editor-plugins';
 import { DefaultFormat } from 'roosterjs-editor-types';
 import { EditorViewState } from 'roosterjs-react';
 
@@ -55,7 +55,7 @@ export default class ReactEditor extends React.Component<ReactEditorProps, {}> {
 
     private getEditorOptions(): EditorOptions {
         let { plugins, viewState, undo, hyperlinkToolTipCallback, defaultFormat } = this.props;
-        let allPlugins: EditorPlugin[] = [new ContentEdit(), new HyperLink(hyperlinkToolTipCallback), new Paste(true /*useDirectPaste*/), new DefaultShortcut()];
+        let allPlugins: EditorPlugin[] = [new ContentEdit(), new HyperLink(hyperlinkToolTipCallback), new Paste(true /*useDirectPaste*/)];
 
         if (plugins) {
             allPlugins = allPlugins.concat(plugins);

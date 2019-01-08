@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.63",
+  "version": "0.0.64",
   "description": "A react component wrapper for roosterjs with more plugins",
   "main": "lib/index.js",
   "repository": {
@@ -26,26 +26,27 @@
     "office-ui-fabric-react": "~5.112.0",
     "react": "~15.3.2",
     "react-dom": "~15.3.2",
-    "roosterjs-editor-plugins": "^6.18.0",
-    "roosterjs-plugin-image-resize": "^6.18.0"
+    "roosterjs-editor-plugins": "^7.0.0",
+    "roosterjs-plugin-image-resize": "^7.0.0"
   },
   "devDependencies": {
     "@types/node": "8.0.50",
     "@types/react": "~15.6.0",
     "autoprefixer": "^7.1.1",
     "classnames": "2.2.5",
-    "node-sass": "4.6.0",
+    "node-sass": "4.11.0",
     "postcss-inline-rtl": "^0.9.8",
     "postcss-modules": "1.1.0",
     "rimraf": "2.6.2",
     "toposort": "1.0.4",
-    "ts-loader": "^3.0.5",
+    "ts-loader": "5.3.3",
     "tslint": "5.7.0",
     "tslint-eslint-rules": "4.1.1",
     "tslint-microsoft-contrib": "5.0.1",
-    "typescript": "^2.8.3",
-    "url-loader": "0.6.2",
-    "webpack": "^3.12.0",
-    "webpack-dev-server": "^2.9.3"
+    "typescript": "3.2.2",
+    "url-loader": "1.1.2",
+    "webpack": "4.28.1",
+    "webpack-cli": "3.2.1",
+    "webpack-dev-server": "3.1.14"
   }
 }

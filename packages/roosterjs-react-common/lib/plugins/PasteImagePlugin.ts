@@ -10,6 +10,10 @@ export default class PasteImagePlugin implements EditorPlugin {
 
     constructor(private imageManager: ImageManagerInteface, private preventImagePaste: boolean = false) {}
 
+    public getName() {
+        return 'PasteImage';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
     }

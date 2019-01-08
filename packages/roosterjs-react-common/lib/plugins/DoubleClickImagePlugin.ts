@@ -7,6 +7,10 @@ export default class DoubleClickImagePlugin implements EditorPlugin {
 
     public constructor(private doubleClickImageSelector: string = 'img') {}
 
+    public getName() {
+        return 'DoubleClickImage';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
         this.onDoubleClickDisposer = this.editor.addDomEventHandler('dblclick', this.onDoubleClick);

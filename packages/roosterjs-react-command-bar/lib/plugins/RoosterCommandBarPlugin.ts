@@ -38,6 +38,10 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
 
     constructor(private options: RoosterCommandBarPluginOptions = {}) {}
 
+    public getName() {
+        return 'RoosterCommandBar';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
 

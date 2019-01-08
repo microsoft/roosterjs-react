@@ -1,1 +1,1 @@
-export const NullFunction = (...args: any[]) => {};
+export const NullFunction = (...args: any[]) => { return undefined; };

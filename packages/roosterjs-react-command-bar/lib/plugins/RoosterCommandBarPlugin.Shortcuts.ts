@@ -1,5 +1,5 @@
 import { KeyCodes } from 'office-ui-fabric-react/lib/Utilities';
-import { browserData } from 'roosterjs-editor-core';
+import { Browser } from 'roosterjs-editor-dom';
 import { PluginDomEvent, PluginEvent, PluginEventType } from 'roosterjs-editor-types';
 
 export const enum RoosterShortcutCommands {
@@ -178,7 +178,7 @@ export function getCommandFromEvent(event: PluginEvent): RoosterShortcutCommands
         return RoosterShortcutCommands.None;
     }
 
-    const commands = browserData.isMac ? macCommands : winCommands;
+    const commands = Browser.isMac ? macCommands : winCommands;
     const keyboardEvent = (event as PluginDomEvent).rawEvent as KeyboardEvent;
     for (const cmd of commands) {
         if (

@@ -1,6 +1,6 @@
 import { Editor } from 'roosterjs-editor-core';
-import { execFormatWithUndo, queryNodesWithSelection, getFormatState } from 'roosterjs-editor-api';
-import { DocumentCommand, Indentation } from 'roosterjs-editor-types';
+import { getFormatState } from 'roosterjs-editor-api';
+import { DocumentCommand, Indentation, QueryScope } from 'roosterjs-editor-types';
 
 function execCommand(editor: Editor, command: DocumentCommand, addUndoSnapshotWhenCollapsed?: boolean) {
     editor.focus();
@@ -10,7 +10,7 @@ function execCommand(editor: Editor, command: DocumentCommand, addUndoSnapshotWh
     if (range && range.collapsed && !addUndoSnapshotWhenCollapsed) {
         formatter();
     } else {
-        execFormatWithUndo(editor, formatter);
+        editor.addUndoSnapshot(formatter);
     }
 }
 
@@ -49,14 +49,13 @@ export function toggleNonCompatBullet(editor: Editor) {
 export function setNonCompatIndentation(editor: Editor, indentation: Indentation) {
     editor.focus();
     const command = indentation == Indentation.Increase ? 'indent' : 'outdent';
-    execFormatWithUndo(editor, () => {
+    editor.addUndoSnapshot(() => {
         const format = getFormatState(editor);
         editor.getDocument().execCommand(command, false, null);
         if (!format.isBullet && !format.isNumbering) {
-            const nodes = queryNodesWithSelection(editor, 'blockquote');
-            nodes.forEach(node => {
-                (<HTMLElement>node).style.marginTop = '0';
-                (<HTMLElement>node).style.marginBottom = '0';
+            editor.queryElements('blockquote', QueryScope.OnSelection, node => {
+                node.style.marginTop = '0';
+                node.style.marginBottom = '0';
             });
         }
     });

@@ -92,7 +92,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
             return;
         }
 
-        editor && !editor.isDisposed() && editor.updateSelection(selectionRange);
+        editor && !editor.isDisposed() && editor.select(selectionRange);
         this.linkInserted = true; // don't need to restore the selection after dismiss if we're changing selection into a link
         createLink(editor, this.linkField.value);
         this.dismissDialog();
@@ -101,7 +101,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
     private dismissDialog = (ev?: React.MouseEvent<HTMLButtonElement>): void => {
         const { editor, onDismiss = NullFunction, selectionRange } = this.props;
         onDismiss(ev as any);
-        !this.linkInserted && editor && !editor.isDisposed() && editor.updateSelection(selectionRange);
+        !this.linkInserted && editor && !editor.isDisposed() && editor.select(selectionRange);
     };
 }
 

@@ -8,12 +8,11 @@ import {
     FontSizePicker,
 } from 'roosterjs-react-pickers';
 import confirm from './ConfirmDialog';
-import { Alignment, Indentation, Direction } from 'roosterjs-editor-types';
+import { Alignment, Indentation, Direction, QueryScope } from 'roosterjs-editor-types';
 import {
     clearFormat,
     createLink,
     removeLink,
-    queryNodesWithSelection,
     setAlignment,
     setBackgroundColor,
     setDirection,
@@ -168,7 +167,7 @@ export const insertLink: RibbonButton = {
         editor.saveSelectionRange();
         let link = '';
         try {
-            link = (queryNodesWithSelection(editor, 'a[href]')[0] as HTMLAnchorElement).href;
+            link = (editor.queryElements('a[href]', QueryScope.OnSelection)[0] as HTMLAnchorElement).href;
         } catch (e) {}
 
         confirm(
@@ -190,7 +189,7 @@ export const imageAltText: RibbonButton = {
         formatState.canAddImageAltText ? RibbonButtonState.Normal : RibbonButtonState.Disabled,
     onClick: (editor, strings) => {
         editor.saveSelectionRange();
-        let node = queryNodesWithSelection(editor, 'img')[0];
+        let node = editor.queryElements('img', QueryScope.OnSelection)[0];
         let alt = (node as HTMLImageElement).alt;
         confirm(getString('dlgAltTextTitle', strings), null, alt, strings).then(alt => {
             editor.focus();
