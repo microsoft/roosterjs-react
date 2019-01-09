@@ -1,4 +1,4 @@
-import { toggleBold, toggleBullet, toggleItalic, toggleNumbering, toggleUnderline, clearFormat, toggleHeader } from "roosterjs-editor-api";
+import { clearBlockFormat, clearFormat, toggleBold, toggleBullet, toggleHeader, toggleItalic, toggleNumbering, toggleUnderline } from "roosterjs-editor-api";
 import { Editor, EditorPlugin } from "roosterjs-editor-core";
 import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
 import { NullFunction, Strings, toggleNonCompatBullet, toggleNonCompatNumbering } from "roosterjs-react-common";
@@ -22,6 +22,7 @@ export interface RoosterCommandBarPluginOptions {
     calloutOnDismiss?: (ev?: any) => void;
     onShortcutTriggered?: (command: RoosterShortcutCommands) => void;
     disableListWorkaround?: boolean;
+    useLegacyClearFormat?: boolean;
 }
 
 export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCommandBarPluginInterface {
@@ -157,8 +158,12 @@ export default class RoosterCommandBarPlugin implements EditorPlugin, RoosterCom
         const editor = this.editor;
 
         this.editor.addUndoSnapshot(() => {
-            clearFormat(editor);
-            toggleHeader(editor, 0);
+            if (this.options.useLegacyClearFormat) {
+                clearFormat(editor);
+                toggleHeader(editor, 0);
+            } else {
+                clearBlockFormat(editor);
+            }
         });
     }
 }
