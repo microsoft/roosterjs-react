@@ -1,5 +1,5 @@
 import { Undo } from 'roosterjs-editor-core';
-import { UndoSnapshotsService } from 'roosterjs-editor-core/lib/undo/UndoSnapshots';
+import { UndoSnapshotsService } from 'roosterjs-editor-core';
 
 import { hasPlaceholder, ImageManagerInteface, UpdatePlaceholdersResult } from '../utils/ImageManager';
 

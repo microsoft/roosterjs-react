@@ -2,9 +2,9 @@ import { Callout, DirectionalHint } from "office-ui-fabric-react/lib/Callout";
 import { Async, KeyCodes } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import { cacheGetCursorEventData, clearCursorEventDataCache, replaceTextBeforeCursorWithNode } from "roosterjs-editor-api";
-import { Editor } from "roosterjs-editor-core";
-import { PluginDomEvent, PluginEvent, PluginEventType } from "roosterjs-editor-types";
+import { replaceWithNode } from "roosterjs-editor-api";
+import { Editor, cacheGetContentSearcher, clearContentSearcherCache } from "roosterjs-editor-core";
+import { PluginDomEvent, PluginEvent, PluginEventType, PositionType } from "roosterjs-editor-types";
 import { AriaAttributes, LeanRoosterPlugin, NullFunction, Strings } from "roosterjs-react-common";
 
 import EmojiPane, { EmojiPaneMode, EmojiPaneProps } from "../components/EmojiPane";
@@ -49,6 +49,10 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
         this._async = new Async();
         this._refreshCalloutDebounced = this._async.debounce(() => this._refreshCallout(), 100);
         this._strings = options.strings;
+    }
+
+    public getName() {
+        return 'Emoji';
     }
 
     public initialize(editor: Editor): void {
@@ -265,8 +269,8 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
             this._setIsSuggesting(true);
             onKeyboardTriggered();
         } else if (wordBeforeCursor) {
-            const cursorData = cacheGetCursorEventData(event, this._editor);
-            const charBeforeCursor = cursorData ? cursorData.getXCharsBeforeCursor(1) : null;
+            const cursorData = cacheGetContentSearcher(event, this._editor);
+            const charBeforeCursor = cursorData ? cursorData.getSubStringBefore(1) : null;
 
             // It is possible that the word before the cursor is ahead of the pluginEvent we are handling
             // ex. WordBeforeCursor is ":D"" but the event we are currently handling is for the : key
@@ -275,7 +279,7 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
             if (keyboardEvent.key === charBeforeCursor) {
                 const emoji = matchShortcut(wordBeforeCursor);
                 if (emoji && this._insertEmoji(emoji, wordBeforeCursor)) {
-                    clearCursorEventDataCache(event);
+                    clearContentSearcherCache(event);
                     this._canUndoEmoji = true;
                 }
             }
@@ -288,17 +292,14 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
 
         const node = this._editor.getDocument().createElement("span");
         node.innerText = emoji.codePoint;
-        if (wordBeforeCursor && replaceTextBeforeCursorWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)) {
+        if (wordBeforeCursor && replaceWithNode(this._editor, wordBeforeCursor, node, false /*exactMatch*/)) {
             inserted = true;
             this._canUndoEmoji = true;
 
             // Update the editor cursor to be after the inserted node
             window.requestAnimationFrame(() => {
                 if (this._editor && this._editor.contains(node)) {
-                    const newSelectionRange = this._editor.getDocument().createRange();
-                    newSelectionRange.setStartAfter(node);
-                    newSelectionRange.collapse(true);
-                    this._editor.updateSelection(newSelectionRange);
+                    this._editor.select(node, PositionType.After);
                     this._editor.addUndoSnapshot();
                 }
             });
@@ -409,8 +410,8 @@ export default class EmojiPlugin implements LeanRoosterPlugin {
     }
 
     private _getWordBeforeCursor(event: PluginEvent): string {
-        const cursorData = cacheGetCursorEventData(event, this._editor);
-        const wordBeforeCursor = cursorData ? cursorData.wordBeforeCursor : null;
+        const cursorData = cacheGetContentSearcher(event, this._editor);
+        const wordBeforeCursor = cursorData ? cursorData.getWordBefore() : null;
         const matches = EMOJI_BEFORE_COLON_REGEX.exec(wordBeforeCursor);
         return matches && matches.length > 2 && matches[0] === wordBeforeCursor ? matches[2] : null;
     }

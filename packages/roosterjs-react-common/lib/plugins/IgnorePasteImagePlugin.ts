@@ -11,6 +11,10 @@ export default class IgnorePasteImagePlugin implements EditorPlugin {
         return IgnorePasteImagePlugin.InternalInstance;
     }
 
+    public getName() {
+        return 'IgnorePasteImage';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
     }

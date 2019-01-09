@@ -8,6 +8,10 @@ export default class RibbonPlugin implements EditorPlugin {
 
     constructor(private onButtonClick?: (buttonName: string) => void) {}
 
+    public getName() {
+        return 'Ribbon';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
     }

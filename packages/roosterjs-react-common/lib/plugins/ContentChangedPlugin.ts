@@ -10,6 +10,10 @@ export default class ContentChangedPlugin implements EditorPlugin {
 
     public constructor(private onChange: (newValue: string) => void) {}
 
+    public getName() {
+        return 'ContentChanged';
+    }
+
     public initialize(editor: Editor): void {
         this.editor = editor;
         this.changeDisposer = this.editor.addDomEventHandler("input", this.onChangeEvent);
