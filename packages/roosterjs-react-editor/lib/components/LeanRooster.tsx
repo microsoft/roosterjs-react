@@ -536,7 +536,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
 
     private _getAnchorForClickOpenHyperlink(ev: React.MouseEvent<HTMLDivElement>, element: HTMLElement): HTMLAnchorElement {
         const { clickOpenHyperlinkViewMode, readonly } = this.props;
-        if (!clickOpenHyperlinkViewMode || readonly || this.mode !== LeanRoosterModes.View) {
+        const isPrimaryButton = ev.button === 0;
+        if (!isPrimaryButton || !clickOpenHyperlinkViewMode || readonly || this.mode !== LeanRoosterModes.View) {
             return null;
         }
 
