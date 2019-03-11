@@ -171,6 +171,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         ref={leanRoosterOnRef}
                         contentDivRef={leanRoosterContentDivOnRef}
                         hyperlinkToolTipCallback={(url: string) => `CTRL+Click to follow link\n${url}`}
+                        clickOpenHyperlinkViewMode={true}
                         defaultFormat={{}}
                         data-foo="bar"
                     />,

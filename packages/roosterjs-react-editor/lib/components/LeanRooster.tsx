@@ -1,14 +1,14 @@
 import "./LeanRooster.scss.g";
 
 import * as React from "react";
-import { Editor, EditorOptions, EditorPlugin, Undo, UndoService, CoreApiMap } from "roosterjs-editor-core";
-import { isNodeEmpty } from "roosterjs-editor-dom";
+import { CoreApiMap, Editor, EditorOptions, EditorPlugin, Undo, UndoService } from "roosterjs-editor-core";
+import { isNodeEmpty, Browser, findClosestElementAncestor } from "roosterjs-editor-dom";
 import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from "roosterjs-editor-plugins";
 import { DefaultFormat } from "roosterjs-editor-types";
+import { AttributeCallbackMap } from "roosterjs-html-sanitizer";
 import { css, getDataAndAriaProps, LeanRoosterPlugin, NullFunction } from "roosterjs-react-common";
 
 import EditorViewState from "../schema/EditorViewState";
-import { AttributeCallbackMap } from "roosterjs-html-sanitizer";
 
 const ContentEditableDivStyle = { userSelect: "text", msUserSelect: "text", WebkitUserSelect: "text" } as React.CSSProperties;
 const ReadOnlyClassName = "readonly";
@@ -18,36 +18,154 @@ export const enum LeanRoosterModes {
     Edit = 1
 }
 
-export interface LeanRoosterProps {
+// Initial editor options
+export interface LeanRoosterInitialOptions {
+    /**
+     * (Optional) True to activate rooster and its plugins when component is mounted
+     */
+    activateRoosterOnMount?: boolean;
+
+    /**
+     * (Optional) Feature options for the editor
+     */
+    contentEditFeatures?: ContentEditFeatures;
+
+    /**
+     * (Optional) Core API override for the editor (useful for tracking timings)
+     */
+    coreApiOverride?: Partial<CoreApiMap>;
+
+    /**
+     * (Optional) Default format for the editor
+     */
+    defaultFormat?: DefaultFormat;
+
+    /**
+     * (Optional) Enable restore selection on focus
+     */
+    enableRestoreSelectionOnFocus?: boolean;
+
+    /**
+     * (Optional) Plugins for the editor
+     */
+    plugins?: LeanRoosterPlugin[];
+
+    /**
+     * (Optional) Custom undo plugin
+     */
+    undo?: UndoService;
+
+    /**
+     * (Optional) Callback map for santizing attributes (used by Paste plugin)
+     */
+    sanitizeAttributeCallbacks?: AttributeCallbackMap;
+
+    /**
+     * (Optional) Update view state callback
+     */
+    updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
+
+    /**
+     * (Optional) Initial view state for the editor
+     */
+    viewState: EditorViewState;
+}
+
+export interface LeanRoosterProps extends LeanRoosterInitialOptions {
+    /**
+     * Additional CSS class(es) to apply to the ColorPicker.
+     */
     className?: string;
+
+    /**
+     * (Optional) True to use right to left locale
+     */
     isRtl?: boolean;
+
+    /**
+     * (Optional) Placeholder text
+     */
     placeholder?: string;
-    isEmptyCheckThreshold?: number;
-    isEmptyTrimValue?: boolean;
+
+    /**
+     * (Optional) Threshold for isEmpty() check
+     */
+    thresholdForIsEmptyCheck?: number;
+
+    /**
+     * (Optional) Trim when calling isEmpty()
+     */
+    trimWithEmptyCheck?: boolean;
+
+    /**
+     * (Optional) True to enable readonly mode
+     */
     readonly?: boolean;
+
+    /**
+     * (Optional) True to allow hyperlink to be opened while in view mode
+     */
+    clickOpenHyperlinkViewMode?: boolean;
+
+    /**
+     * (Optional) Callback for the content DIV reference
+     */
     contentDivRef?: (ref: HTMLDivElement) => void;
-    hyperlinkToolTipCallback?: (href: string) => string;
+
+    /**
+     * (Optional) Callback for getting the tooltip for a hyperlink
+     */
+    hyperlinkToolTipCallback?: (href: string, anchor: HTMLAnchorElement) => string;
+
+    /**
+     * (Optional) Custom isEmpty() function
+     */
     isEmptyFunction?: (element: HTMLDivElement, trim?: boolean) => boolean;
+
+    /**
+     * (Optional) Callback for after a mode change
+     */
     onAfterModeChange?: (newMode: LeanRoosterModes) => void;
+
+    /**
+     * (Optional) Callback for before a mode change
+     */
     onBeforeModeChange?: (newMode: LeanRoosterModes) => boolean;
+
+    /**
+     * (Optional) Callback for editor blur event
+     */
     onBlur?: (ev: React.FocusEvent<HTMLDivElement>) => void;
+
+    /**
+     * (Optional) Callback for editor focus event
+     */
     onFocus?: (ev: React.FocusEvent<HTMLDivElement>) => void;
+
+    /**
+     * (Optional) Callback for editor drop event
+     */
     onDrop?: (ev: React.DragEvent<HTMLDivElement>) => void;
+
+    /**
+     * (Optional) Callback for editor drag enter event
+     */
     onDragEnter?: (ev: React.DragEvent<HTMLDivElement>) => void;
+
+    /**
+     * (Optional) Callback for editor drag leave event
+     */
     onDragLeave?: (ev: React.DragEvent<HTMLDivElement>) => void;
+
+    /**
+     * (Optional) Callback for editor drag over event
+     */
     onDragOver?: (ev: React.DragEvent<HTMLDivElement>) => void;
 
-    // initial editor options
-    activateRoosterOnMount?: boolean;
-    contentEditFeatures?: ContentEditFeatures;
-    coreApiOverride?: Partial<CoreApiMap>;
-    defaultFormat?: DefaultFormat;
-    enableRestoreSelectionOnFocus?: boolean;
-    plugins?: LeanRoosterPlugin[];
-    undo?: UndoService;
-    sanitizeAttributeCallbacks?: AttributeCallbackMap;
-    updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
-    viewState: EditorViewState;
+    /**
+     * (Optional) Handler for when hyperlink is clicked
+     */
+    onHyperlinkClick?: (anchor: HTMLAnchorElement, ev: MouseEvent) => boolean;
 }
 
 export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
@@ -71,6 +189,7 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     public render(): JSX.Element {
         const { isRtl, readonly } = this.props;
         return (
+            // tslint:disable-next-line: react-no-dangerous-html
             <div
                 {...getDataAndAriaProps(this.props)}
                 className={this._getClassName(this.props)}
@@ -160,6 +279,10 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         }
     }
 
+    public get hasActivated(): boolean {
+        return !!this._editor;
+    }
+
     public hasPlaceholder(): boolean {
         return this._hasPlaceholder;
     }
@@ -217,17 +340,17 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     public isEmpty(): boolean {
-        const { isEmptyTrimValue = false, isEmptyCheckThreshold, viewState, isEmptyFunction = isNodeEmpty } = this.props;
+        const { trimWithEmptyCheck = false, thresholdForIsEmptyCheck, viewState, isEmptyFunction = isNodeEmpty } = this.props;
 
         if (!this._contentDiv) {
             return !viewState.content || viewState.content.length === 0;
         }
 
-        if (isEmptyCheckThreshold && this._contentDiv.innerHTML.length >= isEmptyCheckThreshold) {
+        if (thresholdForIsEmptyCheck && this._contentDiv.innerHTML.length >= thresholdForIsEmptyCheck) {
             return false;
         }
 
-        return isEmptyFunction(this._contentDiv, isEmptyTrimValue);
+        return isEmptyFunction(this._contentDiv, trimWithEmptyCheck);
     }
 
     public getContent(): string {
@@ -295,8 +418,8 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         } = this.props;
         const plugins: EditorPlugin[] = [
             new ContentEdit({ ...getDefaultContentEditFeatures(), defaultShortcut: false, smartOrderedList: true, ...contentEditFeatures }),
-            new HyperLink(this._hyperlinkToolTipCallback),
-            new Paste(null, { "istemptitle": v => v, ...sanitizeAttributeCallbacks }),
+            new HyperLink(this._hyperlinkToolTipCallback, undefined, this._onHyperlinkClick),
+            new Paste(null, { istemptitle: v => v, ...sanitizeAttributeCallbacks }),
             ...additionalPlugins
         ];
         const disableRestoreSelectionOnFocus = !enableRestoreSelectionOnFocus;
@@ -305,9 +428,14 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
         return { plugins, defaultFormat, undo, disableRestoreSelectionOnFocus, omitContentEditableAttributeChanges: true /* avoid unnecessary reflow */, coreApiOverride };
     }
 
-    private _hyperlinkToolTipCallback = (href: string): string => {
-        const { hyperlinkToolTipCallback = href => href } = this.props;
-        return hyperlinkToolTipCallback(href);
+    private _onHyperlinkClick = (anchor: HTMLAnchorElement, mouseEvent: MouseEvent): boolean => {
+        const { onHyperlinkClick = _ => false } = this.props;
+        return onHyperlinkClick(anchor, mouseEvent);
+    };
+
+    private _hyperlinkToolTipCallback = (href: string, anchor: HTMLAnchorElement): string => {
+        const { hyperlinkToolTipCallback = (href, _) => href } = this.props;
+        return hyperlinkToolTipCallback(href, anchor);
     };
 
     private _updateViewState = (viewState: EditorViewState, content: string, isInitializing: boolean): void => {
@@ -367,16 +495,65 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     private _onMouseDown = (ev: React.MouseEvent<HTMLDivElement>): void => {
+        const target = ev.target as HTMLElement;
+        const anchor = this._getAnchorForClickOpenHyperlink(ev, target);
+        if (anchor) {
+            // we're going to handle click for the href, so don't switch to view mode
+            ev.preventDefault();
+            ev.stopPropagation();
+            return;
+        }
+
         this._placeholderVisible = false;
         const forceUpdate = true;
         this._trySwithToEditMode(forceUpdate);
     };
 
     private _onMouseUp = (ev: React.MouseEvent<HTMLDivElement>): void => {
+        const target = ev.target as HTMLElement;
+        const anchor = this._getAnchorForClickOpenHyperlink(ev, target);
+        if (anchor) {
+            const { onHyperlinkClick } = this.props;
+            // if editor has already activated, let the Hyperlink plugin call onHyperlinkClick
+            if (this.hasActivated && onHyperlinkClick) {
+                return;
+            }
+
+            // if no custom click handler or it returned false, open the link
+            if (!onHyperlinkClick || onHyperlinkClick(anchor, ev.nativeEvent) === false) {
+                try {
+                    window.open(anchor.getAttribute("href"), "_blank");
+                } catch {}
+            }
+
+            return;
+        }
+
         if (this._editor && !this._editor.hasFocus()) {
             this._editor.focus();
         }
     };
+
+    private _getAnchorForClickOpenHyperlink(ev: React.MouseEvent<HTMLDivElement>, element: HTMLElement): HTMLAnchorElement {
+        const { clickOpenHyperlinkViewMode, readonly } = this.props;
+        const isPrimaryButton = ev.button === 0;
+        if (!isPrimaryButton || !clickOpenHyperlinkViewMode || readonly || this.mode !== LeanRoosterModes.View) {
+            return null;
+        }
+
+        // Hyperlink plugin will handle CTRL+Click when editor is created and FireFox will handle for contenteditable
+        const ctrlOpen = Browser.isMac ? ev.metaKey : ev.ctrlKey;
+        if ((this._editor && ctrlOpen) || (Browser.isFirefox && ctrlOpen)) {
+            return null;
+        }
+
+        const anchor = findClosestElementAncestor(element, this._contentDiv, "a[href]");
+        if (anchor) {
+            return anchor as HTMLAnchorElement;
+        }
+
+        return null;
+    }
 
     private _onBlur = (ev: React.FocusEvent<HTMLDivElement>): void => {
         const { onBlur = NullFunction } = this.props;
