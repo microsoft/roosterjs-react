@@ -2,7 +2,7 @@ import "./LeanRooster.scss.g";
 
 import * as React from "react";
 import { CoreApiMap, Editor, EditorOptions, EditorPlugin, Undo, UndoService } from "roosterjs-editor-core";
-import { isNodeEmpty, Browser, findClosestElementAncestor } from "roosterjs-editor-dom";
+import { Browser, findClosestElementAncestor, isNodeEmpty } from "roosterjs-editor-dom";
 import { ContentEdit, ContentEditFeatures, getDefaultContentEditFeatures, HyperLink, Paste } from "roosterjs-editor-plugins";
 import { DefaultFormat } from "roosterjs-editor-types";
 import { AttributeCallbackMap } from "roosterjs-html-sanitizer";
@@ -24,6 +24,11 @@ export interface LeanRoosterInitialOptions {
      * (Optional) True to activate rooster and its plugins when component is mounted
      */
     activateRoosterOnMount?: boolean;
+
+    /**
+     * (Optional) Activate rooster in view mode instead of edit when activateRoosterOnMount is on
+     */
+    activateInViewMode?: boolean;
 
     /**
      * (Optional) Feature options for the editor
@@ -66,7 +71,7 @@ export interface LeanRoosterInitialOptions {
     updateViewState?: (viewState: EditorViewState, content: string, isInitializing: boolean) => void;
 
     /**
-     * (Optional) Initial view state for the editor
+     * Initial view state for the editor
      */
     viewState: EditorViewState;
 }
@@ -216,10 +221,15 @@ export default class LeanRooster extends React.Component<LeanRoosterProps, {}> {
     }
 
     public componentDidMount(): void {
-        const { readonly, activateRoosterOnMount } = this.props;
+        const { readonly, activateRoosterOnMount, activateInViewMode } = this.props;
 
         if (!readonly && activateRoosterOnMount) {
-            this._trySwithToEditMode();
+            if (activateInViewMode) {
+                this._editor = new Editor(this._contentDiv, this._editorOptions);
+                this._updateContentToViewState(true /* isInitializing */);
+            } else {
+                this._trySwithToEditMode();
+            }
         } else if (!this._hasPlaceholder) {
             this._refreshPlaceholder();
         }
