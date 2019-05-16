@@ -1,2 +1,7 @@
 {
+  "editor.formatOnSave": true,
+  "typescriptHero.imports.stringQuoteStyle": "\"",
+  "typescriptHero.imports.removeTrailingIndex": false,
+  "typescriptHero.imports.multiLineTrailingComma": false,
+  "typescriptHero.imports.organizeOnSave": true
 }

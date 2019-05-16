@@ -1,6 +1,6 @@
 {
   "name": "roosterjs-react",
-  "version": "0.0.68",
+  "version": "0.0.69",
   "description": "A react component wrapper for roosterjs with more plugins",
   "main": "lib/index.js",
   "repository": {
@@ -13,13 +13,18 @@
     "normalize": "node tools/normalize-packages.js",
     "build": "npm run clean & npm run normalize & npm run tslint & node tools/scss.js & node tools/build-all.js & npm run pack & npm run pack:prod & npm run dts",
     "dts": "node tools/dts.js",
-    "start": "node tools/scss.js & webpack-dev-server",
-    "start:fos": "node tools/scss.js & webpack-dev-server --openPage sample/FocusOutShellSample.htm",
+    "start": "node tools/scss.js & webpack-dev-server --openPage sample/FocusOutShellSample.htm",
+    "start:basic": "node tools/scss.js & webpack-dev-server",
     "pack": "node tools/pack.js & node tools/pack.js -amd",
     "pack:prod": "node tools/pack.js -p & node tools/pack.js -amd -p",
     "publish": "node tools/publish-all.js"
   },
   "author": "Jiuqing Song",
+  "contributors": [
+    {
+      "name": "Adrian Tran"
+    }
+  ],
   "license": "MIT",
   "dependencies": {
     "@microsoft/load-themed-styles": "^1.7.59",
