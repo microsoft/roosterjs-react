@@ -39,7 +39,6 @@ export default class PasteImagePlugin implements EditorPlugin {
         if (event.eventType !== PluginEventType.BeforePaste) {
             return;
         }
-
         const beforePasteEvent = event as BeforePasteEvent;
         if (beforePasteEvent.pasteOption !== PasteOption.PasteImage) {
             return;
@@ -68,6 +67,10 @@ export default class PasteImagePlugin implements EditorPlugin {
         beforePasteEvent.fragment.appendChild(placeholder);
         beforePasteEvent.clipboardData.html = placeholder.outerHTML;
         beforePasteEvent.pasteOption = PasteOption.PasteHtml;
+    }
+
+    public setPreventImagePaste(enabled: boolean = true): void {
+        this.preventImagePaste = enabled;
     }
 
     public getEditor(): Editor {
