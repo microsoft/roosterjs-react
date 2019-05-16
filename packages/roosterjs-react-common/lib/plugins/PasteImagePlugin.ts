@@ -39,6 +39,7 @@ export default class PasteImagePlugin implements EditorPlugin {
         if (event.eventType !== PluginEventType.BeforePaste) {
             return;
         }
+
         const beforePasteEvent = event as BeforePasteEvent;
         if (beforePasteEvent.pasteOption !== PasteOption.PasteImage) {
             return;
@@ -63,13 +64,10 @@ export default class PasteImagePlugin implements EditorPlugin {
         }
 
         // modify the pasting content and option so Paste plugin won't handle
+        placeholder.setAttribute("alt", image.name );
         beforePasteEvent.fragment.appendChild(placeholder);
         beforePasteEvent.clipboardData.html = placeholder.outerHTML;
         beforePasteEvent.pasteOption = PasteOption.PasteHtml;
-    }
-
-    public setPreventImagePaste(enabled: boolean = true): void {
-        this.preventImagePaste = enabled;
     }
 
     public getEditor(): Editor {
