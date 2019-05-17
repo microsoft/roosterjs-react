@@ -57,13 +57,12 @@ export default class PasteImagePlugin implements EditorPlugin {
         }
 
         const image = beforePasteEvent.clipboardData.image;
-        const placeholder: HTMLElement = this.imageManager.upload(editor, image);
+        const placeholder: HTMLElement = this.imageManager.upload(editor, image, true);
         if (placeholder === null) {
             return;
         }
 
         // modify the pasting content and option so Paste plugin won't handle
-        placeholder.setAttribute("alt", image.name );
         beforePasteEvent.fragment.appendChild(placeholder);
         beforePasteEvent.clipboardData.html = placeholder.outerHTML;
         beforePasteEvent.pasteOption = PasteOption.PasteHtml;
