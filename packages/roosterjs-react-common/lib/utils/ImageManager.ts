@@ -5,7 +5,7 @@ import * as Styles from '../scss/core.scss.g';
 import { css } from '../utils/ReactUtil';
 
 export interface ImageManagerInteface {
-    upload: (editor: Editor, image: File) => HTMLElement;
+    upload: (editor: Editor, image: File, forceFallbackAltValue?: boolean) => HTMLElement;
     updatePlaceholders: (html: string) => UpdatePlaceholdersResult;
 }
 
@@ -13,6 +13,7 @@ export interface ImageManagerOptions {
     uploadImage: (file: File) => Promise<string>;
     createImagePlaceholder?: (editor: Editor, image: File) => HTMLImageElement;
     placeholderImageClassName?: string;
+    fallbackAltValue?: string;
 }
 
 const PlaceholderDataName = 'paste-image-placeholder-804b751e';
@@ -40,7 +41,7 @@ export default class ImageManager implements ImageManagerInteface {
         this.placeholderImageClasses = this.options.placeholderImageClassName ? this.options.placeholderImageClassName.split(' ') : undefined;
     }
 
-    public upload(editor: Editor, image: File): HTMLImageElement {
+    public upload(editor: Editor, image: File, forceFallbackAltValue?: boolean): HTMLImageElement {
         if (!image || image.size === 0) {
             return null;
         }
@@ -48,6 +49,13 @@ export default class ImageManager implements ImageManagerInteface {
         const placeholder = this.options.createImagePlaceholder(editor, image);
         if (placeholder === null) {
             return null;
+        }
+
+        let altText = "";
+        if (forceFallbackAltValue) {
+            altText = this.options.fallbackAltValue;
+        } else {
+            altText = image.name || this.options.fallbackAltValue;
         }
 
         // note: add identification (to handle undo/redo scenarios)
@@ -63,7 +71,7 @@ export default class ImageManager implements ImageManagerInteface {
                     return;
                 }
 
-                this.replacePlaceholder(placeholder, url, editor);
+                this.replacePlaceholder(placeholder, url, editor, altText || "Image");
                 this.triggerChangeEvent(editor);
             },
             () => {
@@ -122,10 +130,11 @@ export default class ImageManager implements ImageManagerInteface {
         }
     }
 
-    private replacePlaceholder(placeholder: HTMLElement, url: string, editor?: Editor): void {
+    private replacePlaceholder(placeholder: HTMLElement, url: string, editor?: Editor, altText?: string): void {
         // just update attributes if placeholder is already an image tag
+        let img: HTMLImageElement;
         if (placeholder.tagName === 'IMG') {
-            const img = placeholder as HTMLImageElement;
+            img = placeholder as HTMLImageElement;
             img.src = url;
             img.classList.remove(Styles.roosterjsReactSpinner, ...this.placeholderImageClasses);
             placeholder.removeAttribute(PlaceholderDataAttribute);
@@ -136,7 +145,7 @@ export default class ImageManager implements ImageManagerInteface {
             const doc = editor ? editor.getDocument() : document; // editor can be null when called from updatePlaceholders
 
             // create final IMG node
-            const img = doc.createElement('img') as HTMLImageElement;
+            img = doc.createElement('img') as HTMLImageElement;
             img.src = url;
             if (editor) {
                 editor.replaceNode(placeholder, img);
@@ -145,6 +154,8 @@ export default class ImageManager implements ImageManagerInteface {
                 doc.replaceChild(img, placeholder);
             }
         }
+
+        img.setAttribute("alt", altText);
     }
 
     private defaultCreateImagePlaceholder = (editor: Editor, image: File): HTMLImageElement => {

@@ -57,7 +57,7 @@ export default class PasteImagePlugin implements EditorPlugin {
         }
 
         const image = beforePasteEvent.clipboardData.image;
-        const placeholder: HTMLElement = this.imageManager.upload(editor, image);
+        const placeholder: HTMLElement = this.imageManager.upload(editor, image, true);
         if (placeholder === null) {
             return;
         }
