@@ -1,17 +1,25 @@
-import { CommandBarButton, IButton, IButtonProps } from 'office-ui-fabric-react/lib/Button';
-import { Icon } from 'office-ui-fabric-react/lib/Icon';
-import { TooltipHost } from 'office-ui-fabric-react/lib/Tooltip';
-import { IRenderFunction } from 'office-ui-fabric-react/lib/Utilities';
-import * as React from 'react';
-import { css } from 'roosterjs-react-common';
+import { CommandBarButton, IButton, IButtonProps } from "office-ui-fabric-react/lib/Button";
+import { DirectionalHint } from "office-ui-fabric-react/lib/ContextualMenu";
+import { Icon } from "office-ui-fabric-react/lib/Icon";
+import { TooltipHost } from "office-ui-fabric-react/lib/Tooltip";
+import { IRenderFunction } from "office-ui-fabric-react/lib/Utilities";
+import * as React from "react";
+import { css } from "roosterjs-react-common";
 
-import { RoosterCommandBarButton } from '../schema/RoosterCommandBarSchema';
+import { RoosterCommandBarButton } from "../schema/RoosterCommandBarSchema";
+
+export interface IconOnRenderDelegateOptions {
+    customCacheKey?: string;
+    highContrastAssetName?: string;
+    assets?: { name: string; className?: string }[];
+    tooltipDirectionHint?: DirectionalHint;
+}
 
 export type ButtonOnRenderDelegate = (item: RoosterCommandBarButton) => JSX.Element;
 const OnRenderDelegateCache: { [key: string]: ButtonOnRenderDelegate } = {};
 
 export function getIconOnRenderDelegate(highContrastAssetName: string = null, ...assets: { name: string; className?: string }[]): ButtonOnRenderDelegate {
-    return getIconOnRenderDelegateWithCustomCacheKey(undefined, highContrastAssetName, ...assets);
+    return getIconButtonOnRenderDelegate({ highContrastAssetName, assets });
 }
 
 export function getIconOnRenderDelegateWithCustomCacheKey(
@@ -19,9 +27,14 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
     highContrastAssetName: string = null,
     ...assets: { name: string; className?: string }[]
 ): ButtonOnRenderDelegate {
-    const cacheKey = customCacheKey != null ? customCacheKey : assets ? assets.map(a => a.name).join('.') : '';
+    return getIconButtonOnRenderDelegate({ customCacheKey, highContrastAssetName, assets });
+}
+
+export function getIconButtonOnRenderDelegate(options?: IconOnRenderDelegateOptions): ButtonOnRenderDelegate {
+    const { customCacheKey, assets, highContrastAssetName, tooltipDirectionHint } = options || ({} as IconOnRenderDelegateOptions);
+    const cacheKey = customCacheKey != null ? customCacheKey : assets ? assets.map(a => a.name).join(".") : "";
     if (!OnRenderDelegateCache[cacheKey]) {
-        const iconClassName = 'stacked-icon';
+        const iconClassName = "stacked-icon";
         let onRenderIcon: IRenderFunction<IButtonProps> = undefined;
         if (assets && assets.length > 1) {
             onRenderIcon = () => (
@@ -36,7 +49,7 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
 
         let cmdButton: IButton = null;
         OnRenderDelegateCache[cacheKey] = (item: RoosterCommandBarButton): JSX.Element => (
-            <TooltipHost hostClassName="command-button-tool-tip" content={item.name} key={item.key}>
+            <TooltipHost hostClassName="command-button-tool-tip" content={item.name} key={item.key} directionalHint={tooltipDirectionHint}>
                 <CommandBarButton
                     componentRef={ref => (cmdButton = ref)}
                     {...item as any}
@@ -50,7 +63,7 @@ export function getIconOnRenderDelegateWithCustomCacheKey(
                             }
                         }
                     }
-                    className={css('rooster-command-bar-button', item.buttonClassName)}
+                    className={css("rooster-command-bar-button", item.buttonClassName)}
                     onRenderIcon={onRenderIcon}
                 />
             </TooltipHost>

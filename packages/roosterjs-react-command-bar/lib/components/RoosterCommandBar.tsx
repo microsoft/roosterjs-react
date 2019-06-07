@@ -9,11 +9,15 @@ import * as React from "react";
 import { getFormatState, insertImage } from "roosterjs-editor-api";
 import { Editor } from "roosterjs-editor-core";
 import { ChangeSource, FormatState } from "roosterjs-editor-types";
+import { AriaAttributes } from "roosterjs-react-common";
 import { createFormatState } from "roosterjs-react-editor";
 
-import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
-import { getIconOnRenderDelegateWithCustomCacheKey } from "../utils/getIconOnRenderDelegate";
-import { AriaAttributes } from "roosterjs-react-common";
+import {
+    RoosterCommandBarButtonInternal,
+    RoosterCommandBarProps,
+    RoosterCommandBarState
+} from "../schema/RoosterCommandBarSchema";
+import { getIconButtonOnRenderDelegate } from "../utils/getIconOnRenderDelegate";
 import {
     OutOfBoxCommandBarButtonMap,
     OutOfBoxCommandBarButtons,
@@ -208,14 +212,15 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
             return null;
         }
 
-        const { strings, calloutClassName, calloutOnDismiss } = this.props;
+        const { strings, calloutClassName, calloutOnDismiss, tooltipDirectionHint } = this.props;
         const className = commandBarButton.className || "";
         const rootClassName = className.split(" ").indexOf(RoosterCommandBarButtonRootClassName) < 0 ? RoosterCommandBarButtonRootClassName : undefined;
         // make a copy of the OOB button template since we're changing its properties
         const button = { ...commandBarButton, className: css(rootClassName, { "first-level": firstLevel }, className) };
 
-        if (!button.onRender && button.onRenderParams) {
-            button.onRender = getIconOnRenderDelegateWithCustomCacheKey(button.key + this._id, ...button.onRenderParams);
+        if (!button.onRender && button.onRenderOptions) {
+            const { customCacheKey = `${button.key}${this._id}` } = button.onRenderOptions;
+            button.onRender = getIconButtonOnRenderDelegate({ ...button.onRenderOptions, customCacheKey, tooltipDirectionHint });
         }
         button.onClick = button.onClick || this._onCommandBarButtonClick.bind(this, button);
         button.iconOnly = true;

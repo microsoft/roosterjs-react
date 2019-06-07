@@ -1,3 +1,4 @@
+import { DirectionalHint } from "office-ui-fabric-react/lib/Callout";
 import * as React from "react";
 import * as ReactDom from "react-dom";
 import { PluginEvent, PluginEventType } from "roosterjs-editor-types";
@@ -212,6 +213,7 @@ function createEditor(name: string, loadEmojiStrings: boolean = false): JSX.Elem
                         }}
                         overflowMenuProps={{ className: "custom-overflow" }}
                         disableListWorkaround={true}
+                        tooltipDirectionHint={DirectionalHint.bottomCenter}
                     />
                 ];
             }}
