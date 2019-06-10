@@ -243,7 +243,7 @@ function output(filename, library, queue) {
 
     // this should be streamlined at some point, if more are needed:
     content += "import { ICommandBarItemProps } from 'office-ui-fabric-react/lib/CommandBar';\r\n";
-    content += "import { IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';\r\n";
+    content += "import { DirectionalHint, IContextualMenuProps } from 'office-ui-fabric-react/lib/ContextualMenu';\r\n";
     content += '\r\n';
     if (library) {
         content += 'declare namespace ' + library + ' {\r\n';

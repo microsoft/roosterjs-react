@@ -4,5 +4,11 @@ export { default as RoosterCommandBarPlugin, RoosterCommandBarPluginOptions } fr
 export { RoosterShortcutCommands } from "./plugins/RoosterCommandBarPlugin.Shortcuts";
 export { default as RoosterCommandBarPluginInterface } from "./schema/RoosterCommandBarPluginInterface";
 export { RoosterCommandBarStringKeys, RoosterCommmandBarButtonKeys } from "./utils/OutOfBoxCommandBarButtons";
-export { getIconOnRenderDelegate, getIconOnRenderDelegateWithCustomCacheKey, ButtonOnRenderDelegate } from "./utils/getIconOnRenderDelegate";
+export {
+    getIconOnRenderDelegate,
+    getIconOnRenderDelegateWithCustomCacheKey,
+    getIconButtonOnRenderDelegate,
+    ButtonOnRenderDelegate,
+    IconOnRenderDelegateOptions
+} from "./utils/getIconOnRenderDelegate";
 export { createLinkDialog, LinkDialogProps, InsertLinkStringKeys } from "./components/LinkDialog";

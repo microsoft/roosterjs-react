@@ -15,7 +15,7 @@ import {
     toggleItalic,
     toggleNumbering,
     toggleStrikethrough,
-    toggleUnderline,
+    toggleUnderline
 } from "roosterjs-editor-api";
 import { Editor } from "roosterjs-editor-core";
 import { FormatState, Indentation } from "roosterjs-editor-types";
@@ -24,9 +24,8 @@ import { setNonCompatIndentation, toggleNonCompatBullet, toggleNonCompatNumberin
 import {
     RoosterCommandBarButtonInternal,
     RoosterCommandBarProps,
-    RoosterCommandBarState,
+    RoosterCommandBarState
 } from "../schema/RoosterCommandBarSchema";
-import { getIconOnRenderDelegate } from "./getIconOnRenderDelegate";
 import { ColorInfo, FontColorInfoList, HighlightColorInfoList } from "./OutOfBoxCommandBarButtons.ColorInfo";
 
 export const RoosterCommandBarIconClassName = "rooster-command-bar-icon";
@@ -55,6 +54,8 @@ export const RoosterCommmandBarButtonKeys = {
     Unlink: "unlink",
     Code: "code"
 };
+
+const RenderOptionsNoCustomCacheKey: string = null; // buttons that are not menu based don't need custom cache keys
 
 export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
     {
@@ -85,7 +86,11 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.BulletedList,
         name: "Bulleted list",
         iconProps: _getIconProps("BulletedList"),
-        onRender: getIconOnRenderDelegate("BulletedList", { name: "BulletedListText" }, { name: "BulletedListBullet" }),
+        onRenderOptions: {
+            customCacheKey: RenderOptionsNoCustomCacheKey,
+            highContrastAssetName: "BulletedList",
+            assets: [{ name: "BulletedListText" }, { name: "BulletedListBullet" }]
+        },
         canCheck: true,
         getChecked: (formatState: FormatState) => formatState.isBullet,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? toggleNonCompatBullet : toggleBullet)(editor)
@@ -94,7 +99,11 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.NumberedList,
         name: "Numbered list",
         iconProps: _getIconProps("NumberedList"),
-        onRender: getIconOnRenderDelegate("NumberedList", { name: "NumberedListText" }, { name: "NumberedListNumber" }),
+        onRenderOptions: {
+            customCacheKey: RenderOptionsNoCustomCacheKey,
+            highContrastAssetName: "NumberedList",
+            assets: [{ name: "NumberedListText" }, { name: "NumberedListNumber" }]
+        },
         canCheck: true,
         getChecked: (formatState: FormatState) => formatState.isNumbering,
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? toggleNonCompatNumbering : toggleNumbering)(editor)
@@ -103,7 +112,10 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.Highlight,
         name: "Highlight",
         iconProps: _getIconProps("Highlight"),
-        onRenderParams: ["FabricTextHighlightComposite", { name: "FontColorSwatch", className: "highlight-swatch" }, { name: "FabricTextHighlight" }],
+        onRenderOptions: {
+            highContrastAssetName: "FabricTextHighlightComposite",
+            assets: [{ name: "FontColorSwatch", className: "highlight-swatch" }, { name: "FabricTextHighlight" }]
+        },
         subMenuProps: {
             className: "rooster-command-bar-color-container",
             key: "highlight-sub",
@@ -127,7 +139,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.FontColor,
         name: "Font color",
         iconProps: _getIconProps("FontColor"),
-        onRenderParams: ["FontColor", { name: "FontColorSwatch", className: "color-swatch" }, { name: "FontColorA" }],
+        onRenderOptions: { highContrastAssetName: "FontColor", assets: [{ name: "FontColorSwatch", className: "color-swatch" }, { name: "FontColorA" }] },
         subMenuProps: {
             className: "rooster-command-bar-color-container",
             key: "font-color-sub",
@@ -157,14 +169,22 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.Outdent,
         name: "Decrease indent",
         iconProps: _getIconProps("DecreaseIndentLegacy"),
-        onRender: getIconOnRenderDelegate("DecreaseIndentLegacy", { name: "DecreaseIndentText" }, { name: "DecreaseIndentArrow" }),
+        onRenderOptions: {
+            customCacheKey: RenderOptionsNoCustomCacheKey,
+            highContrastAssetName: "DecreaseIndentLegacy",
+            assets: [{ name: "DecreaseIndentText" }, { name: "DecreaseIndentArrow" }]
+        },
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? setNonCompatIndentation : setIndentation)(editor, Indentation.Decrease)
     },
     {
         key: RoosterCommmandBarButtonKeys.Indent,
         name: "Increase indent",
         iconProps: _getIconProps("IncreaseIndentLegacy"),
-        onRender: getIconOnRenderDelegate("IncreaseIndentLegacy", { name: "IncreaseIndentText" }, { name: "IncreaseIndentArrow" }),
+        onRenderOptions: {
+            customCacheKey: RenderOptionsNoCustomCacheKey,
+            highContrastAssetName: "IncreaseIndentLegacy",
+            assets: [{ name: "IncreaseIndentText" }, { name: "IncreaseIndentArrow" }]
+        },
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => (props.disableListWorkaround ? setNonCompatIndentation : setIndentation)(editor, Indentation.Increase)
     },
     {
@@ -178,7 +198,7 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.Header,
         name: "Header",
         iconProps: _getIconProps("FontSize"),
-        onRenderParams: [null, { name: "FontSize" }],
+        onRenderOptions: { assets: [{ name: "FontSize" }] },
         subMenuProps: {
             key: "header-sub",
             shouldFocusOnMount: true,
@@ -230,14 +250,18 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.ClearFormat,
         name: "Clear format",
         iconProps: _getIconProps("ClearFormatting"),
-        onRender: getIconOnRenderDelegate("ClearFormatting", { name: "ClearFormattingA" }, { name: "ClearFormattingEraser" }),
+        onRenderOptions: {
+            customCacheKey: RenderOptionsNoCustomCacheKey,
+            highContrastAssetName: "ClearFormatting",
+            assets: [{ name: "ClearFormattingA" }, { name: "ClearFormattingEraser" }]
+        },
         handleChange: (editor: Editor, props: RoosterCommandBarProps) => props.roosterCommandBarPlugin.clearFormat()
     },
     {
         key: RoosterCommmandBarButtonKeys.InsertImage,
         name: "Insert image",
         iconProps: _getIconProps("Photo2"),
-        onRender: getIconOnRenderDelegate(null, { name: "Photo2Fill" }, { name: "Photo2" }) // reuse Photo2 as the high contrast icon
+        onRenderOptions: { customCacheKey: RenderOptionsNoCustomCacheKey, assets: [{ name: "Photo2Fill" }, { name: "Photo2" }] } // reuse Photo2 as the high contrast icon
     },
     {
         key: RoosterCommmandBarButtonKeys.Link,
@@ -249,16 +273,14 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         key: RoosterCommmandBarButtonKeys.Unlink,
         name: "Unlink",
         iconProps: _getIconProps("RemoveLink"),
-        onRender: getIconOnRenderDelegate("RemoveLink", { name: "RemoveLinkChain" }, { name: "RemoveLinkX" }),
+        onRenderOptions: { customCacheKey: RenderOptionsNoCustomCacheKey, highContrastAssetName: "RemoveLink", assets: [{ name: "RemoveLinkChain" }, { name: "RemoveLinkX" }] },
         getDisabled: (formatState: FormatState) => !formatState.canUnlink,
         handleChange: (editor: Editor) => removeLink(editor)
     }
 ];
 OutOfBoxCommandBarButtons.forEach((button: RoosterCommandBarButtonInternal) => {
     const asset = { name: button.name };
-    if (!button.onRenderParams) {
-        button.onRender = button.onRender || getIconOnRenderDelegate(null, asset);
-    }
+    button.onRenderOptions = button.onRenderOptions || { customCacheKey: RenderOptionsNoCustomCacheKey, assets: [asset] };
     button.className = RoosterCommandBarButtonRootClassName;
 });
 
