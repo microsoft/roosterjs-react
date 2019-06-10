@@ -55,7 +55,7 @@ export const RoosterCommmandBarButtonKeys = {
     Code: "code"
 };
 
-const RenderOptionsNoCustomCacheKey: string = null; // buttons that is not menu based doesn't need custom cache keys
+const RenderOptionsNoCustomCacheKey: string = null; // buttons that are not menu based don't need custom cache keys
 
 export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
     {
