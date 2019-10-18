@@ -28,15 +28,15 @@
   "license": "MIT",
   "dependencies": {
     "@microsoft/load-themed-styles": "^1.7.59",
-    "office-ui-fabric-react": "~5.112.0",
-    "react": "~15.3.2",
-    "react-dom": "~15.3.2",
+    "office-ui-fabric-react": "^7.53.0",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
     "roosterjs-editor-plugins": "^7.2.5",
     "roosterjs-plugin-image-resize": "^7.2.5"
   },
   "devDependencies": {
-    "@types/node": "8.0.50",
-    "@types/react": "~15.6.0",
+    "@types/node": "^12.11.1",
+    "@types/react": "^16.9.9",
     "autoprefixer": "^7.1.1",
     "classnames": "2.2.5",
     "node-sass": "4.11.0",
