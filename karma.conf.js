@@ -39,7 +39,7 @@ module.exports = function(config) {
             },
             resolve: {
                 extensions: [".ts", ".tsx", ".js"],
-                modules: ["./packages"]
+                modules: ["./packages", "node_modules"]
             }
         },
 
