@@ -57,18 +57,24 @@ export default class RoosterCommandBar extends React.PureComponent<RoosterComman
                 <CommandBar
                     className={css("rooster-command-bar-base", commandBarClassName)}
                     items={this._buttons}
-                    overflowMenuProps={
-                        {
+                    overflowButtonProps={{
+                        ariaLabel: ellipsisAriaLabel,
+                        menuProps: {
                             ...overflowMenuProps,
+                            // we set items as empty to satisfy the type checker & because otherwise the component
+                            // throws an error about an unexpected `undefined` value on first render.
+                            //
+                            // We expect it to be overridden by the commandBar when rendering the button
+                            // after measuring.
+                            items: [],
                             calloutProps: {
                                 className: calloutClassName
-                            } as ICalloutProps,
+                            },
                             onDismiss: calloutOnDismiss,
                             className: css("rooster-command-bar-overflow", overflowMenuProps && overflowMenuProps.className),
                             focusZoneProps: { direction: FocusZoneDirection.horizontal }
-                        } as Partial<IContextualMenuProps>
-                    }
-                    elipisisAriaLabel={ellipsisAriaLabel}
+                        }
+                    }}
                 />
                 <input type="file" ref={this._fileInputOnRef} accept="image/*" style={DisplayNoneStyle} onChange={this._fileInputOnChange} />
             </div>

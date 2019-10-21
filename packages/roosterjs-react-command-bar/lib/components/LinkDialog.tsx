@@ -55,7 +55,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
                     componentRef={this.onLinkFieldRef}
                     onKeyDown={this.onLinkFieldKeyDown}
                     required={true}
-                    onChanged={this.onLinkFieldChanged}
+                    onChange={this.onLinkFieldChanged}
                 />
                 <DialogFooter>
                     <PrimaryButton onClick={this.insertLink} text={strings[InsertLinkStringKeys.InsertButton] || "Insert"} disabled={this.state.insertButtonDisabled} />
@@ -73,7 +73,7 @@ class LinkDialog extends React.PureComponent<LinkDialogProps, LinkDialogState> {
         this.linkField = ref;
     };
 
-    private onLinkFieldChanged = (newValue: string): void => {
+    private onLinkFieldChanged = (_e: any, newValue: string): void => {
         this.setState({ insertButtonDisabled: newValue.trim().length === 0 });
     };
 

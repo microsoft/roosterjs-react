@@ -112,7 +112,9 @@ export default class ColorPicker extends React.Component<ColorPickerProps, {}> {
                 target={menuTargetElement}
                 directionalHint={DirectionalHint.bottomLeftEdge}
                 onDismiss={onDismissMenu}
-                arrowDirection={FocusZoneDirection.bidirectional}
+                focusZoneProps={{
+                    direction: FocusZoneDirection.bidirectional
+                }}
                 shouldFocusOnMount={true}
                 items={this.props.colors.map((color: ColorPickerItem) => {
                     return {

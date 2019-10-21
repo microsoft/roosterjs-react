@@ -118,7 +118,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         },
         subMenuProps: {
             className: "rooster-command-bar-color-container",
-            key: "highlight-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
@@ -142,7 +141,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         onRenderOptions: { highContrastAssetName: "FontColor", assets: [{ name: "FontColorSwatch", className: "color-swatch" }, { name: "FontColorA" }] },
         subMenuProps: {
             className: "rooster-command-bar-color-container",
-            key: "font-color-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             focusZoneProps: { direction: FocusZoneDirection.bidirectional },
@@ -200,7 +198,6 @@ export const OutOfBoxCommandBarButtons: RoosterCommandBarButtonInternal[] = [
         iconProps: _getIconProps("FontSize"),
         onRenderOptions: { assets: [{ name: "FontSize" }] },
         subMenuProps: {
-            key: "header-sub",
             shouldFocusOnMount: true,
             directionalHint: DirectionalHint.bottomLeftEdge,
             items: [

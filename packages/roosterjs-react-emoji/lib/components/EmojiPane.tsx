@@ -1,6 +1,6 @@
 import { Callout, DirectionalHint, ICalloutProps } from "office-ui-fabric-react/lib/Callout";
 import { FocusZone } from "office-ui-fabric-react/lib/FocusZone";
-import { TextField } from "office-ui-fabric-react/lib/TextField";
+import { TextField, ITextField } from "office-ui-fabric-react/lib/TextField";
 import { KeyCodes } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
 import { AriaAttributes, css, NullFunction, Strings } from "roosterjs-react-common";
@@ -23,8 +23,8 @@ const EmojisPerRow = 7;
 const EmojiVisibleRowCount = 5;
 const EmojiVisibleWithoutNavBarRowCount = 6;
 const EmojiHeightPx = 40;
-const VerticalDirectionKeys = [KeyCodes.up, KeyCodes.down];
-const DirectionKeys = [KeyCodes.left, KeyCodes.right, KeyCodes.up, KeyCodes.down, KeyCodes.home, KeyCodes.end];
+const VerticalDirectionKeys: number[] = [KeyCodes.up, KeyCodes.down];
+const DirectionKeys: number[] = [KeyCodes.left, KeyCodes.right, KeyCodes.up, KeyCodes.down, KeyCodes.home, KeyCodes.end];
 
 const TooltipCalloutProps: ICalloutProps = {
     isBeakVisible: true,
@@ -83,7 +83,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
     private static IdCounter = 0;
 
     private _baseId = EmojiPane.IdCounter++;
-    private _searchBox: TextField;
+    private _searchBox: ITextField;
     private _listId = `EmojiPane${this._baseId}`;
     private _emojiBody: HTMLElement;
     private _input: HTMLInputElement;
@@ -240,9 +240,9 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
                 {!searchDisabled && (
                     <TextField
                         role="combobox"
-                        ref={this._searchRefCallback}
+                        componentRef={this._searchRefCallback}
                         value={this.state.searchInBox}
-                        onChanged={this._onSearchChange}
+                        onChange={this._onSearchChange}
                         inputClassName={Styles.emojiTextInput}
                         onKeyPress={this._onSearchKeyPress}
                         onKeyDown={this._onSearchKeyDown}
@@ -387,7 +387,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         return `family_${itemKey}_${this._baseId}`;
     };
 
-    private _searchRefCallback = (ref: TextField): void => {
+    private _searchRefCallback = (ref: ITextField): void => {
         this._searchBox = ref;
         if (this._searchBox) {
             this._searchBox.focus();
@@ -409,7 +409,7 @@ export default class EmojiPane extends React.PureComponent<InternalEmojiPaneProp
         }
     };
 
-    private _onSearchChange = (newValue: string): void => {
+    private _onSearchChange = (e: any, newValue: string): void => {
         const normalizedSearchValue = this._normalizeSearchText(newValue, false);
         const newMode = normalizedSearchValue.length === 0 ? EmojiPaneMode.Full : EmojiPaneMode.Partial;
         this.setState({
