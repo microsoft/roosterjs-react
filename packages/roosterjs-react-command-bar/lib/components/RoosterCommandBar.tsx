@@ -2,7 +2,7 @@ import "./RoosterCommandBar.scss.g";
 
 import { ICalloutProps } from "office-ui-fabric-react/lib/Callout";
 import { CommandBar } from "office-ui-fabric-react/lib/CommandBar";
-import { IContextualMenuItem, IContextualMenuProps } from "office-ui-fabric-react/lib/ContextualMenu";
+import { IContextualMenuItem } from "office-ui-fabric-react/lib/ContextualMenu";
 import { FocusZoneDirection } from "office-ui-fabric-react/lib/FocusZone";
 import { Async, css } from "office-ui-fabric-react/lib/Utilities";
 import * as React from "react";
@@ -12,11 +12,7 @@ import { ChangeSource, FormatState } from "roosterjs-editor-types";
 import { AriaAttributes } from "roosterjs-react-common";
 import { createFormatState } from "roosterjs-react-editor";
 
-import {
-    RoosterCommandBarButtonInternal,
-    RoosterCommandBarProps,
-    RoosterCommandBarState
-} from "../schema/RoosterCommandBarSchema";
+import { RoosterCommandBarButtonInternal, RoosterCommandBarProps, RoosterCommandBarState } from "../schema/RoosterCommandBarSchema";
 import { getIconButtonOnRenderDelegate } from "../utils/getIconOnRenderDelegate";
 import {
     OutOfBoxCommandBarButtonMap,
