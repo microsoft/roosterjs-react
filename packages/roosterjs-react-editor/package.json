@@ -4,5 +4,10 @@
   "dependencies": {
     "roosterjs-react-common": ""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/roosterjs-react.git",
+    "directory": "packages/roosterjs-react-editor"
+  },
   "main": "./lib/index.ts"
 }

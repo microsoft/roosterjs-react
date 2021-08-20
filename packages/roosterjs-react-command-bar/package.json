@@ -6,5 +6,10 @@
     "roosterjs-react-editor": "",
     "roosterjs-react-emoji": ""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/roosterjs-react.git",
+    "directory": "packages/roosterjs-react-command-bar"
+  },
   "main": "./lib/index.ts"
 }

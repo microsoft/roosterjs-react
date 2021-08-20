@@ -4,5 +4,10 @@
   "dependencies": {
     "roosterjs-react-pickers": ""
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/roosterjs-react.git",
+    "directory": "packages/roosterjs-react-pickers"
+  },
   "main": "./lib/index.ts"
 }

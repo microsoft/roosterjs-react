@@ -8,6 +8,11 @@
     "office-ui-fabric-react": ">=5.9.0",
     "react": ">=15.3.2",
     "react-dom": ">=15.3.2"
- },
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Microsoft/roosterjs-react.git",
+    "directory": "packages/roosterjs-react-common"
+  },
   "main": "./lib/index.ts"
 }
