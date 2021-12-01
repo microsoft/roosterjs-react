@@ -183,6 +183,7 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                 key={name}>
                 <IconButton
                     className={buttonClassName}
+                    styles={this.props.buttonStyle}
                     data-is-focusable={!isDisabled}
                     disabled={isDisabled}
                     title={title}
