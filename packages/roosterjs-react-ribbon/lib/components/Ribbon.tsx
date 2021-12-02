@@ -1,12 +1,12 @@
-import * as React from 'react';
-import RibbonButton, { RibbonButtonState } from '../schema/RibbonButton';
-import RibbonProps from '../schema/RibbonProps';
-import { createFormatState } from 'roosterjs-react-editor';
+import { IconButton } from 'office-ui-fabric-react/lib/Button';
 import { Callout, DirectionalHint } from 'office-ui-fabric-react/lib/Callout';
 import { FocusZone, FocusZoneDirection } from 'office-ui-fabric-react/lib/FocusZone';
-import { FormatState } from 'roosterjs-editor-types';
-import { IconButton } from 'office-ui-fabric-react/lib/Button';
+import * as React from 'react';
 import { getFormatState } from 'roosterjs-editor-api';
+import { FormatState } from 'roosterjs-editor-types';
+import { createFormatState } from 'roosterjs-react-editor';
+import RibbonButton, { RibbonButtonState } from '../schema/RibbonButton';
+import RibbonProps from '../schema/RibbonProps';
 import { getString } from '../strings/ribbonButtonStrings';
 import * as Buttons from './buttons';
 import * as Styles from './Ribbon.scss.g';
@@ -183,15 +183,17 @@ export default class Ribbon extends React.Component<RibbonProps, RibbonState> {
                 key={name}>
                 <IconButton
                     className={buttonClassName}
-                    data-is-focusable={true}
+                    styles={this.props.buttonStyle}
+                    data-is-focusable={!isDisabled}
+                    disabled={isDisabled}
                     title={title}
                     onClick={!isDisabled && (() => this.onRibbonButton(name))}
                     onDragStart={this.cancelEvent}>
                     {this.props.buttonRenderer ? (
                         this.props.buttonRenderer(name, this.props.isRtl)
                     ) : (
-                            <span>{name}</span>
-                        )}
+                        <span>{name}</span>
+                    )}
                 </IconButton>
             </div>
         );

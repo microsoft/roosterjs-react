@@ -1,6 +1,7 @@
-import RibbonPluginInterface from './RibbonPluginInterface';
-import RibbonButton from './RibbonButton';
+import { IButtonStyles } from 'office-ui-fabric-react';
 import { Strings } from '../strings/ribbonButtonStrings';
+import RibbonButton from './RibbonButton';
+import RibbonPluginInterface from './RibbonPluginInterface';
 
 interface RibbonProps {
     /**
@@ -13,6 +14,11 @@ interface RibbonProps {
      * Default behavior is to render the button name
      */
     buttonRenderer?: (buttonName: string, isRtl: boolean) => JSX.Element;
+
+    /**
+     * A custom set of styles to render the button with
+     */
+    buttonStyle?: IButtonStyles;
 
     /**
      * Minimum count of button to shown in ribbon.
