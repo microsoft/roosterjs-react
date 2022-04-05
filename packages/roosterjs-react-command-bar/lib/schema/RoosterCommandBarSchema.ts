@@ -17,7 +17,7 @@ export interface RoosterCommandBarProps {
     emojiPlugin?: EmojiPlugin;
     buttonOverrides?: RoosterCommandBarButton[];
     calloutClassName?: string;
-    calloutOnDismiss?: (ev: React.MouseEvent<HTMLElement>) => void;
+    calloutOnDismiss?: (ev: React.FocusEvent<HTMLElement>) => void;
     onButtonClicked?: (buttonKey: string) => void;
     overflowMenuProps?: Partial<IContextualMenuProps>;
     disableListWorkaround?: boolean;
